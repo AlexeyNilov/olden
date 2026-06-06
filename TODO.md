@@ -47,13 +47,13 @@
 
 ### Proposed direction
 
-* [ ] Prefer a row-offset coordinate field as the public model: `HexCoord(column: int, row: int)`.
-* [ ] Keep coordinate validation in a small `Battlefield` domain object with explicit per-row lengths, defaulting to `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`.
-* [ ] Design the coordinate model so offset coordinates can convert to axial coordinates later for unit speed, distance, movement range, and spell AoE rings.
-* [ ] Add conversion helpers to axial coordinates when implementing the first behavior that benefits from hex math, such as distance or rings.
-* [ ] Represent each hex's static properties separately from dynamic battle state: deployment zones are field configuration; occupancy is battle state.
-* [ ] Represent obstacles as field objects that occupy one or more whole-hex coordinates.
-* [ ] Treat multi-hex creatures as an occupancy concern, not as a coordinate-system concern.
+* [x] Prefer a row-offset coordinate field as the public model: `HexCoord(column: int, row: int)`.
+* [x] Keep coordinate validation in a small `Battlefield` domain object with explicit per-row lengths, defaulting to `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`.
+* [x] Design the coordinate model so offset coordinates can convert to axial coordinates for neighbor lookup, unit speed, distance, movement range, and spell AoE rings.
+* [x] Add conversion helpers to axial coordinates when implementing the first behavior that benefits from hex math, such as neighbor lookup, distance, or rings.
+* [x] Represent each hex's static properties separately from dynamic battle state: deployment zones are field configuration; occupancy is battle state.
+* [x] Represent obstacles as field objects that occupy one or more whole-hex coordinates.
+* [x] Treat multi-hex creatures as an occupancy concern, not as a coordinate-system concern.
 
 ### TDD implementation tasks
 
