@@ -85,12 +85,11 @@
 * Turn-by-turn movement until adjacent engagement
 * Replayable movement combat log
 
-## Milestone 10: Battlefield movement view
+## Milestone 10: Movement log replay view
 
-**Status:** Later
+**Status:** Next
 
-* How do we implement movement?
-* Turn-order integration
+* How do we implement replay visualization?
 
 
 ## Milestone 11: Combat actions
