@@ -49,6 +49,13 @@
 * Field rendering
 * Unit placement display
 
+## Milestone 5: Data layer
+
+**Status:** Later
+
+* Unit database and related operations
+* Repository pattern
+
 ## Milestone 6: Combat actions
 
 **Status:** Later
