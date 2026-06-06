@@ -57,17 +57,17 @@
 
 ### TDD implementation tasks
 
-* [ ] Write a failing test that a default battlefield exposes row lengths `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`.
-* [ ] Write a failing test that a default battlefield contains exactly 137 valid coordinates.
-* [ ] Write a failing test that valid edge and corner coordinates are accepted.
-* [ ] Write a failing test that negative coordinates and coordinates outside each row's length are rejected before any lookup logic runs.
-* [ ] Write a failing test that neighbor lookup returns only in-bounds neighboring hexes for center, edge, and corner positions.
-* [ ] Write a failing test that the chosen row-offset parity matches the expected six neighbors for a known coordinate.
-* [ ] Write a failing test that a hex can expose deployment-zone metadata without affecting coordinate validity.
-* [ ] Write a failing test that occupancy rejects placing two units on the same coordinate.
-* [ ] Write a failing test that an obstacle blocks occupancy on all coordinates it covers.
-* [ ] Implement the smallest battlefield model that satisfies the tests.
-* [ ] Run `make format`, `make lint`, `make mypy`, and `go test` only if relevant; for this Python project, use the Python checks listed in `AGENTS.md`.
+* [x] Write a failing test that a default battlefield exposes row lengths `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`.
+* [x] Write a failing test that a default battlefield contains exactly 137 valid coordinates.
+* [x] Write a failing test that valid edge and corner coordinates are accepted.
+* [x] Write a failing test that negative coordinates and coordinates outside each row's length are rejected before any lookup logic runs.
+* [x] Write a failing test that neighbor lookup returns only in-bounds neighboring hexes for center, edge, and corner positions.
+* [x] Write a failing test that the chosen row-offset parity matches the expected six neighbors for a known coordinate.
+* [x] Write a failing test that a hex can expose deployment-zone metadata without affecting coordinate validity.
+* [x] Write a failing test that occupancy rejects placing two units on the same coordinate.
+* [x] Write a failing test that an obstacle blocks occupancy on all coordinates it covers.
+* [x] Implement the smallest battlefield model that satisfies the tests.
+* [x] Run `make format`, `make lint`, `make mypy`, and `go test` only if relevant; for this Python project, use the Python checks listed in `AGENTS.md`.
 
 ### Clarifying questions
 

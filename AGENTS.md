@@ -51,14 +51,6 @@ Your job is to help the user think better, and to write production ready code. O
 
 ## Tooling
 
-### On Windows, PowerShell
-- Use Ruff for formatting and linting:
-  - `.\.venv\Scripts\ruff.exe format --check .`
-  - `.\.venv\Scripts\ruff.exe check .`
-- Use mypy for type checking:
-  - `.\.venv\Scripts\mypy.exe`
-
-### On Linux
 - Use Ruff for formatting and linting:
   - `make format`
   - `make lint`
@@ -72,10 +64,3 @@ Your job is to help the user think better, and to write production ready code. O
 - Minimalist Docstrings: Omit docstrings for "obvious" functions (getters, setters, simple wrappers, or self-documenting signatures).
 - Mandatory Docstrings: Provide Google-style docstrings (Purpose, Args, Returns, Raises) only if the function contains complex "Why" logic or non-obvious business rules.
 - Any significant change affecting architecture, data flow, or public interfaces must be reflected in `README.md`.
-
-### MCP Tools Descriptions
-- MCP Tool Descriptions: Write descriptions as routing guidance for LLMs, not marketing copy. State what the tool searches or changes, when to use it, when not to use it, important scope limits, time windows, result ordering, and result caps.
-- MCP Tool Boundaries: Make adjacent tools easy to distinguish. Name the data source and domain explicitly (for example, application/container logs vs kubelet node logs) and avoid overlapping vague phrases like "search logs" without qualifiers.
-- MCP Parameters: Add parameter metadata with precise input expectations and invalid inputs. Prefer exact examples and exclusions, e.g. exact pod name only; not namespace, deployment, label selector, host, or wildcard.
-- MCP Tool Errors: Use `ToolError` for expected, user-actionable failures with safe messages (invalid input, unsupported wildcard, missing required context, permission or service unavailable when sanitized). Use normal exceptions for unexpected internal defects. Sanitize external-system exceptions that may expose credentials, sensitive URLs, query bodies, or noisy infrastructure details before returning them to the user.
-- MCP Schema Tests: For exposed tools, test descriptions and parameter schema metadata when they affect tool choice or user-visible behavior. Test validation before external I/O for rejected inputs.
