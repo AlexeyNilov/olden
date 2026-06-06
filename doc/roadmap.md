@@ -33,8 +33,6 @@
 
 * Distance between two hexes
 * Movement radius by unit speed
-* Spell area-of-effect rings
-* Line-of-sight rules
 
 ## Milestone 4: Movement simulation
 
