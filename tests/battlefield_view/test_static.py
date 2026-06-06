@@ -1,5 +1,5 @@
-from olden.battlefield_view.app import _build_page, _demo_battle, _register_unit_image_static_files, render_battlefield_svg
 from olden.battlefield_view.model import build_battlefield_view
+from olden.battlefield_view.static import _build_page, _demo_battle, _register_unit_image_static_files, render_battlefield_svg
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
@@ -33,6 +33,8 @@ def test_svg_renderer_uses_unit_image_and_count_label_when_definition_image_exis
     assert '<image href="/unit-images/esquire.webp"' in svg
     assert ">10</text>" in svg
     assert "Swordsman 10" not in svg
+    assert 'class="unit-side player"' in svg
+    assert ">P</text>" in svg
 
 
 def test_svg_renderer_sizes_unit_image_to_fill_the_hex_bounds(tmp_path):
@@ -79,6 +81,24 @@ def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is
 
     assert "<image " not in svg
     assert "Swordsman 10" in svg
+    assert 'class="unit-side player"' in svg
+
+
+def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
+    stack = UnitStack(
+        id="enemy-esquire",
+        definition=UnitDefinition(id="esquire", name="Swordsman", speed=4, footprint=UnitFootprint.single_hex()),
+        side=CombatSide.ENEMY,
+        count=20,
+    )
+    occupancy = Occupancy()
+    occupancy.place(stack.id, HexCoord(8, 5))
+    view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
+
+    svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
+
+    assert 'class="unit-side enemy"' in svg
+    assert ">E</text>" in svg
 
 
 def test_nicegui_page_embeds_trusted_generated_svg_without_sanitizing():

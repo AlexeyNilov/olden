@@ -158,8 +158,8 @@ def _unit_elements(hex_data: RenderableHex, unit_image_directory: Path) -> tuple
         return (_unit_label(hex_data),)
     unit_image = resolve_unit_image(hex_data.unit_stack, unit_image_directory)
     if unit_image is None:
-        return (_unit_label(hex_data),)
-    return (_unit_image(hex_data, unit_image.href), _unit_count_label(hex_data))
+        return (_unit_label(hex_data), _unit_side_badge(hex_data))
+    return (_unit_image(hex_data, unit_image.href), _unit_count_label(hex_data), _unit_side_badge(hex_data))
 
 
 def _unit_image(hex_data: RenderableHex, href: str) -> str:
@@ -188,6 +188,30 @@ def _unit_count_label(hex_data: RenderableHex) -> str:
         'font-family="sans-serif" font-size="12" font-weight="700">'
         f"{hex_data.unit_stack.count}</text>"
     )
+
+
+def _unit_side_badge(hex_data: RenderableHex) -> str:
+    if hex_data.unit_stack is None:
+        return ""
+    bounds = _hex_bounds(hex_data)
+    radius = 9
+    center_x = bounds.min_x + radius + 3
+    center_y = bounds.min_y + radius + 3
+    side = hex_data.unit_stack.side
+    marker = "P" if side is CombatSide.PLAYER else "E"
+    return (
+        f'<circle class="unit-side {side.value}" cx="{center_x:.2f}" cy="{center_y:.2f}" r="{radius}" '
+        f'fill="{_unit_side_fill(side)}" stroke="#111111" stroke-width="2" />'
+        f'<text class="unit-side {side.value}" x="{center_x:.2f}" y="{center_y + 4:.2f}" text-anchor="middle" '
+        f'fill="#ffffff" stroke="#111111" stroke-width="1" paint-order="stroke" '
+        f'font-family="sans-serif" font-size="12" font-weight="800">{marker}</text>'
+    )
+
+
+def _unit_side_fill(side: CombatSide) -> str:
+    if side is CombatSide.PLAYER:
+        return "#2f80d0"
+    return "#c6534a"
 
 
 def _unit_text(hex_data: RenderableHex) -> str:

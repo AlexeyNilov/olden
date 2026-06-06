@@ -4,8 +4,12 @@ from importlib import import_module
 from pathlib import Path
 from typing import Any
 
-from olden.battlefield_view.app import DEFAULT_UNIT_IMAGE_DIRECTORY, _register_unit_image_static_files, render_battlefield_svg
 from olden.battlefield_view.model import build_battlefield_view_for_battle
+from olden.battlefield_view.static import (
+    DEFAULT_UNIT_IMAGE_DIRECTORY,
+    _register_unit_image_static_files,
+    render_battlefield_svg,
+)
 from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.combat_log import UnitMovedEvent, load_combat_log_file
 from olden.combat.combat_replay import CombatReplayFrame, build_combat_replay_frames
@@ -15,6 +19,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
 DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_movement_log.yaml"
 DEFAULT_REPLAY_DELAY_SECONDS = 1.0
+DEFAULT_REPLAY_PORT = 8081
 
 
 class ReplayController:
@@ -86,13 +91,14 @@ def run_combat_replay_view(
     initial_state_path: Path = DEFAULT_BATTLE_INITIAL_STATE_PATH,
     combat_log_path: Path = DEFAULT_COMBAT_LOG_PATH,
     delay_seconds: float = DEFAULT_REPLAY_DELAY_SECONDS,
+    port: int = DEFAULT_REPLAY_PORT,
 ) -> None:
     nicegui = _load_nicegui()
     ui = getattr(nicegui, "ui")
     frames = load_replay_frames(initial_state_path, combat_log_path)
     _register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
     _build_page(ui, frames, delay_seconds, DEFAULT_UNIT_IMAGE_DIRECTORY)
-    ui.run(title="Olden Combat Replay", reload=False, show=False)
+    ui.run(title="Olden Combat Replay", reload=False, show=False, port=port)
 
 
 def load_default_replay_frames() -> tuple[CombatReplayFrame, ...]:

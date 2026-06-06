@@ -42,7 +42,7 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 **Decision:** Add pure combat replay frame generation in `combat/combat_replay.py` and a separate NiceGUI app in `battlefield_view/replay_app.py`. The replay app loads `data/demo_battle.yaml` and `data/demo_movement_log.yaml` by default, renders one battlefield state per replay frame, and owns playback controls and delay configuration.
 
-**Alternatives considered:** Reusing `battlefield_view/app.py` for replay was rejected because the static view would inherit timer, controls, and replay-file concerns. Smooth per-path-step animation was deferred because current combat logs already provide event-level replay, and frame-per-event replay is enough to inspect movement order.
+**Alternatives considered:** Reusing `battlefield_view/static.py` for replay was rejected because the static view would inherit timer, controls, and replay-file concerns. Smooth per-path-step animation was deferred because current combat logs already provide event-level replay, and frame-per-event replay is enough to inspect movement order.
 
 **Consequences:** Snapshot rendering remains simple and reusable. Replay behavior has a clear UI entry point and a pure frame builder that is testable without NiceGUI. Future path-step animation can extend replay frames or add a separate animation layer without rewriting combat-log replay.
 

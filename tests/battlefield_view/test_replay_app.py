@@ -3,6 +3,7 @@ from pathlib import Path
 from olden.battlefield_view.replay_app import (
     DEFAULT_BATTLE_INITIAL_STATE_PATH,
     DEFAULT_COMBAT_LOG_PATH,
+    DEFAULT_REPLAY_PORT,
     ReplayController,
     _build_page,
     load_default_replay_frames,
@@ -16,6 +17,7 @@ def test_load_default_replay_frames_uses_demo_battle_and_demo_movement_log():
     assert frames[-1].battle.occupancy.coordinates_for("enemy-esquire")
     assert DEFAULT_BATTLE_INITIAL_STATE_PATH.name == "demo_battle.yaml"
     assert DEFAULT_COMBAT_LOG_PATH.name == "demo_movement_log.yaml"
+    assert DEFAULT_REPLAY_PORT == 8081
 
 
 def test_replay_controller_advances_frames_and_updates_svg():
