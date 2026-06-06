@@ -1,6 +1,6 @@
 # olden
 
-Olden combat simulator.
+Heroes of Might and Magic: Olden Era combat simulator.
 
 ## Configuration
 
