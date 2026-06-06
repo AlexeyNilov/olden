@@ -39,6 +39,19 @@ This helps ensure requirements are:
 
 * **When** field configuration is represented, **the system shall** keep deployment-zone data separate from dynamic unit occupancy.
 * **When** obstacles are represented, **the system shall** support obstacles that cover one or more hex coordinates.
+* **When** obstacles are represented, **the system shall** treat each obstacle coordinate as a whole-hex blocker.
 * **When** a unit occupies a coordinate, **the system shall** prevent another unit from occupying the same coordinate at the same time.
 * **When** a coordinate is covered by an obstacle, **the system shall** prevent unit occupancy on that coordinate.
 * **While** pathfinding and movement range are deferred, **the system shall** avoid exposing pathfinding or movement-range APIs as part of the first battlefield model.
+
+### Deployment zones
+
+* **When** deployment zones are represented, **the system shall** assign zones by battlefield side.
+* **When** the player-controlled side is represented, **the system shall** place that side's deployment zone on the left side of the battlefield.
+* **When** the enemy side is represented, **the system shall** place that side's deployment zone on the right side of the battlefield.
+
+### Future range operations
+
+* **When** range operations are added after the first battlefield model, **the system shall** support distance between two hexes.
+* **When** range operations are added after the first battlefield model, **the system shall** support movement radius from a unit speed value.
+* **When** range operations are added after the first battlefield model, **the system shall** support spell area-of-effect rings.

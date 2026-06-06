@@ -25,9 +25,13 @@
 * [x] Row lengths are `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`, totaling 137 hexes.
 * [x] Odd-numbered rows contain 13 hexes; even-numbered rows contain 12 hexes.
 * [x] The battlefield uses flat-top hexes.
+* [x] Olden Era uses the same combat-grid conventions as older Heroes games.
 * [x] The Python API should expose `HexCoord(column: int, row: int)` rather than one-based UI labels.
 * [x] The first model must support field topology, occupancy, obstacles, and deployment zones.
+* [x] Deployment zones are fixed by side: player-controlled side on the left, enemy side on the right.
+* [x] Obstacles are always whole-hex blockers.
 * [x] Pathfinding and movement range are outside the first milestone.
+* [x] Future range work must support distance between hexes, movement radius by unit speed, and spell AoE rings.
 
 ### Documentation tasks
 
@@ -48,7 +52,7 @@
 * [ ] Design the coordinate model so offset coordinates can convert to axial coordinates later for unit speed, distance, movement range, and spell AoE rings.
 * [ ] Add conversion helpers to axial coordinates when implementing the first behavior that benefits from hex math, such as distance or rings.
 * [ ] Represent each hex's static properties separately from dynamic battle state: deployment zones are field configuration; occupancy is battle state.
-* [ ] Represent obstacles as field objects that occupy one or more coordinates, rather than as a boolean flag on `Hex`, unless requirements prove obstacles are always single-hex.
+* [ ] Represent obstacles as field objects that occupy one or more whole-hex coordinates.
 * [ ] Treat multi-hex creatures as an occupancy concern, not as a coordinate-system concern.
 
 ### TDD implementation tasks
@@ -70,12 +74,12 @@
 * [x] Is the battlefield visually flat-top or pointy-top? Flat-top.
 * [x] Should the canonical coordinate exposed by the Python API be `(column, row)`, `(x, y)`, or a game-specific label? Use `(column, row)` through `HexCoord`.
 * [x] Should API coordinates be zero-based, one-based, or support both with explicit conversion? Zero-based.
-* [ ] Does Olden Era use the same combat-grid conventions as earlier Heroes games, or should we avoid assuming inherited rules?
+* [x] Does Olden Era use the same combat-grid conventions as earlier Heroes games, or should we avoid assuming inherited rules? It uses the same structure as older Heroes games.
 * [x] Do we need to model only the field topology first, or should the first iteration include occupied hexes, obstacles, and deployment zones? Include occupancy, obstacles, and deployment zones.
 * [x] Should pathfinding and movement range be part of the first milestone, or deferred until the static field model is tested? Deferred.
 * [x] Which rows are shifted horizontally in the canonical model: odd rows or even rows? Odd rows are longer and contain 13 hexes.
 * [x] How many hexes do odd rows contain? 13.
 * [x] If zero-based odd rows have 13 hexes and even rows have 12 hexes, is the total battlefield size 137 hexes? Yes.
-* [ ] Are deployment zones fixed by side, creature type, scenario, or arbitrary scenario configuration?
-* [ ] Can obstacles occupy partial hex edges, or are they always whole-hex blockers?
-* [ ] Which future range operations should be supported first after topology: distance between hexes, movement radius by unit speed, or spell AoE rings?
+* [x] Are deployment zones fixed by side, creature type, scenario, or arbitrary scenario configuration? Fixed by side: player-controlled side on the left, enemy side on the right.
+* [x] Can obstacles occupy partial hex edges, or are they always whole-hex blockers? Always whole-hex blockers.
+* [x] Which future range operations should be supported first after topology: distance between hexes, movement radius by unit speed, or spell AoE rings? All of them.
