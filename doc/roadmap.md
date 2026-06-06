@@ -96,16 +96,17 @@
 * Playback controls for play, pause, restart, previous, and next
 
 
-## Milestone 11: Combat actions
+## Milestone 11: Combat actions: Melee attack
 
-**Status:** Later
+**Status:** Next
 
 * Attack targeting
 * Damage resolution
+* Counter attack
 
 ## Milestone ?: Combat simulation
 ## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
 
 ## Backlog
 
-Combat log window, combat replay,  counter attack count, npc combat strategy with codex
+* NPC combat strategy
