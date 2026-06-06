@@ -57,9 +57,17 @@
 * Local YAML-backed unit catalog
 * Packaged CC BY-SA unit data boundary
 
-## Milestone 7: Combat actions
+## Milestone 7: Battlefield movement view
 
 **Status:** Next
+
+* _demo_stack: use load_packaged_unit_catalog() to load UnitDefinition
+* Use picture image/esquire.webp
+
+
+## Milestone 7: Combat actions
+
+**Status:** Later
 
 * Attack targeting
 * Damage resolution

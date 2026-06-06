@@ -152,8 +152,8 @@ def _demo_battlefield() -> Battlefield:
 
 def _demo_unit_stacks() -> dict[str, UnitStack]:
     return {
-        "swordsman": _demo_stack("swordsman", "Swordsman", CombatSide.PLAYER, 12, 4),
-        "golem": _demo_stack("golem", "Golem", CombatSide.ENEMY, 8, 3),
+        "swordsman": _demo_stack("swordsman", "Swordsman", CombatSide.PLAYER, 10, 4),
+        "swordsman_enemy": _demo_stack("swordsman", "Swordsman", CombatSide.ENEMY, 20, 3),
     }
 
 
@@ -165,7 +165,7 @@ def _demo_stack(unit_id: str, name: str, side: CombatSide, count: int, speed: in
 def _demo_occupancy() -> Occupancy:
     occupancy = Occupancy(blocked_coordinates=_demo_obstacle_coordinates())
     occupancy.place("swordsman", HexCoord(0, 5))
-    occupancy.place("golem", HexCoord(12, 5))
+    occupancy.place("swordsman_enemy", HexCoord(12, 5))
     return occupancy
 
 
