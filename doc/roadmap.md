@@ -81,3 +81,6 @@
 
 * Attack targeting
 * Damage resolution
+
+## Milestone ?: Combat simulation
+## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
