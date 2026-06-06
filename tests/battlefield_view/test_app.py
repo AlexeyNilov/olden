@@ -35,6 +35,40 @@ def test_svg_renderer_uses_unit_image_and_count_label_when_definition_image_exis
     assert "Swordsman 10" not in svg
 
 
+def test_svg_renderer_sizes_unit_image_to_fill_the_hex_bounds(tmp_path):
+    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    occupancy = Occupancy()
+    occupancy.place(stack.id, HexCoord(4, 5))
+    (tmp_path / "esquire.webp").write_bytes(b"image")
+    view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
+    hex_data = view.hex_at(HexCoord(4, 5))
+    min_x = min(point.x for point in hex_data.points)
+    max_x = max(point.x for point in hex_data.points)
+    min_y = min(point.y for point in hex_data.points)
+    max_y = max(point.y for point in hex_data.points)
+
+    svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
+
+    assert f'x="{min_x:.2f}"' in svg
+    assert f'y="{min_y:.2f}"' in svg
+    assert f'width="{max_x - min_x:.2f}"' in svg
+    assert f'height="{max_y - min_y:.2f}"' in svg
+
+
+def test_svg_renderer_places_unit_image_count_near_the_bottom_of_the_hex(tmp_path):
+    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    occupancy = Occupancy()
+    occupancy.place(stack.id, HexCoord(4, 5))
+    (tmp_path / "esquire.webp").write_bytes(b"image")
+    view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
+    hex_data = view.hex_at(HexCoord(4, 5))
+    max_y = max(point.y for point in hex_data.points)
+
+    svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
+
+    assert f'y="{max_y - 7:.2f}"' in svg
+
+
 def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is_missing(tmp_path):
     stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
     occupancy = Occupancy()

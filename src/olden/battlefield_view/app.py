@@ -158,12 +158,9 @@ def _unit_elements(hex_data: RenderableHex, unit_image_directory: Path) -> tuple
 
 def _unit_image(hex_data: RenderableHex, href: str) -> str:
     bounds = _hex_bounds(hex_data)
-    image_size = min(bounds.width, bounds.height) * 0.82
-    image_x = hex_data.center_x - image_size / 2
-    image_y = hex_data.center_y - image_size / 2 + 3
     return (
-        f'<image href="{escape(href)}" x="{image_x:.2f}" y="{image_y:.2f}" width="{image_size:.2f}" '
-        f'height="{image_size:.2f}" preserveAspectRatio="xMidYMid meet" />'
+        f'<image href="{escape(href)}" x="{bounds.min_x:.2f}" y="{bounds.min_y:.2f}" width="{bounds.width:.2f}" '
+        f'height="{bounds.height:.2f}" preserveAspectRatio="xMidYMid meet" />'
     )
 
 
@@ -180,8 +177,9 @@ def _unit_count_label(hex_data: RenderableHex) -> str:
         return _unit_label(hex_data)
     bounds = _hex_bounds(hex_data)
     return (
-        f'<text class="unit" x="{hex_data.center_x:.2f}" y="{bounds.min_y + 13:.2f}" '
-        f'text-anchor="middle" fill="#f7f0d0" font-family="sans-serif" font-size="12" font-weight="700">'
+        f'<text class="unit" x="{hex_data.center_x:.2f}" y="{bounds.max_y - 7:.2f}" '
+        'text-anchor="middle" fill="#f7f0d0" stroke="#111111" stroke-width="2" paint-order="stroke" '
+        'font-family="sans-serif" font-size="12" font-weight="700">'
         f"{hex_data.unit_stack.count}</text>"
     )
 
@@ -193,9 +191,10 @@ def _unit_text(hex_data: RenderableHex) -> str:
 
 
 class _HexBounds:
-    def __init__(self, min_x: float, min_y: float, width: float, height: float) -> None:
+    def __init__(self, min_x: float, min_y: float, max_y: float, width: float, height: float) -> None:
         self.min_x = min_x
         self.min_y = min_y
+        self.max_y = max_y
         self.width = width
         self.height = height
 
@@ -205,7 +204,7 @@ def _hex_bounds(hex_data: RenderableHex) -> _HexBounds:
     max_x = max(point.x for point in hex_data.points)
     min_y = min(point.y for point in hex_data.points)
     max_y = max(point.y for point in hex_data.points)
-    return _HexBounds(min_x=min_x, min_y=min_y, width=max_x - min_x, height=max_y - min_y)
+    return _HexBounds(min_x=min_x, min_y=min_y, max_y=max_y, width=max_x - min_x, height=max_y - min_y)
 
 
 def _demo_battlefield() -> Battlefield:
