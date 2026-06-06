@@ -47,7 +47,7 @@ def _build_page(ui: Any, view: BattlefieldView) -> None:
     ui.page_title("Olden Battlefield View")
     ui.add_css("body { background: #10131f; }")
     with ui.column().classes("w-full items-center q-pa-md"):
-        ui.html(render_battlefield_svg(view)).classes("battlefield-view")
+        ui.html(render_battlefield_svg(view), sanitize=False).classes("battlefield-view")
 
 
 def _load_nicegui_ui() -> Any:
@@ -62,11 +62,8 @@ def _load_nicegui_ui() -> Any:
 def _svg_open(width: float, height: float) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.2f} {height:.2f}" '
-        'role="img" aria-label="Olden battlefield" style="max-width: 100%; height: auto;">'
-        "<style>"
-        ".hex{fill:#556b3d;stroke:#25251f;stroke-width:3}.player{fill:#3f6fa8}.enemy{fill:#9a4f46}"
-        ".blocked{fill:#3a3a34}.occupied{stroke:#f2d27a;stroke-width:4}.unit{fill:#f7f0d0;font:700 12px sans-serif}"
-        "</style>"
+        f'width="{width:.2f}" height="{height:.2f}" role="img" aria-label="Olden battlefield" '
+        'style="display: block; max-width: 100%; height: auto;">'
     )
 
 
@@ -77,7 +74,11 @@ def _svg_size(view: BattlefieldView) -> tuple[float, float]:
 
 
 def _polygon(hex_data: RenderableHex) -> str:
-    return f'<polygon class="{_hex_classes(hex_data)}" points="{_points(hex_data)}"><title>{_title(hex_data)}</title></polygon>'
+    return (
+        f'<polygon class="{_hex_classes(hex_data)}" points="{_points(hex_data)}" fill="{_hex_fill(hex_data)}" '
+        f'stroke="{_hex_stroke(hex_data)}" stroke-width="{_hex_stroke_width(hex_data)}">'
+        f"<title>{_title(hex_data)}</title></polygon>"
+    )
 
 
 def _hex_classes(hex_data: RenderableHex) -> str:
@@ -97,6 +98,28 @@ def _points(hex_data: RenderableHex) -> str:
     return " ".join(f"{point.x:.2f},{point.y:.2f}" for point in hex_data.points)
 
 
+def _hex_fill(hex_data: RenderableHex) -> str:
+    if hex_data.is_blocked:
+        return "#3a3a34"
+    if hex_data.deployment_side is CombatSide.PLAYER:
+        return "#3f6fa8"
+    if hex_data.deployment_side is CombatSide.ENEMY:
+        return "#9a4f46"
+    return "#556b3d"
+
+
+def _hex_stroke(hex_data: RenderableHex) -> str:
+    if hex_data.occupant_id is not None:
+        return "#f2d27a"
+    return "#25251f"
+
+
+def _hex_stroke_width(hex_data: RenderableHex) -> str:
+    if hex_data.occupant_id is not None:
+        return "4"
+    return "3"
+
+
 def _title(hex_data: RenderableHex) -> str:
     parts = [f"({hex_data.coord.column}, {hex_data.coord.row})"]
     if hex_data.deployment_side is not None:
@@ -112,7 +135,7 @@ def _unit_label(hex_data: RenderableHex) -> str:
     label = _unit_text(hex_data)
     return (
         f'<text class="unit" x="{hex_data.center_x:.2f}" y="{hex_data.center_y + 4:.2f}" '
-        f'text-anchor="middle">{escape(label)}</text>'
+        f'text-anchor="middle" fill="#f7f0d0" font-family="sans-serif" font-size="12" font-weight="700">{escape(label)}</text>'
     )
 
 
