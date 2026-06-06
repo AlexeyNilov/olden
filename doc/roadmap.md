@@ -36,15 +36,15 @@
 
 ## Milestone 4: Movement simulation
 
-**Status:** Next
+**Status:** Done
 
-* Movement validation with obstacles and occupancy
+* Single-hex movement validation with obstacles and occupancy
 * Movement cost rules
 * Pathfinding
 
 ## Milestone 5: Combat actions
 
-**Status:** Later
+**Status:** Next
 
 * Attack targeting
 * Damage resolution

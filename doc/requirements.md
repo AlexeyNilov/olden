@@ -67,6 +67,9 @@ This helps ensure requirements are:
 * **When** a coordinate is covered by an obstacle, **the system shall** prevent unit occupancy on that coordinate.
 * **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is already occupied.
 * **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is blocked by an obstacle.
+* **When** occupancy is queried for a unit, **the system shall** return every coordinate occupied by that unit.
+* **When** a unit is removed from occupancy, **the system shall** clear every coordinate occupied by that unit.
+* **When** a single-hex unit is moved in occupancy, **the system shall** clear its previous coordinate and reserve its destination coordinate.
 
 ### Range and movement math
 
@@ -79,10 +82,24 @@ This helps ensure requirements are:
 * **When** movement radius is calculated near a battlefield edge, **the system shall** exclude coordinates outside the battlefield.
 * **When** movement radius is calculated with negative speed, **the system shall** reject the request.
 
+### Movement simulation
+
+* **When** a path is found for single-hex movement, **the system shall** return the shortest path as ordered anchor coordinates including the start and destination.
+* **When** a movement path is calculated, **the system shall** treat each step between adjacent coordinates as cost `1`.
+* **When** single-hex movement is pathfinding, **the system shall** treat obstacle coordinates as impassable.
+* **When** single-hex movement is pathfinding, **the system shall** treat coordinates occupied by other units as impassable.
+* **When** single-hex movement is pathfinding, **the system shall** allow the moving unit's own current coordinate.
+* **When** a destination cannot be reached, **the system shall** raise a dedicated unreachable-path exception.
+* **When** movement is validated within unit speed, **the system shall** return the valid movement path without mutating occupancy.
+* **When** movement is validated beyond unit speed, **the system shall** reject the movement.
+* **When** movement is validated with an invalid start or destination coordinate, **the system shall** reject the movement.
+* **When** movement is validated to a blocked or other-unit-occupied destination, **the system shall** reject the movement.
+
 ### Deferred behavior
 
-* **While** pathfinding is deferred, **the system shall** avoid exposing pathfinding APIs as part of range and movement math.
+* **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
 * **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
 * **While** combat action simulation is deferred, **the system shall** avoid exposing damage, morale, luck, attack-resolution, ability, cost, growth, or upgrade behavior as part of the Unit model.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
-* **While** movement simulation is deferred, **the system shall** keep movement radius independent of obstacles and dynamic occupancy.
+* **While** multi-hex movement is deferred, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior as part of single-hex movement simulation.
+* **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.

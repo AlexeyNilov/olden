@@ -59,3 +59,42 @@ def test_occupancy_rejects_unit_footprint_when_secondary_coordinate_is_occupied(
 
     assert occupancy.unit_at(HexCoord(4, 4)) is None
     assert occupancy.unit_at(HexCoord(5, 4)) == "swordsman"
+
+
+def test_occupancy_returns_all_coordinates_occupied_by_a_unit():
+    occupancy = Occupancy()
+    coordinates = frozenset({HexCoord(4, 4), HexCoord(5, 4)})
+
+    occupancy.place_footprint("cavalry", coordinates)
+
+    assert occupancy.coordinates_for("cavalry") == coordinates
+    assert occupancy.coordinates_for("unknown") == frozenset()
+
+
+def test_occupancy_removes_every_coordinate_occupied_by_a_unit():
+    occupancy = Occupancy()
+    occupancy.place_footprint("cavalry", frozenset({HexCoord(4, 4), HexCoord(5, 4)}))
+
+    occupancy.remove("cavalry")
+
+    assert occupancy.unit_at(HexCoord(4, 4)) is None
+    assert occupancy.unit_at(HexCoord(5, 4)) is None
+
+
+def test_occupancy_moves_a_single_hex_unit_to_an_unoccupied_destination():
+    occupancy = Occupancy()
+    occupancy.place("swordsman", HexCoord(4, 4))
+
+    occupancy.move("swordsman", HexCoord(5, 4))
+
+    assert occupancy.unit_at(HexCoord(4, 4)) is None
+    assert occupancy.unit_at(HexCoord(5, 4)) == "swordsman"
+
+
+def test_occupancy_can_ignore_a_moving_units_current_coordinate_when_checking_placeability():
+    occupancy = Occupancy()
+    occupancy.place("swordsman", HexCoord(4, 4))
+    occupancy.place("golem", HexCoord(5, 4))
+
+    assert occupancy.can_place(frozenset({HexCoord(4, 4)}), moving_unit_id="swordsman")
+    assert not occupancy.can_place(frozenset({HexCoord(5, 4)}), moving_unit_id="swordsman")

@@ -21,6 +21,7 @@ src/olden/
         occupancy.py
         obstacles.py
         deployment.py
+        movement.py
         range.py
         sides.py
         units.py
@@ -30,6 +31,7 @@ tests/
 
     combat/
         test_battlefield.py
+        test_movement.py
         test_occupancy.py
         test_range.py
         test_units.py
@@ -43,6 +45,7 @@ tests/
 * Put coordinate value objects and future hex-math helpers in `coordinates.py`.
 * Put battlefield topology, row validation, and neighbor lookup in `battlefield.py`.
 * Put dynamic unit placement rules in `occupancy.py`.
+* Put movement validation and pathfinding rules in `movement.py`.
 * Put blocked-coordinate rules in `obstacles.py`.
 * Put deployment-zone rules in `deployment.py`.
 * Put pure distance and movement-radius calculations in `range.py`.

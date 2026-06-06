@@ -34,6 +34,18 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-06: Scope first movement simulation to single-hex pathfinding
+
+**Status:** Accepted
+
+**Context:** Milestone 4 introduces movement validation, constant movement cost, and pathfinding. The simulator already has unit footprints, obstacles, occupancy, neighbor lookup, and range math, but multi-hex movement adds footprint-clearance complexity that is not needed for the first movement slice.
+
+**Decision:** Implement Milestone 4 as single-hex movement only. Each adjacent step costs `1`, so path cost is `len(path) - 1`. Pathfinding uses breadth-first search over battlefield neighbors and treats obstacles and other units as impassable. A moving unit may pass through its own starting coordinate. Unreachable destinations raise a dedicated movement exception. Movement validation returns the valid path and does not mutate occupancy; occupancy mutation remains a separate operation.
+
+**Alternatives considered:** Implementing multi-hex movement now was rejected because it requires additional rules for rotating or translating footprints through narrow spaces. Returning an empty path for unreachable destinations was rejected because unreachable movement is an exceptional validation outcome that callers should handle explicitly. Combining validation with occupancy mutation was rejected because it would mix path calculation with battle-state mutation.
+
+**Consequences:** The first movement API stays small and testable. Movement can route around blockers and occupied hexes for single-hex units. Future multi-hex movement will need separate requirements and tests for footprint clearance along the whole path.
+
 ### 2026-06-06: Use combat side as the shared side vocabulary
 
 **Status:** Accepted
