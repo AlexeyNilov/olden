@@ -1,6 +1,14 @@
 # AGENTS.md
 
-See `README.md` for project overview and structure.
+See `README.md` for the project overview and documentation map.
+
+Before changing code or docs, read the relevant owner document:
+- `doc/development.md` for project structure and workflow.
+- `doc/glossary.md` for shared vocabulary.
+- `doc/requirements.md` for current testable behavior.
+- `doc/decisions.md` for architectural and domain decision history.
+- `doc/roadmap.md` for sequencing and deferred scope.
+- `doc/hex_math.md` for coordinate-system and hex-math reference notes.
 
 ## Mission
 Act as a research partner, not a cheerleader.
@@ -30,7 +38,19 @@ Your job is to help the user think better, and to write production ready code. O
 ## Rules
 - Use existing project patterns.
 - `.env` is local-only and may contain user-specific credentials; never commit it.
-- After significant changes, bump the project version in `pyproject.toml` using semantic versioning.
+- Bump the version in `pyproject.toml` for user-visible behavior, public API changes, or substantial domain implementation.
+- Do not bump the version for documentation-only changes, tests-only changes, or internal refactors with no behavior or API change.
+
+## Project Workflow
+- Do not duplicate long-lived facts across docs. Update the canonical owner first and reference it elsewhere when needed.
+- `doc/glossary.md` owns terminology.
+- `doc/requirements.md` owns current testable behavior.
+- `doc/roadmap.md` owns future and deferred scope.
+- `doc/decisions.md` owns decision history, not the current full specification.
+- `doc/development.md` owns developer workflow and project structure.
+- `TODO.md` owns active implementation tasks only; do not use it as a planning archive.
+- Use glossary terms consistently. If a recurring domain term appears in code, tests, docs, or discussion, add it to `doc/glossary.md`.
+- For combat-domain work, start from `doc/requirements.md`. If the needed behavior is not specified there, clarify it or add/update the requirement before writing tests.
 
 ## Think before coding/implementing
 - List assumptions that affect behavior, public API, data, security, or verification.
@@ -48,19 +68,29 @@ Your job is to help the user think better, and to write production ready code. O
 - No duplicate signaling (e.g., print + logging).
 - Use logging, not print (except in CLI-only scripts).
 - Avoid new dependencies unless justified.
+- Do not introduce generic `models`, `services`, `repositories`, `application`, or `infrastructure` layers unless the need is concrete and documented. Prefer modules named after domain concepts.
+
+## Combat Domain Model
+- Treat `src/olden/combat/` as the bounded context for combat simulation.
+- Keep `Battlefield` distinct from `Battle`.
+- `Battlefield` is static topology and field configuration.
+- `Battle state` is dynamic state such as occupancy.
+- Use `HexCoord(column, row)` as the public coordinate model.
+- Keep axial and cube coordinates as internal helpers for hex math unless a public API need is documented.
+- Obstacles are whole-hex blockers.
+- Deployment zones are side-based: player-controlled side on the left, enemy side on the right.
 
 ## Tooling
-
-- Use Ruff for formatting and linting:
+- Before considering code changes complete, run:
+  - `make test`
   - `make format`
   - `make lint`
-- Use mypy for type checking:
   - `make mypy`
-
-- Run these checks before considering implementation work complete.
+- For documentation-only changes, tests are not required unless code or executable examples changed.
 
 ## Documentation
 - Type Hints First: Use explicit and precise type hints for all arguments and return values.
 - Minimalist Docstrings: Omit docstrings for "obvious" functions (getters, setters, simple wrappers, or self-documenting signatures).
 - Mandatory Docstrings: Provide Google-style docstrings (Purpose, Args, Returns, Raises) only if the function contains complex "Why" logic or non-obvious business rules.
-- Any significant change affecting architecture, data flow, or public interfaces must be reflected in `README.md`.
+- Any significant change affecting architecture, data flow, public interfaces, or domain behavior must update the canonical owner doc from the README documentation map.
+- Update `README.md` only when the documentation map, project overview, or public entry-point information changes.
