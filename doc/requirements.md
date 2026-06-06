@@ -120,6 +120,18 @@ This helps ensure requirements are:
 * **When** a battle moves a unit stack, **the system shall** validate the movement against the stack's current anchor, unit speed, obstacles, and occupancy before mutating occupancy.
 * **When** a battle moves a unit stack, **the system shall** return a movement result containing the stack ID, start coordinate, destination coordinate, and movement path.
 
+### Movement-only simulation
+
+* **When** movement-only simulation starts, **the system shall** copy the initial battle before moving unit stacks.
+* **When** movement-only simulation starts, **the system shall** record a battle-start event in the combat log.
+* **When** movement-only simulation runs without initiative, **the system shall** move the configured first stack before the configured second stack.
+* **When** movement-only simulation advances turns, **the system shall** alternate between the two configured unit stacks.
+* **When** a simulated unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
+* **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
+* **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
+* **When** simulated unit stacks are adjacent, **the system shall** stop before adding combat actions.
+* **When** movement-only simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
+
 ### Combat log
 
 * **When** a battle-start event is recorded, **the system shall** assign it the next contiguous combat-log sequence number.

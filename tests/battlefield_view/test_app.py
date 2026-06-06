@@ -102,7 +102,7 @@ def test_demo_battle_loads_state_from_demo_battle_yaml():
     battle = _demo_battle()
 
     assert battle.battlefield.is_blocked(HexCoord(5, 4))
-    assert battle.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
+    assert battle.occupancy.unit_at(HexCoord(0, 9)) == "player-esquire"
     assert battle.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
     assert battle.unit_stacks["player-esquire"].definition.id == "esquire"
     assert battle.unit_stacks["player-esquire"].definition.name == "Swordsman"

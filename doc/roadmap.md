@@ -76,7 +76,16 @@
 * Replay combat logs from battle initial state to reconstruct movement occupancy
 * Render loaded battle state through the battlefield view model
 
-## Milestone 9: Battlefield movement view
+## Milestone 9: Movement-only battle simulation
+
+**Status:** Done
+
+* Fixed two-stack movement order without initiative
+* Random tie-breaking among equally short engagement paths
+* Turn-by-turn movement until adjacent engagement
+* Replayable movement combat log
+
+## Milestone 10: Battlefield movement view
 
 **Status:** Later
 
@@ -84,7 +93,7 @@
 * Turn-order integration
 
 
-## Milestone 10: Combat actions
+## Milestone 11: Combat actions
 
 **Status:** Later
 
