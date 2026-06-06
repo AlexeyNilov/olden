@@ -32,3 +32,13 @@ Launch the combat-log replay view with:
 ```bash
 olden-combat-replay-view
 ```
+
+For local development, the Makefile can manage browser-view processes:
+
+```bash
+make restart-static-view
+make restart-replay-view
+make view-status
+```
+
+Managed view logs and pid files are written under `.run/`.

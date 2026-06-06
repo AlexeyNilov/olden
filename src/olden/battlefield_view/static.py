@@ -16,6 +16,7 @@ from olden.unit_data.packaged import load_packaged_unit_catalog
 
 DEFAULT_UNIT_IMAGE_DIRECTORY = Path(__file__).resolve().parents[3] / "image"
 DEFAULT_BATTLE_INITIAL_STATE_PATH = Path(__file__).resolve().parents[3] / "data" / "demo_battle.yaml"
+DEFAULT_STATIC_VIEW_PORT = 8082
 
 
 def main() -> None:
@@ -26,6 +27,7 @@ def run_battlefield_view(
     battlefield: Battlefield | None = None,
     occupancy: Occupancy | None = None,
     unit_stacks: Mapping[str, UnitStack] | None = None,
+    port: int = DEFAULT_STATIC_VIEW_PORT,
 ) -> None:
     nicegui = _load_nicegui()
     ui = getattr(nicegui, "ui")
@@ -40,7 +42,7 @@ def run_battlefield_view(
     )
     _register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
     _build_page(ui, view)
-    ui.run(title="Olden Battlefield View", reload=False, show=False)
+    ui.run(title="Olden Battlefield View", reload=False, show=False, port=port)
 
 
 def render_battlefield_svg(

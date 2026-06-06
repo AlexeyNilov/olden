@@ -28,6 +28,9 @@ src/olden/
         packaged.py
         units.yaml
 
+scripts/
+    view_server.py
+
     combat/
         __init__.py
         battle.py
@@ -86,6 +89,7 @@ tests/
 * Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
 * Put local battle setup examples in `data/`.
 * Put runnable local examples in `sample/`.
+* Put local developer workflow scripts in `scripts/`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
 
