@@ -37,7 +37,7 @@ This helps ensure requirements are:
 
 ### Field state
 
-* **When** field configuration is represented, **the system shall** keep terrain and deployment-zone data separate from dynamic unit occupancy.
+* **When** field configuration is represented, **the system shall** keep deployment-zone data separate from dynamic unit occupancy.
 * **When** obstacles are represented, **the system shall** support obstacles that cover one or more hex coordinates.
 * **When** a unit occupies a coordinate, **the system shall** prevent another unit from occupying the same coordinate at the same time.
 * **When** a coordinate is covered by an obstacle, **the system shall** prevent unit occupancy on that coordinate.

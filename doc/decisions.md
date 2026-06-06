@@ -37,7 +37,7 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 **Status:** Accepted
 
-**Context:** The combat simulator needs a deterministic field model before movement, targeting, occupancy, obstacles, terrain, and deployment zones can be implemented. The field screenshot shows flat-top hexes arranged in staggered rows. The user clarified that the canonical row lengths are `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`, for 137 total hexes, and that the Python API should use zero-based coordinates.
+**Context:** The combat simulator needs a deterministic field model before movement, targeting, occupancy, obstacles, and deployment zones can be implemented. The field screenshot shows flat-top hexes arranged in staggered rows. The user clarified that the canonical row lengths are `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`, for 137 total hexes, and that the Python API should use zero-based coordinates.
 
 **Decision:** Use `HexCoord(column: int, row: int)` as the public coordinate model. The default battlefield has 11 rows. Even-numbered rows have 12 hexes, odd-numbered rows have 13 hexes, and coordinate validation is based on each row's length. The first model includes topology, occupancy, obstacles, and deployment zones. Pathfinding and movement range are deferred.
 
