@@ -1,11 +1,7 @@
-from enum import Enum
-
 from olden.combat.coordinates import HexCoord
+from olden.combat.sides import CombatSide
 
-
-class DeploymentSide(Enum):
-    PLAYER = "player"
-    ENEMY = "enemy"
+DeploymentSide = CombatSide
 
 
 class DeploymentZones:

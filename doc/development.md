@@ -21,6 +21,8 @@ src/olden/
         occupancy.py
         obstacles.py
         deployment.py
+        sides.py
+        units.py
 
 tests/
     test_config.py
@@ -28,6 +30,7 @@ tests/
     combat/
         test_battlefield.py
         test_occupancy.py
+        test_units.py
 ```
 
 ## Structure principles
@@ -40,6 +43,8 @@ tests/
 * Put dynamic unit placement rules in `occupancy.py`.
 * Put blocked-coordinate rules in `obstacles.py`.
 * Put deployment-zone rules in `deployment.py`.
+* Put shared combat side vocabulary in `sides.py`.
+* Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
 

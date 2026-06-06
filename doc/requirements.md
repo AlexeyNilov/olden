@@ -51,11 +51,25 @@ This helps ensure requirements are:
 
 * **When** battle state is represented, **the system shall** keep dynamic unit occupancy separate from field configuration.
 
+### Unit model
+
+* **When** a unit definition is represented, **the system shall** expose stable identity, display name, speed, and footprint data.
+* **When** a unit definition has negative speed, **the system shall** reject it as invalid.
+* **When** a unit stack is represented, **the system shall** expose stack identity, combat side, unit definition, and creature count.
+* **When** a unit stack count is zero or negative, **the system shall** reject it as invalid.
+* **When** a single-hex unit footprint is anchored at a coordinate, **the system shall** occupy only the anchor coordinate.
+* **When** a multi-hex unit footprint is anchored at a coordinate, **the system shall** derive occupied coordinates from the anchor and footprint offsets.
+* **When** a unit footprint is empty or omits the anchor offset, **the system shall** reject it as invalid.
+
 ### Occupancy
 
 * **When** a unit occupies a coordinate, **the system shall** prevent another unit from occupying the same coordinate at the same time.
 * **When** a coordinate is covered by an obstacle, **the system shall** prevent unit occupancy on that coordinate.
+* **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is already occupied.
+* **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is blocked by an obstacle.
 
 ### Deferred behavior
 
 * **While** pathfinding and movement range are deferred, **the system shall** avoid exposing pathfinding or movement-range APIs as part of the first battlefield model.
+* **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
+* **While** combat action simulation is deferred, **the system shall** avoid exposing damage, morale, luck, attack-resolution, ability, cost, growth, or upgrade behavior as part of the Unit model.

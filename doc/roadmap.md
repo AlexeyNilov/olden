@@ -19,7 +19,7 @@
 
 ## Milestone 2: Unit model
 
-**Status:** Next
+**Status:** Done
 
 * Unit identity
 * Unit side
@@ -29,7 +29,7 @@
 
 ## Milestone 3: Range and movement math
 
-**Status:** Later
+**Status:** Next
 
 * Distance between two hexes
 * Movement radius by unit speed
