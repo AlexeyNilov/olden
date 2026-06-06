@@ -42,18 +42,17 @@
 * Movement cost rules
 * Pathfinding
 
-## Milestone 5: Combat actions
+## Milestone 5: Battlefield view
 
 **Status:** Next
+
+* Field rendering
+* Unit placement display
+
+## Milestone 6: Combat actions
+
+**Status:** Later
 
 * Attack targeting
 * Damage resolution
 * Turn-order integration
-
-## Milestone 6: Battlefield view
-
-**Status:** Later
-
-* Field rendering
-* Unit placement display
-* Obstacle and deployment-zone display
