@@ -1,0 +1,86 @@
+schema_version: 1
+events:
+- sequence: 1
+  type: battle_started
+- sequence: 2
+  type: unit_moved
+  round: 1
+  turn: 1
+  stack_id: player-esquire
+  start:
+    column: 0
+    row: 9
+  destination:
+    column: 4
+    row: 9
+  path:
+  - column: 0
+    row: 9
+  - column: 1
+    row: 9
+  - column: 2
+    row: 9
+  - column: 3
+    row: 9
+  - column: 4
+    row: 9
+- sequence: 3
+  type: unit_moved
+  round: 1
+  turn: 2
+  stack_id: enemy-esquire
+  start:
+    column: 12
+    row: 5
+  destination:
+    column: 8
+    row: 5
+  path:
+  - column: 12
+    row: 5
+  - column: 11
+    row: 5
+  - column: 10
+    row: 5
+  - column: 9
+    row: 5
+  - column: 8
+    row: 5
+- sequence: 4
+  type: unit_moved
+  round: 2
+  turn: 1
+  stack_id: player-esquire
+  start:
+    column: 4
+    row: 9
+  destination:
+    column: 6
+    row: 6
+  path:
+  - column: 4
+    row: 9
+  - column: 5
+    row: 9
+  - column: 5
+    row: 8
+  - column: 6
+    row: 7
+  - column: 6
+    row: 6
+- sequence: 5
+  type: unit_moved
+  round: 2
+  turn: 2
+  stack_id: enemy-esquire
+  start:
+    column: 8
+    row: 5
+  destination:
+    column: 7
+    row: 6
+  path:
+  - column: 8
+    row: 5
+  - column: 7
+    row: 6

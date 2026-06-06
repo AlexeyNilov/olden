@@ -34,6 +34,7 @@ Your job is to help the user think better, and to write production ready code. O
 - Refactor only after the test suite is green.
 - If a change is hard to test, simplify the design.
 - Do not test imported libraries or framework behavior - only test the logic introduced or modified in this codebase.
+- Do not write tests for code in `sample` folder
 
 ## Rules
 - Use existing project patterns.

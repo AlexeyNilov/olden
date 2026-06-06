@@ -131,6 +131,7 @@ This helps ensure requirements are:
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** simulated unit stacks are adjacent, **the system shall** stop before adding combat actions.
 * **When** movement-only simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
+* **When** the demo movement simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the movement combat log in the `data` folder.
 
 ### Combat log
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "olden"
-version = "0.0.10"
+version = "0.0.11"
 description = "Olden combat simulator."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -58,7 +58,7 @@ select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
 python_version = "3.11"
-files = ["src"]
+files = ["src", "sample", "tests"]
 mypy_path = "src"
 warn_unused_configs = true
 warn_return_any = true
