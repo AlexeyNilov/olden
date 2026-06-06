@@ -20,7 +20,7 @@ This helps ensure requirements are:
 * **When** the default battlefield is created, **the system shall** use row lengths `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`.
 * **When** the default battlefield is created, **the system shall** expose exactly 137 valid hex coordinates.
 * **When** a coordinate is represented in the Python API, **the system shall** use zero-based `column` and `row` values.
-* **When** the battlefield topology is represented, **the system shall** model flat-top hexes with staggered odd-numbered rows.
+* **When** the battlefield topology is represented, **the system shall** model pointy-top hexes with staggered odd-numbered rows.
 
 ### Coordinate validation
 
@@ -98,7 +98,8 @@ This helps ensure requirements are:
 ### Battlefield view
 
 * **When** battlefield view data is produced, **the system shall** include one renderable hex for every valid battlefield coordinate.
-* **When** battlefield view layout is produced, **the system shall** preserve flat-top odd-row staggering.
+* **When** battlefield view layout is produced, **the system shall** preserve pointy-top odd-row staggering.
+* **When** battlefield view layout is produced, **the system shall** align neighboring hexes by shared sides without overlap or gaps.
 * **When** battlefield view data is produced, **the system shall** expose deployment-zone state for each renderable hex.
 * **When** battlefield view data is produced for blocked coordinates, **the system shall** expose blocked state for those renderable hexes.
 * **When** battlefield view data is produced for occupied coordinates, **the system shall** expose the occupying unit identity for those renderable hexes.

@@ -2,7 +2,7 @@
 
 * **Battle:** A running combat instance. Future battle state includes units, turns, actions, effects, and mutable combat state.
 * **Battle state:** Dynamic combat data such as unit occupancy.
-* **Battlefield:** The static combat field made of flat-top hexes arranged in staggered rows.
+* **Battlefield:** The static combat field made of pointy-top hexes arranged in staggered rows.
 * **Battlefield hex:** One addressable hex on the battlefield, including its coordinate and static field metadata.
 * **Battlefield topology:** The battlefield's shape, valid coordinates, and neighbor relationships.
 * **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
