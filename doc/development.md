@@ -19,7 +19,7 @@ src/olden/
         layout.py
         model.py
         replay_app.py
-        static.py
+        svg.py
         unit_images.py
 
     unit_data/
@@ -84,8 +84,8 @@ tests/
 * Put combat-log replay frame generation in `combat_replay.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
-* Put the static local battlefield browser view in `battlefield_view/static.py`.
 * Put the separate local combat replay browser view in `battlefield_view/replay_app.py`.
+* Put shared SVG battlefield rendering in `battlefield_view/svg.py`.
 * Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
 * Put local battle setup examples in `data/`.
 * Put runnable local examples in `sample/`.

@@ -167,7 +167,7 @@ This helps ensure requirements are:
 * **When** a unit stack is rendered with an existing unit image, **the system shall** display only the stack count as the unit label.
 * **When** a unit stack is rendered without an existing unit image, **the system shall** display fallback text using the unit name and stack count.
 * **When** a unit stack is rendered with stack metadata, **the system shall** display a visible combat-side marker for the stack.
-* **When** the demo battlefield view is launched, **the system shall** load the Swordsman unit definition from the packaged unit catalog record with ID `esquire`.
+* **When** the combat replay view is launched, **the system shall** load the Swordsman unit definition from the packaged unit catalog record with ID `esquire`.
 
 ### Deferred behavior
 

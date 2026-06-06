@@ -18,25 +18,18 @@ Heroes of Might and Magic: Olden Era combat simulator.
 The server reads local configuration from `.env`. Values already set in the process
 environment take precedence over `.env` values.
 
-## Local battlefield view
+## Local combat replay view
 
-Install the optional view dependency group to launch the local browser views:
+Install the optional view dependency group to launch the local combat-log replay view:
 
 ```bash
 pip install -e ".[view]"
-olden-battlefield-view
-```
-
-Launch the combat-log replay view with:
-
-```bash
 olden-combat-replay-view
 ```
 
 For local development, the Makefile can manage browser-view processes:
 
 ```bash
-make restart-static-view
 make restart-replay-view
 make view-status
 ```

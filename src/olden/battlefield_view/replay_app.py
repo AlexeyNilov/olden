@@ -5,9 +5,9 @@ from pathlib import Path
 from typing import Any
 
 from olden.battlefield_view.model import build_battlefield_view_for_battle
-from olden.battlefield_view.static import (
+from olden.battlefield_view.svg import (
     DEFAULT_UNIT_IMAGE_DIRECTORY,
-    _register_unit_image_static_files,
+    register_unit_image_static_files,
     render_battlefield_svg,
 )
 from olden.combat.battle_setup import load_battle_initial_state_file
@@ -96,7 +96,7 @@ def run_combat_replay_view(
     nicegui = _load_nicegui()
     ui = getattr(nicegui, "ui")
     frames = load_replay_frames(initial_state_path, combat_log_path)
-    _register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
+    register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
     _build_page(ui, frames, delay_seconds, DEFAULT_UNIT_IMAGE_DIRECTORY)
     ui.run(title="Olden Combat Replay", reload=False, show=False, port=port)
 

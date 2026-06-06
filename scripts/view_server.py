@@ -27,11 +27,6 @@ class ViewApp:
 
 
 VIEW_APPS = {
-    "static": ViewApp(
-        name="static",
-        module="olden.battlefield_view.static",
-        url="http://localhost:8082",
-    ),
     "replay": ViewApp(
         name="replay",
         module="olden.battlefield_view.replay_app",

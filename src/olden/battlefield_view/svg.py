@@ -1,48 +1,12 @@
-from collections.abc import Mapping
 from html import escape
-from importlib import import_module
 from pathlib import Path
 from typing import Any
 
-from olden.battlefield_view.model import BattlefieldView, RenderableHex, build_battlefield_view
+from olden.battlefield_view.model import BattlefieldView, RenderableHex
 from olden.battlefield_view.unit_images import UNIT_IMAGE_ROUTE, resolve_unit_image
-from olden.combat.battle import Battle
-from olden.combat.battle_setup import load_battle_initial_state_file
-from olden.combat.battlefield import Battlefield
-from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitStack
-from olden.unit_data.packaged import load_packaged_unit_catalog
 
 DEFAULT_UNIT_IMAGE_DIRECTORY = Path(__file__).resolve().parents[3] / "image"
-DEFAULT_BATTLE_INITIAL_STATE_PATH = Path(__file__).resolve().parents[3] / "data" / "demo_battle.yaml"
-DEFAULT_STATIC_VIEW_PORT = 8082
-
-
-def main() -> None:
-    run_battlefield_view()
-
-
-def run_battlefield_view(
-    battlefield: Battlefield | None = None,
-    occupancy: Occupancy | None = None,
-    unit_stacks: Mapping[str, UnitStack] | None = None,
-    port: int = DEFAULT_STATIC_VIEW_PORT,
-) -> None:
-    nicegui = _load_nicegui()
-    ui = getattr(nicegui, "ui")
-    demo_battle = _demo_battle()
-    resolved_battlefield = battlefield if battlefield is not None else demo_battle.battlefield
-    resolved_occupancy = occupancy if occupancy is not None else demo_battle.occupancy
-    resolved_unit_stacks = unit_stacks if unit_stacks is not None else demo_battle.unit_stacks
-    view = build_battlefield_view(
-        resolved_battlefield,
-        resolved_occupancy,
-        resolved_unit_stacks,
-    )
-    _register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
-    _build_page(ui, view)
-    ui.run(title="Olden Battlefield View", reload=False, show=False, port=port)
 
 
 def render_battlefield_svg(
@@ -59,28 +23,9 @@ def render_battlefield_svg(
     return "".join(parts)
 
 
-def _build_page(ui: Any, view: BattlefieldView) -> None:
-    ui.page_title("Olden Battlefield View")
-    ui.add_css("body { background: #10131f; }")
-    with ui.column().classes("w-full items-center q-pa-md"):
-        ui.html(render_battlefield_svg(view), sanitize=False).classes("battlefield-view")
-
-
-def _register_unit_image_static_files(nicegui_app: Any, image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY) -> None:
+def register_unit_image_static_files(nicegui_app: Any, image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY) -> None:
     if image_directory.is_dir():
         nicegui_app.add_static_files(UNIT_IMAGE_ROUTE, image_directory)
-
-
-def _load_nicegui() -> Any:
-    try:
-        return import_module("nicegui")
-    except ModuleNotFoundError as exc:
-        msg = 'NiceGUI is required for the battlefield view. Install it with: pip install -e ".[view]"'
-        raise RuntimeError(msg) from exc
-
-
-def _demo_battle() -> Battle:
-    return load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
 
 
 def _svg_open(width: float, height: float) -> str:
@@ -237,7 +182,3 @@ def _hex_bounds(hex_data: RenderableHex) -> _HexBounds:
     min_y = min(point.y for point in hex_data.points)
     max_y = max(point.y for point in hex_data.points)
     return _HexBounds(min_x=min_x, min_y=min_y, max_y=max_y, width=max_x - min_x, height=max_y - min_y)
-
-
-if __name__ == "__main__":
-    main()

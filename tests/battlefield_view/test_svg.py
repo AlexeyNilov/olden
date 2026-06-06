@@ -1,5 +1,5 @@
 from olden.battlefield_view.model import build_battlefield_view
-from olden.battlefield_view.static import _build_page, _demo_battle, _register_unit_image_static_files, render_battlefield_svg
+from olden.battlefield_view.svg import register_unit_image_static_files, render_battlefield_svg
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
@@ -101,54 +101,17 @@ def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
     assert ">E</text>" in svg
 
 
-def test_nicegui_page_embeds_trusted_generated_svg_without_sanitizing():
-    ui = FakeUi()
-    view = build_battlefield_view(Battlefield.default(), Occupancy())
-
-    _build_page(ui, view)
-
-    assert ui.html_sanitize is False
-
-
 def test_register_unit_image_static_files_uses_local_image_directory(tmp_path):
     app = FakeApp()
 
-    _register_unit_image_static_files(app, tmp_path)
+    register_unit_image_static_files(app, tmp_path)
 
     assert app.static_files == [("/unit-images", tmp_path)]
-
-
-def test_demo_battle_loads_state_from_demo_battle_yaml():
-    battle = _demo_battle()
-
-    assert battle.battlefield.is_blocked(HexCoord(5, 4))
-    assert battle.occupancy.unit_at(HexCoord(0, 9)) == "player-esquire"
-    assert battle.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
-    assert battle.unit_stacks["player-esquire"].definition.id == "esquire"
-    assert battle.unit_stacks["player-esquire"].definition.name == "Swordsman"
 
 
 def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitStack:
     definition = UnitDefinition(id=unit_id, name=name, speed=4, footprint=UnitFootprint.single_hex())
     return UnitStack(id=stack_id, definition=definition, side=CombatSide.PLAYER, count=count)
-
-
-class FakeUi:
-    def __init__(self) -> None:
-        self.html_sanitize: bool | None = None
-
-    def page_title(self, title: str) -> None:
-        pass
-
-    def add_css(self, css: str) -> None:
-        pass
-
-    def column(self) -> "FakeElement":
-        return FakeElement()
-
-    def html(self, content: str, *, sanitize: bool = True) -> "FakeElement":
-        self.html_sanitize = sanitize
-        return FakeElement()
 
 
 class FakeApp:
@@ -157,14 +120,3 @@ class FakeApp:
 
     def add_static_files(self, url_path: str, local_directory: object) -> None:
         self.static_files.append((url_path, local_directory))
-
-
-class FakeElement:
-    def classes(self, classes: str) -> "FakeElement":
-        return self
-
-    def __enter__(self) -> "FakeElement":
-        return self
-
-    def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> None:
-        pass

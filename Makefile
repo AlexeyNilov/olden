@@ -28,15 +28,6 @@ mypy:
 format:
 	$(RUFF) format --check .
 
-static-view:
-	$(PYTHON) $(VIEW_SERVER) start static
-
-restart-static-view:
-	$(PYTHON) $(VIEW_SERVER) restart static
-
-stop-static-view:
-	$(PYTHON) $(VIEW_SERVER) stop static
-
 replay-view:
 	$(PYTHON) $(VIEW_SERVER) start replay
 
@@ -47,5 +38,4 @@ stop-replay-view:
 	$(PYTHON) $(VIEW_SERVER) stop replay
 
 view-status:
-	$(PYTHON) $(VIEW_SERVER) status static
 	$(PYTHON) $(VIEW_SERVER) status replay
