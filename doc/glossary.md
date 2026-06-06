@@ -14,10 +14,11 @@
 * **Initiative:** Future unit stat that contributes to turn order.
 * **Luck:** Future combat modifier that can alter damage up or down during attack resolution.
 * **Morale:** Future combat modifier that can grant an extra action or cause a lost action.
+* **Movement radius:** The set of valid battlefield coordinates within a unit's speed distance from an origin, ignoring obstacles, occupancy, and pathfinding.
 * **Obstacle:** A whole-hex blocker covering one or more battlefield coordinates.
 * **Obstacle map:** The field configuration that answers whether a coordinate is blocked by an obstacle.
 * **Occupancy:** The dynamic mapping of units to battlefield coordinates.
-* **Range operation:** Hex-math behavior such as distance between hexes, movement radius by unit speed, or spell area-of-effect rings.
+* **Range operation:** Hex-math behavior such as distance between hexes or movement radius by unit speed.
 * **Unit definition:** Static unit data shared by every stack of that unit type.
 * **Unit footprint:** The set of battlefield coordinates occupied by a unit stack when anchored at a coordinate.
 * **Unit stack:** A battle-state instance of a unit definition with a side and creature count.

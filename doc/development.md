@@ -21,6 +21,7 @@ src/olden/
         occupancy.py
         obstacles.py
         deployment.py
+        range.py
         sides.py
         units.py
 
@@ -30,6 +31,7 @@ tests/
     combat/
         test_battlefield.py
         test_occupancy.py
+        test_range.py
         test_units.py
 ```
 
@@ -43,6 +45,7 @@ tests/
 * Put dynamic unit placement rules in `occupancy.py`.
 * Put blocked-coordinate rules in `obstacles.py`.
 * Put deployment-zone rules in `deployment.py`.
+* Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Add service modules only when behavior does not naturally belong to one domain object.

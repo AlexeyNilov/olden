@@ -29,16 +29,16 @@
 
 ## Milestone 3: Range and movement math
 
-**Status:** Next
+**Status:** Done
 
 * Distance between two hexes
 * Movement radius by unit speed
 
 ## Milestone 4: Movement simulation
 
-**Status:** Later
+**Status:** Next
 
-* Movement validation
+* Movement validation with obstacles and occupancy
 * Movement cost rules
 * Pathfinding
 

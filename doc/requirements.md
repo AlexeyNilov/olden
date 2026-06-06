@@ -68,8 +68,21 @@ This helps ensure requirements are:
 * **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is already occupied.
 * **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is blocked by an obstacle.
 
+### Range and movement math
+
+* **When** distance is calculated from a coordinate to itself, **the system shall** return `0`.
+* **When** distance is calculated between adjacent valid coordinates, **the system shall** return `1`.
+* **When** distance is calculated between two valid coordinates, **the system shall** return the same value regardless of coordinate order.
+* **When** distance is calculated with an invalid start or end coordinate, **the system shall** reject the request before calculating distance.
+* **When** movement radius is calculated with speed `0`, **the system shall** return only the origin coordinate.
+* **When** movement radius is calculated with positive speed, **the system shall** return every valid battlefield coordinate within that hex distance from the origin.
+* **When** movement radius is calculated near a battlefield edge, **the system shall** exclude coordinates outside the battlefield.
+* **When** movement radius is calculated with negative speed, **the system shall** reject the request.
+
 ### Deferred behavior
 
-* **While** pathfinding and movement range are deferred, **the system shall** avoid exposing pathfinding or movement-range APIs as part of the first battlefield model.
+* **While** pathfinding is deferred, **the system shall** avoid exposing pathfinding APIs as part of range and movement math.
 * **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
 * **While** combat action simulation is deferred, **the system shall** avoid exposing damage, morale, luck, attack-resolution, ability, cost, growth, or upgrade behavior as part of the Unit model.
+* **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
+* **While** movement simulation is deferred, **the system shall** keep movement radius independent of obstacles and dynamic occupancy.

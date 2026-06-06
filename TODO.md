@@ -8,22 +8,24 @@
 
 ## Actual tasks
 
-### Milestone 2: Unit model
+### Milestone 3: Range and movement math
 
-* [x] Update `doc/glossary.md` with Unit model terms: combat side, unit definition, unit stack, unit footprint, initiative, attack category, morale, and luck.
-* [x] Update `doc/requirements.md` with testable Unit model behavior before writing implementation tests.
-* [x] Add an ADR for using `CombatSide` as the shared side concept.
-* [x] Add failing tests for `UnitDefinition` identity and speed validation.
-* [x] Add failing tests for `UnitStack` side, count, and non-positive count rejection.
-* [x] Add failing tests for single-hex unit footprint placement through occupancy.
-* [x] Add failing tests for multi-hex footprint placement rejecting blocked secondary coordinates.
-* [x] Add failing tests for multi-hex footprint placement rejecting occupied secondary coordinates.
-* [x] Implement `src/olden/combat/units.py` with focused immutable value objects for unit definition, unit stack, and unit footprint.
-* [x] Keep Milestone 2 unit data limited to identity, side, stack count, speed, and footprint; defer damage, initiative ordering, morale/luck probability, attack resolution, abilities, costs, growth, and upgrades.
-* [x] Update `src/olden/combat/occupancy.py` so placement can reserve every coordinate in a unit footprint while preserving existing one-hex behavior.
-* [x] Add a Swordsman-derived example or fixture using `id="esquire"`, `name="Swordsman"`, `speed=4`, and a one-hex footprint as a data-shape check, not a full unit database.
+* [x] Update `doc/requirements.md` with testable behavior for hex distance and movement radius.
+* [x] Update `doc/glossary.md` with distance and movement-radius terminology if needed.
+* [x] Add failing tests for distance from a coordinate to itself returning `0`.
+* [x] Add failing tests for adjacent valid coordinates returning distance `1`.
+* [x] Add failing tests proving distance is symmetric across staggered odd-row coordinates.
+* [x] Add failing tests proving distance rejects invalid start or end coordinates.
+* [x] Add failing tests for movement radius with speed `0` returning only the origin coordinate.
+* [x] Add failing tests for movement radius including all valid coordinates within speed.
+* [x] Add failing tests for movement radius trimming off-battlefield coordinates near edges.
+* [x] Add failing tests for movement radius rejecting negative speed.
+* [x] Implement `src/olden/combat/range.py` with public `distance_between()` and `movement_radius()` behavior using `HexCoord` at API boundaries.
+* [x] Keep axial or cube coordinate conversion private to the range implementation.
+* [x] Keep Milestone 3 scoped to pure geometric range math; do not implement line-of-sight, spell area-of-effect rings, pathfinding, movement validation, obstacles, or occupancy-aware movement.
+* [x] Update `doc/development.md` with `range.py` and `test_range.py`.
 * [x] Bump `pyproject.toml` version for the additive public combat API.
-* [x] Update `doc/roadmap.md` after implementation to mark Milestone 2 complete only when identity, side, stack data, speed, and footprint rules are implemented and verified.
+* [x] Update `doc/roadmap.md` after implementation to mark Milestone 3 complete only when distance and movement radius are implemented and verified.
 * [x] Run `make test`.
 * [x] Run `make format`.
 * [x] Run `make lint`.
