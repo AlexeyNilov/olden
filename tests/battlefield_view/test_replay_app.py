@@ -68,6 +68,19 @@ def test_build_page_sets_initial_delay_and_registers_controls():
     assert ui.buttons == ["Play", "Pause", "Restart", "Previous", "Next"]
 
 
+def test_build_page_applies_high_contrast_delay_input_styles():
+    ui = FakeUi()
+
+    _build_page(ui, load_default_replay_frames(), delay_seconds=2.0, unit_image_directory=Path("missing-images"))
+
+    assert ".replay-delay-input .q-field__label" in ui.css
+    assert ".replay-delay-input .q-field__native" in ui.css
+    assert ".replay-delay-input .q-field__control" in ui.css
+    assert "#f7f0d0" in ui.css
+    assert "#1f2a44" in ui.css
+    assert "replay-delay-input" in ui.number_element.class_values
+
+
 DEFAULT_PLAYER_START = next(iter(load_default_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
 
 
@@ -107,13 +120,15 @@ class FakeUi:
         self.timer_obj = FakeTimer()
         self.label_obj = FakeLabel()
         self.svg_container = FakeContainer()
+        self.number_element = FakeElement()
         self.buttons: list[str] = []
+        self.css = ""
 
     def page_title(self, title: str) -> None:
         pass
 
     def add_css(self, css: str) -> None:
-        pass
+        self.css += css
 
     def column(self) -> "FakeElement":
         return FakeElement()
@@ -134,7 +149,7 @@ class FakeUi:
         return FakeElement()
 
     def number(self, label: str, value: float, min: float, max: float, step: float, on_change: object) -> "FakeElement":
-        return FakeElement()
+        return self.number_element
 
     def timer(self, interval: float, callback: object, active: bool = True) -> FakeTimer:
         self.timer_obj.interval = interval
@@ -143,10 +158,16 @@ class FakeUi:
 
 
 class FakeElement:
+    def __init__(self) -> None:
+        self.class_values: list[str] = []
+        self.prop_values: list[str] = []
+
     def classes(self, classes: str) -> "FakeElement":
+        self.class_values.append(classes)
         return self
 
     def props(self, props: str) -> "FakeElement":
+        self.prop_values.append(props)
         return self
 
     def __enter__(self) -> "FakeElement":

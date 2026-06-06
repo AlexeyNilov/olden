@@ -20,6 +20,41 @@ DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
 DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_movement_log.yaml"
 DEFAULT_REPLAY_DELAY_SECONDS = 1.0
 DEFAULT_REPLAY_PORT = 8081
+REPLAY_PAGE_CSS = """
+body {
+    background: #10131f;
+    color: #f7f0d0;
+}
+
+.replay-delay-input {
+    min-width: 9rem;
+}
+
+.replay-delay-input .q-field__control {
+    background: #1f2a44;
+    color: #f2d27a;
+}
+
+.replay-delay-input .q-field__control::before {
+    border-color: #8fa4c7;
+}
+
+.replay-delay-input .q-field__control::after {
+    border-color: #f2d27a;
+}
+
+.replay-delay-input .q-field__label {
+    color: #f7f0d0;
+}
+
+.replay-delay-input .q-field__native {
+    color: #ffffff;
+}
+
+.replay-delay-input .q-field__append {
+    color: #f2d27a;
+}
+"""
 
 
 class ReplayController:
@@ -118,7 +153,7 @@ def _build_page(
     unit_image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY,
 ) -> ReplayController:
     ui.page_title("Olden Combat Replay")
-    ui.add_css("body { background: #10131f; color: #f7f0d0; }")
+    ui.add_css(REPLAY_PAGE_CSS)
     with ui.column().classes("w-full items-center q-pa-md"):
         status_label = ui.label("")
         svg_container = ui.html("", sanitize=False).classes("battlefield-view")
@@ -146,7 +181,7 @@ def _build_page(
                 max=10.0,
                 step=0.1,
                 on_change=lambda event: controller.set_delay(float(event.value)),
-            ).props("dense")
+            ).props("dense outlined").classes("replay-delay-input")
     return controller
 
 
