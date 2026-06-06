@@ -9,11 +9,9 @@ from olden.battlefield_view.unit_images import UNIT_IMAGE_ROUTE, resolve_unit_im
 from olden.combat.battle import Battle
 from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.battlefield import Battlefield
-from olden.combat.coordinates import HexCoord
-from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitStack
+from olden.combat.units import UnitStack
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 DEFAULT_UNIT_IMAGE_DIRECTORY = Path(__file__).resolve().parents[3] / "image"
@@ -80,13 +78,7 @@ def _load_nicegui() -> Any:
 
 
 def _demo_battle() -> Battle:
-    if DEFAULT_BATTLE_INITIAL_STATE_PATH.exists():
-        return load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
-    return Battle(
-        battlefield=_demo_battlefield(),
-        occupancy=_demo_occupancy(),
-        unit_stacks=_demo_unit_stacks(),
-    )
+    return load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
 
 
 def _svg_open(width: float, height: float) -> str:
@@ -219,34 +211,6 @@ def _hex_bounds(hex_data: RenderableHex) -> _HexBounds:
     min_y = min(point.y for point in hex_data.points)
     max_y = max(point.y for point in hex_data.points)
     return _HexBounds(min_x=min_x, min_y=min_y, max_y=max_y, width=max_x - min_x, height=max_y - min_y)
-
-
-def _demo_battlefield() -> Battlefield:
-    obstacle = Obstacle(name="rocks", coordinates=_demo_obstacle_coordinates())
-    return Battlefield.default(obstacles=(obstacle,))
-
-
-def _demo_unit_stacks() -> dict[str, UnitStack]:
-    definition = load_packaged_unit_catalog().get("esquire").to_unit_definition()
-    return {
-        "player-esquire": _demo_stack("player-esquire", definition, CombatSide.PLAYER, 10),
-        "enemy-esquire": _demo_stack("enemy-esquire", definition, CombatSide.ENEMY, 20),
-    }
-
-
-def _demo_stack(stack_id: str, definition: UnitDefinition, side: CombatSide, count: int) -> UnitStack:
-    return UnitStack(id=stack_id, definition=definition, side=side, count=count)
-
-
-def _demo_occupancy() -> Occupancy:
-    occupancy = Occupancy(blocked_coordinates=_demo_obstacle_coordinates())
-    occupancy.place("player-esquire", HexCoord(0, 5))
-    occupancy.place("enemy-esquire", HexCoord(12, 5))
-    return occupancy
-
-
-def _demo_obstacle_coordinates() -> frozenset[HexCoord]:
-    return frozenset({HexCoord(5, 4), HexCoord(9, 3), HexCoord(2, 6)})
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from olden.battlefield_view.app import _build_page, _demo_unit_stacks, _register_unit_image_static_files, render_battlefield_svg
+from olden.battlefield_view.app import _build_page, _demo_battle, _register_unit_image_static_files, render_battlefield_svg
 from olden.battlefield_view.model import build_battlefield_view
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
@@ -98,12 +98,14 @@ def test_register_unit_image_static_files_uses_local_image_directory(tmp_path):
     assert app.static_files == [("/unit-images", tmp_path)]
 
 
-def test_demo_unit_stacks_use_packaged_catalog_esquire_definition():
-    stacks = _demo_unit_stacks()
+def test_demo_battle_loads_state_from_demo_battle_yaml():
+    battle = _demo_battle()
 
-    assert stacks["player-esquire"].definition.id == "esquire"
-    assert stacks["player-esquire"].definition.name == "Swordsman"
-    assert stacks["enemy-esquire"].definition.id == "esquire"
+    assert battle.battlefield.is_blocked(HexCoord(5, 4))
+    assert battle.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
+    assert battle.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
+    assert battle.unit_stacks["player-esquire"].definition.id == "esquire"
+    assert battle.unit_stacks["player-esquire"].definition.name == "Swordsman"
 
 
 def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitStack:

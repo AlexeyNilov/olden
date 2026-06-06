@@ -16,7 +16,7 @@ unit_stacks:
     count: 10
     anchor:
       column: 0
-      row: 5
+      row: 9
   - id: enemy-esquire
     unit_id: esquire
     side: enemy
