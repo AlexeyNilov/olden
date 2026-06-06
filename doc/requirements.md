@@ -142,6 +142,18 @@ This helps ensure requirements are:
 * **When** a combat log is replayed from a battle initial state, **the system shall** apply recorded unit movement events in sequence to reconstruct final occupancy.
 * **When** a combat log movement event does not match movement that can be replayed from current battle state, **the system shall** reject replay.
 
+### Combat replay
+
+* **When** combat replay frames are built, **the system shall** include an initial-state frame before movement events are applied.
+* **When** combat replay frames are built, **the system shall** include one frame for each replayed unit-moved event.
+* **When** combat replay frames are built, **the system shall** preserve the combat-log event associated with each non-initial frame.
+* **When** combat replay frames are built, **the system shall** reject movement events that do not replay from the current frame state.
+* **When** the combat replay view is launched, **the system shall** load `data/demo_battle.yaml` and `data/demo_movement_log.yaml` by default.
+* **When** the combat replay view is shown, **the system shall** render one battlefield state per replay frame.
+* **When** the combat replay view advances playback, **the system shall** wait for the configured delay before showing the next frame.
+* **When** the combat replay view delay is changed, **the system shall** apply the new delay to subsequent automatic frame advances.
+* **When** the combat replay view reaches the final frame, **the system shall** stop automatic playback.
+
 ### Battlefield view
 
 * **When** battlefield view data is produced, **the system shall** include one renderable hex for every valid battlefield coordinate.

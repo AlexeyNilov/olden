@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "olden"
-version = "0.0.11"
+version = "0.0.12"
 description = "Olden combat simulator."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -38,6 +38,7 @@ view = [
 
 [project.scripts]
 olden-battlefield-view = "olden.battlefield_view.app:main"
+olden-combat-replay-view = "olden.battlefield_view.replay_app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -47,7 +48,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 
 [tool.ruff]
 line-length = 128

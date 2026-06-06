@@ -19,6 +19,7 @@ src/olden/
         app.py
         layout.py
         model.py
+        replay_app.py
         unit_images.py
 
     unit_data/
@@ -33,6 +34,7 @@ src/olden/
         battle_setup.py
         battlefield.py
         combat_log.py
+        combat_replay.py
         coordinates.py
         movement_simulation.py
         occupancy.py
@@ -76,8 +78,10 @@ tests/
 * Put battle-level state orchestration in `battle.py`.
 * Put battle initial-state YAML loading and saving in `battle_setup.py`.
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
+* Put combat-log replay frame generation in `combat_replay.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
+* Put the separate local combat replay browser view in `battlefield_view/replay_app.py`.
 * Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
 * Put local battle setup examples in `data/`.
 * Put runnable local examples in `sample/`.

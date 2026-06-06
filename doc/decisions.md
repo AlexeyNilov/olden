@@ -34,6 +34,18 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-06: Keep combat replay view separate from static battlefield view
+
+**Status:** Accepted
+
+**Context:** Milestone 10 needs a local browser view for stepping through combat-log replay frames with configurable delay. The existing battlefield view is intentionally a read-only snapshot renderer. Combining snapshot and replay UI state in the same app module would mix two workflows and make static rendering harder to keep simple.
+
+**Decision:** Add pure combat replay frame generation in `combat/combat_replay.py` and a separate NiceGUI app in `battlefield_view/replay_app.py`. The replay app loads `data/demo_battle.yaml` and `data/demo_movement_log.yaml` by default, renders one battlefield state per replay frame, and owns playback controls and delay configuration.
+
+**Alternatives considered:** Reusing `battlefield_view/app.py` for replay was rejected because the static view would inherit timer, controls, and replay-file concerns. Smooth per-path-step animation was deferred because current combat logs already provide event-level replay, and frame-per-event replay is enough to inspect movement order.
+
+**Consequences:** Snapshot rendering remains simple and reusable. Replay behavior has a clear UI entry point and a pure frame builder that is testable without NiceGUI. Future path-step animation can extend replay frames or add a separate animation layer without rewriting combat-log replay.
+
 ### 2026-06-06: Use YAML battle setup and replayable combat log events
 
 **Status:** Accepted

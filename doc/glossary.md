@@ -12,6 +12,8 @@
 * **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
 * **Combat log:** Ordered combat-event history that can be replayed from a battle initial state.
 * **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
+* **Combat replay frame:** One renderable battle state in a combat-log replay, optionally associated with the event that produced it.
+* **Combat replay view:** A local browser view that steps through combat replay frames with configurable playback delay.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that a movement-only simulation can move toward before combat actions exist.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.

@@ -85,11 +85,15 @@
 * Turn-by-turn movement until adjacent engagement
 * Replayable movement combat log
 
-## Milestone 10: Movement log replay view
+## Milestone 10: Combat log replay view
 
-**Status:** Next
+**Status:** Done
 
-* How do we implement replay visualization?
+* Separate combat replay view app
+* Replay frame generation from initial battle state and combat log
+* Event-by-event battlefield rendering
+* Configurable playback delay
+* Playback controls for play, pause, restart, previous, and next
 
 
 ## Milestone 11: Combat actions

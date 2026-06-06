@@ -20,10 +20,15 @@ environment take precedence over `.env` values.
 
 ## Local battlefield view
 
-Install the optional view dependency group to launch the read-only battlefield
-view:
+Install the optional view dependency group to launch the local browser views:
 
 ```bash
 pip install -e ".[view]"
 olden-battlefield-view
+```
+
+Launch the combat-log replay view with:
+
+```bash
+olden-combat-replay-view
 ```
