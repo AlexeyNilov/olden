@@ -100,13 +100,30 @@
 
 **Status:** Next
 
+* Review `doc/combat_system_reference.md`
 * Attack targeting
 * Damage resolution
 * Counter attack
 
-## Milestone ?: Combat simulation
+## Milestone 12: Combat simulation
+
+**Status:** Later
+
+* Rename `sample/demo_movement_simulation.py` to `sample/demo_simulation.py`
+* Add the melee combat simulation to `sample/demo_simulation.py` 
+* Log attacks in the combat log
+
+## Milestone 13: Combat simulation view
+
+**Status:** Later
+
+* How do we show attacks using `src/olden/battlefield_view/replay_app.py`
+* Add combat log window to the right side of the view
+* The combat log window must be scrollable
+
+
 ## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
 
-## Backlog
+**Status:** Later
 
 * NPC combat strategy
