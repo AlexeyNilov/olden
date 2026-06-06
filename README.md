@@ -2,13 +2,22 @@
 
 Heroes of Might and Magic: Olden Era combat simulator.
 
+## Documentation map
+
+* `doc/glossary.md` owns shared project vocabulary.
+* `doc/requirements.md` owns current testable system behavior.
+* `doc/decisions.md` owns architecture and domain decision history.
+* `doc/hex_math.md` owns coordinate-system and hex-math reference notes.
+* `doc/roadmap.md` owns future sequencing and deferred scope.
+* `TODO.md` owns active implementation tasks only.
+
 ## Project structure
 
 The project uses a lightweight domain-first structure. It borrows the useful
 parts of Domain-Driven Design without adding service, repository, application,
 or infrastructure layers before the code needs them.
 
-Planned combat-domain layout:
+Combat-domain layout:
 
 ```text
 src/olden/

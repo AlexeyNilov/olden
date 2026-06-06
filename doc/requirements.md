@@ -49,9 +49,3 @@ This helps ensure requirements are:
 * **When** deployment zones are represented, **the system shall** assign zones by battlefield side.
 * **When** the player-controlled side is represented, **the system shall** place that side's deployment zone on the left side of the battlefield.
 * **When** the enemy side is represented, **the system shall** place that side's deployment zone on the right side of the battlefield.
-
-### Future range operations
-
-* **When** range operations are added after the first battlefield model, **the system shall** support distance between two hexes.
-* **When** range operations are added after the first battlefield model, **the system shall** support movement radius from a unit speed value.
-* **When** range operations are added after the first battlefield model, **the system shall** support spell area-of-effect rings.

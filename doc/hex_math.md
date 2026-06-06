@@ -9,23 +9,9 @@ spell area-of-effect rings, line-of-sight, and pathfinding logic.
 
 ## Battlefield shape
 
-The default battlefield uses flat-top hexes in 11 zero-based rows:
-
-```text
-row 0  - 12 hexes
-row 1  - 13 hexes
-row 2  - 12 hexes
-row 3  - 13 hexes
-row 4  - 12 hexes
-row 5  - 13 hexes
-row 6  - 12 hexes
-row 7  - 13 hexes
-row 8  - 12 hexes
-row 9  - 13 hexes
-row 10 - 12 hexes
-```
-
-Total valid coordinates: 137.
+The canonical battlefield shape is defined in `doc/requirements.md`. These
+notes assume that default shape when discussing examples, but requirements own
+the exact row lengths and valid coordinate count.
 
 ## Offset coordinates
 
