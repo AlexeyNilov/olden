@@ -1,6 +1,7 @@
 # Glossary
 
 * **Battle:** A running combat instance. Future battle state includes units, turns, actions, effects, and mutable combat state.
+* **Battle initial state:** Serialized setup data used to create a battle before combat-log events are applied.
 * **Battle state:** Dynamic combat data such as unit occupancy.
 * **Battlefield:** The static combat field made of pointy-top hexes arranged in staggered rows.
 * **Battlefield hex:** One addressable hex on the battlefield, including its coordinate and static field metadata.
@@ -9,6 +10,8 @@
 * **Attack category:** Future unit attack classification, such as melee, long-reach, or ranged.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
+* **Combat log:** Ordered combat-event history that can be replayed from a battle initial state.
+* **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
 * **Hex coordinate:** A zero-based `(column, row)` address for one battlefield hex.
@@ -25,7 +28,10 @@
 * **Passable coordinate:** A valid battlefield coordinate that is not blocked by an obstacle and is not occupied by another unit during movement pathfinding.
 * **Range operation:** Hex-math behavior such as distance between hexes or movement radius by unit speed.
 * **Renderable hex:** Battlefield-view data for one valid hex coordinate, including display position and visual state.
+* **Round:** A future combat cycle in which unit stacks normally act once. Current combat logs store round numbers as replay metadata only.
 * **Unreachable path:** A movement request where no passable path exists from the start coordinate to the destination coordinate.
+* **Turn:** A future unit-stack action opportunity within a round. Current combat logs store turn numbers as replay metadata only.
+* **Turn marker:** Replay metadata identifying the round and turn number associated with a logged event.
 * **Unit catalog:** A local collection of static unit records loaded from packaged data.
 * **Unit definition:** Static unit data shared by every stack of that unit type.
 * **Unit footprint:** The set of battlefield coordinates occupied by a unit stack when anchored at a coordinate.

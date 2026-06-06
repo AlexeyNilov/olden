@@ -82,6 +82,15 @@ This helps ensure requirements are:
 * **When** a unit is removed from occupancy, **the system shall** clear every coordinate occupied by that unit.
 * **When** a single-hex unit is moved in occupancy, **the system shall** clear its previous coordinate and reserve its destination coordinate.
 
+### Battle initial state
+
+* **When** battle initial state is loaded from YAML, **the system shall** build a battle from battlefield obstacles, unit stacks, combat sides, stack counts, and starting anchors.
+* **When** battle initial state is loaded from YAML, **the system shall** resolve unit definitions through the unit catalog by stable unit ID.
+* **When** battle initial state contains duplicate stack IDs, **the system shall** reject the setup before exposing the battle.
+* **When** battle initial state places a stack on a blocked coordinate, **the system shall** reject the setup before exposing the battle.
+* **When** battle initial state places overlapping stacks, **the system shall** reject the setup before exposing the battle.
+* **When** battle initial state is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent battle setup.
+
 ### Range and movement math
 
 * **When** distance is calculated from a coordinate to itself, **the system shall** return `0`.
@@ -105,6 +114,20 @@ This helps ensure requirements are:
 * **When** movement is validated beyond unit speed, **the system shall** reject the movement.
 * **When** movement is validated with an invalid start or destination coordinate, **the system shall** reject the movement.
 * **When** movement is validated to a blocked or other-unit-occupied destination, **the system shall** reject the movement.
+
+### Battle movement
+
+* **When** a battle moves a unit stack, **the system shall** validate the movement against the stack's current anchor, unit speed, obstacles, and occupancy before mutating occupancy.
+* **When** a battle moves a unit stack, **the system shall** return a movement result containing the stack ID, start coordinate, destination coordinate, and movement path.
+
+### Combat log
+
+* **When** a battle-start event is recorded, **the system shall** assign it the next contiguous combat-log sequence number.
+* **When** a unit-moved event is recorded, **the system shall** include the next contiguous sequence number, turn marker, stack ID, start coordinate, destination coordinate, and movement path.
+* **When** a combat log is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent combat log.
+* **When** a combat log is loaded from YAML, **the system shall** reject event sequences that are not contiguous from `1`.
+* **When** a combat log is replayed from a battle initial state, **the system shall** apply recorded unit movement events in sequence to reconstruct final occupancy.
+* **When** a combat log movement event does not match movement that can be replayed from current battle state, **the system shall** reject replay.
 
 ### Battlefield view
 

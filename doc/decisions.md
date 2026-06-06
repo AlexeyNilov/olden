@@ -34,6 +34,18 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-06: Use YAML battle setup and replayable combat log events
+
+**Status:** Accepted
+
+**Context:** Milestone 8 needs persisted battle initial state and a combat log that can be replayed later by the battlefield view. Current requirements still defer full initiative tie-breakers, waiting, attacks, spells, and damage resolution, so the first log schema needs to preserve replay data without pretending those rules exist.
+
+**Decision:** Store battle initial state and combat logs as schema-versioned YAML. Keep battle setup loading in `combat/battle_setup.py`, keep battle-level movement orchestration in `combat/battle.py`, and keep ordered event history plus replay in `combat/combat_log.py`. Support only `battle_started` and `unit_moved` events initially. Unit movement events record sequence number, turn marker, stack ID, start coordinate, destination coordinate, and path.
+
+**Alternatives considered:** JSON was rejected because YAML is already used for hand-maintained project data and needs no new dependency. Implementing full initiative ordering was rejected because the reference notes still have open tie-breaker questions. Adding attack or spell log event types now was rejected because those actions do not have executable combat behavior yet.
+
+**Consequences:** Battle setup and logs are inspectable local files under a stable versioned schema. Replay can reconstruct movement state for the battlefield view. Future combat actions can add event types without changing the current movement event contract, but incompatible schema changes must be versioned.
+
 ### 2026-06-06: Use a YAML-backed local unit catalog
 
 **Status:** Accepted

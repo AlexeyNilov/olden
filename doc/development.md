@@ -29,7 +29,10 @@ src/olden/
 
     combat/
         __init__.py
+        battle.py
+        battle_setup.py
         battlefield.py
+        combat_log.py
         coordinates.py
         occupancy.py
         obstacles.py
@@ -43,7 +46,9 @@ tests/
     test_config.py
 
     combat/
+        test_battle_setup.py
         test_battlefield.py
+        test_combat_log.py
         test_movement.py
         test_occupancy.py
         test_range.py
@@ -63,9 +68,13 @@ tests/
 * Put deployment-zone rules in `deployment.py`.
 * Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
+* Put battle-level state orchestration in `battle.py`.
+* Put battle initial-state YAML loading and saving in `battle_setup.py`.
+* Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
 * Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
+* Put local battle setup examples in `data/`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
 

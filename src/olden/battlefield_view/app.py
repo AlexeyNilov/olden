@@ -6,6 +6,8 @@ from typing import Any
 
 from olden.battlefield_view.model import BattlefieldView, RenderableHex, build_battlefield_view
 from olden.battlefield_view.unit_images import UNIT_IMAGE_ROUTE, resolve_unit_image
+from olden.combat.battle import Battle
+from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
@@ -15,6 +17,7 @@ from olden.combat.units import UnitDefinition, UnitStack
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 DEFAULT_UNIT_IMAGE_DIRECTORY = Path(__file__).resolve().parents[3] / "image"
+DEFAULT_BATTLE_INITIAL_STATE_PATH = Path(__file__).resolve().parents[3] / "data" / "demo_battle.yaml"
 
 
 def main() -> None:
@@ -28,9 +31,10 @@ def run_battlefield_view(
 ) -> None:
     nicegui = _load_nicegui()
     ui = getattr(nicegui, "ui")
-    resolved_battlefield = battlefield if battlefield is not None else _demo_battlefield()
-    resolved_occupancy = occupancy if occupancy is not None else _demo_occupancy()
-    resolved_unit_stacks = unit_stacks if unit_stacks is not None else _demo_unit_stacks()
+    demo_battle = _demo_battle()
+    resolved_battlefield = battlefield if battlefield is not None else demo_battle.battlefield
+    resolved_occupancy = occupancy if occupancy is not None else demo_battle.occupancy
+    resolved_unit_stacks = unit_stacks if unit_stacks is not None else demo_battle.unit_stacks
     view = build_battlefield_view(
         resolved_battlefield,
         resolved_occupancy,
@@ -73,6 +77,16 @@ def _load_nicegui() -> Any:
     except ModuleNotFoundError as exc:
         msg = 'NiceGUI is required for the battlefield view. Install it with: pip install -e ".[view]"'
         raise RuntimeError(msg) from exc
+
+
+def _demo_battle() -> Battle:
+    if DEFAULT_BATTLE_INITIAL_STATE_PATH.exists():
+        return load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
+    return Battle(
+        battlefield=_demo_battlefield(),
+        occupancy=_demo_occupancy(),
+        unit_stacks=_demo_unit_stacks(),
+    )
 
 
 def _svg_open(width: float, height: float) -> str:

@@ -2,6 +2,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 
 from olden.battlefield_view.layout import BattlefieldLayout, HexPoint, HexPosition
+from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
@@ -47,6 +48,15 @@ def build_battlefield_view(
             _renderable_hex(battlefield, occupancy, resolved_unit_stacks, position)
             for position in resolved_layout.positions_for(battlefield)
         )
+    )
+
+
+def build_battlefield_view_for_battle(battle: Battle, layout: BattlefieldLayout | None = None) -> BattlefieldView:
+    return build_battlefield_view(
+        battlefield=battle.battlefield,
+        occupancy=battle.occupancy,
+        unit_stacks=battle.unit_stacks,
+        layout=layout,
     )
 
 

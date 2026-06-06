@@ -66,8 +66,17 @@
 * Use picture image/esquire.webp (the file name is the same as the unit id) as the unit image if the file exists, otherwise show the name
 * Show only stack count above the unit image (no need to show the name because we can see the image)
 
+## Milestone 8: Battlefield state and combat log
 
-## Milestone 8: Battlefield movement view
+**Status:** Done
+
+* Minimal round and turn markers for replay metadata
+* Save/load battle initial state from/to YAML files in the `data` folder
+* Save/load combat log events for battle start and unit movement
+* Replay combat logs from battle initial state to reconstruct movement occupancy
+* Render loaded battle state through the battlefield view model
+
+## Milestone 9: Battlefield movement view
 
 **Status:** Later
 
@@ -75,7 +84,7 @@
 * Turn-order integration
 
 
-## Milestone 9: Combat actions
+## Milestone 10: Combat actions
 
 **Status:** Later
 

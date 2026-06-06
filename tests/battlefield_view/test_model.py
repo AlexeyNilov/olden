@@ -1,10 +1,26 @@
-from olden.battlefield_view.model import build_battlefield_view
+from olden.battlefield_view.model import build_battlefield_view, build_battlefield_view_for_battle
+from olden.combat.battle_setup import load_battle_initial_state_yaml
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.unit_data.packaged import load_packaged_unit_catalog
+
+VALID_INITIAL_STATE_YAML = """
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: player-esquire
+    unit_id: esquire
+    side: player
+    count: 10
+    anchor:
+      column: 0
+      row: 5
+"""
 
 
 def test_battlefield_view_exposes_deployment_zone_state_for_each_renderable_hex():
@@ -49,3 +65,13 @@ def test_battlefield_view_does_not_mutate_occupancy():
     build_battlefield_view(Battlefield.default(), occupancy)
 
     assert occupancy.unit_at(HexCoord(4, 5)) == "unit-1"
+
+
+def test_battlefield_view_can_render_loaded_battle_state():
+    battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, load_packaged_unit_catalog())
+
+    view = build_battlefield_view_for_battle(battle)
+
+    renderable_hex = view.hex_at(HexCoord(0, 5))
+    assert renderable_hex.occupant_id == "player-esquire"
+    assert renderable_hex.unit_stack == battle.unit_stacks["player-esquire"]

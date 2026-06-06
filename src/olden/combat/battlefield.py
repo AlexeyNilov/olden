@@ -22,7 +22,8 @@ class Battlefield:
     ) -> None:
         self.row_lengths = row_lengths
         self._deployment_zones = deployment_zones or DeploymentZones.default(row_lengths)
-        self._obstacles = ObstacleMap(obstacles)
+        self._obstacles = obstacles
+        self._obstacle_map = ObstacleMap(obstacles)
 
     @classmethod
     def default(cls, obstacles: tuple[Obstacle, ...] = ()) -> "Battlefield":
@@ -53,7 +54,15 @@ class Battlefield:
 
     def is_blocked(self, coord: HexCoord) -> bool:
         self.require_valid(coord)
-        return self._obstacles.blocks(coord)
+        return self._obstacle_map.blocks(coord)
+
+    @property
+    def obstacles(self) -> tuple[Obstacle, ...]:
+        return self._obstacles
+
+    @property
+    def blocked_coordinates(self) -> frozenset[HexCoord]:
+        return self._obstacle_map.blocked_coordinates
 
     def _neighbor_candidates(self, coord: HexCoord) -> tuple[HexCoord, ...]:
         column = coord.column
