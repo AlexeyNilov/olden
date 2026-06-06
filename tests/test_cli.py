@@ -1,4 +1,4 @@
-from mcp_stdio_python_template.cli import main
+from olden.cli import main
 
 
 class FakeServer:
@@ -36,7 +36,7 @@ def test_main_prints_help_without_starting_server(capsys):
 
 def test_main_version_option_prints_package_version_without_starting_server(monkeypatch, capsys):
     server = FakeServer()
-    monkeypatch.setattr("mcp_stdio_python_template.cli.package_version", lambda: "9.8.7")
+    monkeypatch.setattr("olden.cli.package_version", lambda: "9.8.7")
 
     exit_code = main(["--version"], server_factory=lambda: server)
 
@@ -44,7 +44,7 @@ def test_main_version_option_prints_package_version_without_starting_server(monk
 
     assert exit_code == 0
     assert server.transports == []
-    assert captured.out == "mcp-stdio-python-template 9.8.7\n"
+    assert captured.out == "olden 9.8.7\n"
     assert captured.err == ""
 
 
