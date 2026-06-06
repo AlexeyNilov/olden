@@ -14,6 +14,7 @@ Use a lightweight Architecture Decision Record (ADR) style:
 * Include enough reasoning for a future maintainer to understand the trade-off.
 * Do not document every small implementation detail; focus on choices that would be costly or confusing to rediscover.
 * Update or supersede earlier decisions instead of silently rewriting history.
+* Do not edit old ADRs just to mirror current requirements; add a new ADR when the decision changes.
 
 ## Entry template
 

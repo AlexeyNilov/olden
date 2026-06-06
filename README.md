@@ -34,11 +34,11 @@ src/olden/
         deployment.py
 
 tests/
+    test_config.py
+
     combat/
         test_battlefield.py
-        test_coordinates.py
         test_occupancy.py
-        test_obstacles.py
 ```
 
 ### Structure principles
@@ -53,6 +53,15 @@ tests/
 * Put deployment-zone rules in `deployment.py`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
+
+## Documentation workflow
+
+* Update `doc/glossary.md` when a shared term is introduced or renamed.
+* Update `doc/requirements.md` when behavior is committed enough to test.
+* Update `doc/roadmap.md` when sequencing, future scope, or milestone status changes.
+* Update `TODO.md` only for active implementation tasks.
+* Add a new ADR in `doc/decisions.md` when a choice affects architecture, data flow, public APIs, dependencies, or long-term maintenance.
+* Do not edit old ADRs just to mirror current requirements; supersede them when the decision changes.
 
 ## Configuration
 
