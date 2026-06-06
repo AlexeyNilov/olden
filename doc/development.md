@@ -14,6 +14,12 @@ src/olden/
     config.py
     exceptions.py
 
+    battlefield_view/
+        __init__.py
+        app.py
+        layout.py
+        model.py
+
     combat/
         __init__.py
         battlefield.py
@@ -51,6 +57,7 @@ tests/
 * Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
+* Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
 

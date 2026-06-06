@@ -44,7 +44,7 @@
 
 ## Milestone 5: Battlefield view
 
-**Status:** Next
+**Status:** Done
 
 * Field rendering
 * Unit placement display

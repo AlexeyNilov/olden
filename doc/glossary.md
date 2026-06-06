@@ -5,6 +5,7 @@
 * **Battlefield:** The static combat field made of flat-top hexes arranged in staggered rows.
 * **Battlefield hex:** One addressable hex on the battlefield, including its coordinate and static field metadata.
 * **Battlefield topology:** The battlefield's shape, valid coordinates, and neighbor relationships.
+* **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
 * **Attack category:** Future unit attack classification, such as melee, long-reach, or ranged.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
@@ -22,6 +23,7 @@
 * **Occupancy:** The dynamic mapping of units to battlefield coordinates.
 * **Passable coordinate:** A valid battlefield coordinate that is not blocked by an obstacle and is not occupied by another unit during movement pathfinding.
 * **Range operation:** Hex-math behavior such as distance between hexes or movement radius by unit speed.
+* **Renderable hex:** Battlefield-view data for one valid hex coordinate, including display position and visual state.
 * **Unreachable path:** A movement request where no passable path exists from the start coordinate to the destination coordinate.
 * **Unit definition:** Static unit data shared by every stack of that unit type.
 * **Unit footprint:** The set of battlefield coordinates occupied by a unit stack when anchored at a coordinate.

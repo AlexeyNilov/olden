@@ -17,3 +17,13 @@ Heroes of Might and Magic: Olden Era combat simulator.
 
 The server reads local configuration from `.env`. Values already set in the process
 environment take precedence over `.env` values.
+
+## Local battlefield view
+
+Install the optional view dependency group to launch the read-only battlefield
+view:
+
+```bash
+pip install -e ".[view]"
+olden-battlefield-view
+```

@@ -34,6 +34,18 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-06: Use NiceGUI for the local battlefield view
+
+**Status:** Accepted
+
+**Context:** Milestone 5 needs a local visualization of battlefield topology, field configuration, and unit placement. The simulator's core combat model is pure domain logic and should remain usable without a browser UI dependency. The view also needs enough layout flexibility to render a staggered flat-top hex field.
+
+**Decision:** Use NiceGUI as an optional `view` dependency for a read-only local battlefield view. Keep the NiceGUI integration outside `src/olden/combat/` and put testable layout and render-state mapping in pure Python modules that do not import NiceGUI.
+
+**Alternatives considered:** A static SVG or HTML export was rejected because it would not give a natural path toward interactive inspection. Matplotlib was rejected because it is better suited to plotting than browser-based UI controls. A full JavaScript frontend was rejected because it would add a second application stack before interaction requirements exist.
+
+**Consequences:** The combat domain remains independent of the UI package, while developers can launch a local browser view with the optional extra installed. UI behavior must stay read-only until interaction requirements are added.
+
 ### 2026-06-06: Scope first movement simulation to single-hex pathfinding
 
 **Status:** Accepted

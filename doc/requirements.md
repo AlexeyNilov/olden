@@ -95,6 +95,15 @@ This helps ensure requirements are:
 * **When** movement is validated with an invalid start or destination coordinate, **the system shall** reject the movement.
 * **When** movement is validated to a blocked or other-unit-occupied destination, **the system shall** reject the movement.
 
+### Battlefield view
+
+* **When** battlefield view data is produced, **the system shall** include one renderable hex for every valid battlefield coordinate.
+* **When** battlefield view layout is produced, **the system shall** preserve flat-top odd-row staggering.
+* **When** battlefield view data is produced, **the system shall** expose deployment-zone state for each renderable hex.
+* **When** battlefield view data is produced for blocked coordinates, **the system shall** expose blocked state for those renderable hexes.
+* **When** battlefield view data is produced for occupied coordinates, **the system shall** expose the occupying unit identity for those renderable hexes.
+* **When** battlefield view data is produced, **the system shall** not mutate battlefield topology, field configuration, or occupancy.
+
 ### Deferred behavior
 
 * **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
