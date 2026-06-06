@@ -2,14 +2,15 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 
 from olden.combat.coordinates import DEFAULT_ROW_LENGTHS, HexCoord
-from olden.combat.deployment import DeploymentSide, DeploymentZones
+from olden.combat.deployment import DeploymentZones
 from olden.combat.obstacles import Obstacle, ObstacleMap
+from olden.combat.sides import CombatSide
 
 
 @dataclass(frozen=True, slots=True)
 class BattlefieldHex:
     coord: HexCoord
-    deployment_side: DeploymentSide | None
+    deployment_side: CombatSide | None
 
 
 class Battlefield:

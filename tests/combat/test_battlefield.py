@@ -2,8 +2,8 @@ import pytest
 
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
-from olden.combat.deployment import DeploymentSide
 from olden.combat.obstacles import Obstacle
+from olden.combat.sides import CombatSide
 
 
 def test_default_battlefield_exposes_expected_row_lengths():
@@ -88,9 +88,9 @@ def test_battlefield_hex_exposes_deployment_zone_without_affecting_coordinate_va
     center_hex = battlefield.hex_at(HexCoord(5, 4))
     right_hex = battlefield.hex_at(HexCoord(11, 4))
 
-    assert left_hex.deployment_side is DeploymentSide.PLAYER
+    assert left_hex.deployment_side is CombatSide.PLAYER
     assert center_hex.deployment_side is None
-    assert right_hex.deployment_side is DeploymentSide.ENEMY
+    assert right_hex.deployment_side is CombatSide.ENEMY
 
 
 def test_obstacle_blocks_all_coordinates_it_covers():

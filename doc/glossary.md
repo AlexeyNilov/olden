@@ -8,7 +8,6 @@
 * **Attack category:** Future unit attack classification, such as melee, long-reach, or ranged.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
-* **Deployment side:** One of the opposing combat sides. The player-controlled side starts on the left; the enemy side starts on the right.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
 * **Hex coordinate:** A zero-based `(column, row)` address for one battlefield hex.

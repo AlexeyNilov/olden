@@ -12,7 +12,7 @@
 
 * [x] Update `doc/glossary.md` with Unit model terms: combat side, unit definition, unit stack, unit footprint, initiative, attack category, morale, and luck.
 * [x] Update `doc/requirements.md` with testable Unit model behavior before writing implementation tests.
-* [x] Add an ADR to `doc/decisions.md` if replacing `DeploymentSide` with a shared combat-side concept becomes the chosen public API direction.
+* [x] Add an ADR for using `CombatSide` as the shared side concept.
 * [x] Add failing tests for `UnitDefinition` identity and speed validation.
 * [x] Add failing tests for `UnitStack` side, count, and non-positive count rejection.
 * [x] Add failing tests for single-hex unit footprint placement through occupancy.

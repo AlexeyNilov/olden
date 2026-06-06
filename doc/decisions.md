@@ -38,13 +38,13 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 **Status:** Accepted
 
-**Context:** Milestone 1 introduced side-based deployment zones using `DeploymentSide`. Milestone 2 needs side data on unit stacks as battle state, not only deployment configuration. Reusing deployment-specific naming for units would blur field configuration with dynamic combat state, while adding a separate unit-side enum would duplicate the same two-sided concept.
+**Context:** Milestone 1 introduced side-based deployment zones before unit stacks existed. Milestone 2 needs side data on unit stacks as battle state, not only deployment configuration. Using deployment-specific side naming for units would blur field configuration with dynamic combat state, while adding a separate unit-side enum would duplicate the same two-sided concept.
 
-**Decision:** Introduce `CombatSide` as the shared public side enum for combat concepts. Keep `DeploymentSide` as a compatibility alias for existing deployment-zone callers while new unit-stack code uses `CombatSide`.
+**Decision:** Use `CombatSide` as the shared public side enum for combat concepts, including deployment zones and unit stacks.
 
-**Alternatives considered:** Reusing `DeploymentSide` everywhere was rejected because units are not deployment zones. Creating a separate `UnitSide` was rejected because the current simulator has one side concept, and duplicating it would force unnecessary conversion between equivalent values.
+**Alternatives considered:** Using deployment-specific side naming everywhere was rejected because units are not deployment zones. Creating a separate unit-side enum was rejected because the current simulator has one side concept, and duplicating it would force unnecessary conversion between equivalent values.
 
-**Consequences:** Unit stacks can use side vocabulary that fits battle state. Existing deployment-zone imports can keep working. If future rules distinguish attacker/defender from player/enemy, that role concept should be added separately rather than overloading `CombatSide`.
+**Consequences:** Deployment zones and unit stacks use one side vocabulary. Pre-release callers must import `CombatSide` for side-based combat APIs. If future rules distinguish attacker/defender from player/enemy, that role concept should be added separately rather than overloading `CombatSide`.
 
 ### 2026-06-06: Represent the battlefield with zero-based row-offset coordinates
 
