@@ -1,15 +1,20 @@
 from collections.abc import Mapping
 from html import escape
 from importlib import import_module
+from pathlib import Path
 from typing import Any
 
 from olden.battlefield_view.model import BattlefieldView, RenderableHex, build_battlefield_view
+from olden.battlefield_view.unit_images import UNIT_IMAGE_ROUTE, resolve_unit_image
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import UnitDefinition, UnitStack
+from olden.unit_data.packaged import load_packaged_unit_catalog
+
+DEFAULT_UNIT_IMAGE_DIRECTORY = Path(__file__).resolve().parents[3] / "image"
 
 
 def main() -> None:
@@ -21,7 +26,8 @@ def run_battlefield_view(
     occupancy: Occupancy | None = None,
     unit_stacks: Mapping[str, UnitStack] | None = None,
 ) -> None:
-    ui = _load_nicegui_ui()
+    nicegui = _load_nicegui()
+    ui = getattr(nicegui, "ui")
     resolved_battlefield = battlefield if battlefield is not None else _demo_battlefield()
     resolved_occupancy = occupancy if occupancy is not None else _demo_occupancy()
     resolved_unit_stacks = unit_stacks if unit_stacks is not None else _demo_unit_stacks()
@@ -30,15 +36,21 @@ def run_battlefield_view(
         resolved_occupancy,
         resolved_unit_stacks,
     )
+    _register_unit_image_static_files(getattr(nicegui, "app"), DEFAULT_UNIT_IMAGE_DIRECTORY)
     _build_page(ui, view)
     ui.run(title="Olden Battlefield View", reload=False, show=False)
 
 
-def render_battlefield_svg(view: BattlefieldView) -> str:
+def render_battlefield_svg(
+    view: BattlefieldView,
+    unit_image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY,
+) -> str:
     width, height = _svg_size(view)
     parts = [_svg_open(width, height)]
     parts.extend(_polygon(hex_data) for hex_data in view.hexes)
-    parts.extend(_unit_label(hex_data) for hex_data in view.hexes if hex_data.occupant_id is not None)
+    for hex_data in view.hexes:
+        if hex_data.occupant_id is not None:
+            parts.extend(_unit_elements(hex_data, unit_image_directory))
     parts.append("</svg>")
     return "".join(parts)
 
@@ -50,13 +62,17 @@ def _build_page(ui: Any, view: BattlefieldView) -> None:
         ui.html(render_battlefield_svg(view), sanitize=False).classes("battlefield-view")
 
 
-def _load_nicegui_ui() -> Any:
+def _register_unit_image_static_files(nicegui_app: Any, image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY) -> None:
+    if image_directory.is_dir():
+        nicegui_app.add_static_files(UNIT_IMAGE_ROUTE, image_directory)
+
+
+def _load_nicegui() -> Any:
     try:
-        nicegui = import_module("nicegui")
+        return import_module("nicegui")
     except ModuleNotFoundError as exc:
         msg = 'NiceGUI is required for the battlefield view. Install it with: pip install -e ".[view]"'
         raise RuntimeError(msg) from exc
-    return getattr(nicegui, "ui")
 
 
 def _svg_open(width: float, height: float) -> str:
@@ -131,11 +147,42 @@ def _title(hex_data: RenderableHex) -> str:
     return escape(" - ".join(parts))
 
 
+def _unit_elements(hex_data: RenderableHex, unit_image_directory: Path) -> tuple[str, ...]:
+    if hex_data.unit_stack is None:
+        return (_unit_label(hex_data),)
+    unit_image = resolve_unit_image(hex_data.unit_stack, unit_image_directory)
+    if unit_image is None:
+        return (_unit_label(hex_data),)
+    return (_unit_image(hex_data, unit_image.href), _unit_count_label(hex_data))
+
+
+def _unit_image(hex_data: RenderableHex, href: str) -> str:
+    bounds = _hex_bounds(hex_data)
+    image_size = min(bounds.width, bounds.height) * 0.82
+    image_x = hex_data.center_x - image_size / 2
+    image_y = hex_data.center_y - image_size / 2 + 3
+    return (
+        f'<image href="{escape(href)}" x="{image_x:.2f}" y="{image_y:.2f}" width="{image_size:.2f}" '
+        f'height="{image_size:.2f}" preserveAspectRatio="xMidYMid meet" />'
+    )
+
+
 def _unit_label(hex_data: RenderableHex) -> str:
     label = _unit_text(hex_data)
     return (
         f'<text class="unit" x="{hex_data.center_x:.2f}" y="{hex_data.center_y + 4:.2f}" '
         f'text-anchor="middle" fill="#f7f0d0" font-family="sans-serif" font-size="12" font-weight="700">{escape(label)}</text>'
+    )
+
+
+def _unit_count_label(hex_data: RenderableHex) -> str:
+    if hex_data.unit_stack is None:
+        return _unit_label(hex_data)
+    bounds = _hex_bounds(hex_data)
+    return (
+        f'<text class="unit" x="{hex_data.center_x:.2f}" y="{bounds.min_y + 13:.2f}" '
+        f'text-anchor="middle" fill="#f7f0d0" font-family="sans-serif" font-size="12" font-weight="700">'
+        f"{hex_data.unit_stack.count}</text>"
     )
 
 
@@ -145,27 +192,43 @@ def _unit_text(hex_data: RenderableHex) -> str:
     return f"{hex_data.unit_stack.definition.name} {hex_data.unit_stack.count}"
 
 
+class _HexBounds:
+    def __init__(self, min_x: float, min_y: float, width: float, height: float) -> None:
+        self.min_x = min_x
+        self.min_y = min_y
+        self.width = width
+        self.height = height
+
+
+def _hex_bounds(hex_data: RenderableHex) -> _HexBounds:
+    min_x = min(point.x for point in hex_data.points)
+    max_x = max(point.x for point in hex_data.points)
+    min_y = min(point.y for point in hex_data.points)
+    max_y = max(point.y for point in hex_data.points)
+    return _HexBounds(min_x=min_x, min_y=min_y, width=max_x - min_x, height=max_y - min_y)
+
+
 def _demo_battlefield() -> Battlefield:
     obstacle = Obstacle(name="rocks", coordinates=_demo_obstacle_coordinates())
     return Battlefield.default(obstacles=(obstacle,))
 
 
 def _demo_unit_stacks() -> dict[str, UnitStack]:
+    definition = load_packaged_unit_catalog().get("esquire").to_unit_definition()
     return {
-        "swordsman": _demo_stack("swordsman", "Swordsman", CombatSide.PLAYER, 10, 4),
-        "swordsman_enemy": _demo_stack("swordsman", "Swordsman", CombatSide.ENEMY, 20, 3),
+        "player-esquire": _demo_stack("player-esquire", definition, CombatSide.PLAYER, 10),
+        "enemy-esquire": _demo_stack("enemy-esquire", definition, CombatSide.ENEMY, 20),
     }
 
 
-def _demo_stack(unit_id: str, name: str, side: CombatSide, count: int, speed: int) -> UnitStack:
-    definition = UnitDefinition(id=unit_id, name=name, speed=speed, footprint=UnitFootprint.single_hex())
-    return UnitStack(id=unit_id, definition=definition, side=side, count=count)
+def _demo_stack(stack_id: str, definition: UnitDefinition, side: CombatSide, count: int) -> UnitStack:
+    return UnitStack(id=stack_id, definition=definition, side=side, count=count)
 
 
 def _demo_occupancy() -> Occupancy:
     occupancy = Occupancy(blocked_coordinates=_demo_obstacle_coordinates())
-    occupancy.place("swordsman", HexCoord(0, 5))
-    occupancy.place("swordsman_enemy", HexCoord(12, 5))
+    occupancy.place("player-esquire", HexCoord(0, 5))
+    occupancy.place("enemy-esquire", HexCoord(12, 5))
     return occupancy
 
 

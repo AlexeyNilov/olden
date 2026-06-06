@@ -1,8 +1,10 @@
-from olden.battlefield_view.app import _build_page, render_battlefield_svg
+from olden.battlefield_view.app import _build_page, _demo_unit_stacks, _register_unit_image_static_files, render_battlefield_svg
 from olden.battlefield_view.model import build_battlefield_view
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
+from olden.combat.sides import CombatSide
+from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
 
 
 def test_svg_renderer_outputs_one_polygon_per_renderable_hex_and_unit_label():
@@ -19,6 +21,32 @@ def test_svg_renderer_outputs_one_polygon_per_renderable_hex_and_unit_label():
     assert "unit-1" in svg
 
 
+def test_svg_renderer_uses_unit_image_and_count_label_when_definition_image_exists(tmp_path):
+    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    occupancy = Occupancy()
+    occupancy.place(stack.id, HexCoord(4, 5))
+    (tmp_path / "esquire.webp").write_bytes(b"image")
+    view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
+
+    svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
+
+    assert '<image href="/unit-images/esquire.webp"' in svg
+    assert ">10</text>" in svg
+    assert "Swordsman 10" not in svg
+
+
+def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is_missing(tmp_path):
+    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    occupancy = Occupancy()
+    occupancy.place(stack.id, HexCoord(4, 5))
+    view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
+
+    svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
+
+    assert "<image " not in svg
+    assert "Swordsman 10" in svg
+
+
 def test_nicegui_page_embeds_trusted_generated_svg_without_sanitizing():
     ui = FakeUi()
     view = build_battlefield_view(Battlefield.default(), Occupancy())
@@ -26,6 +54,27 @@ def test_nicegui_page_embeds_trusted_generated_svg_without_sanitizing():
     _build_page(ui, view)
 
     assert ui.html_sanitize is False
+
+
+def test_register_unit_image_static_files_uses_local_image_directory(tmp_path):
+    app = FakeApp()
+
+    _register_unit_image_static_files(app, tmp_path)
+
+    assert app.static_files == [("/unit-images", tmp_path)]
+
+
+def test_demo_unit_stacks_use_packaged_catalog_esquire_definition():
+    stacks = _demo_unit_stacks()
+
+    assert stacks["player-esquire"].definition.id == "esquire"
+    assert stacks["player-esquire"].definition.name == "Swordsman"
+    assert stacks["enemy-esquire"].definition.id == "esquire"
+
+
+def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitStack:
+    definition = UnitDefinition(id=unit_id, name=name, speed=4, footprint=UnitFootprint.single_hex())
+    return UnitStack(id=stack_id, definition=definition, side=CombatSide.PLAYER, count=count)
 
 
 class FakeUi:
@@ -44,6 +93,14 @@ class FakeUi:
     def html(self, content: str, *, sanitize: bool = True) -> "FakeElement":
         self.html_sanitize = sanitize
         return FakeElement()
+
+
+class FakeApp:
+    def __init__(self) -> None:
+        self.static_files: list[tuple[str, object]] = []
+
+    def add_static_files(self, url_path: str, local_directory: object) -> None:
+        self.static_files.append((url_path, local_directory))
 
 
 class FakeElement:

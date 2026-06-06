@@ -59,11 +59,11 @@
 
 ## Milestone 7: Battlefield unit image
 
-**Status:** Next
+**Status:** Done
 
 * _demo_stack: use load_packaged_unit_catalog() to load the swordsman (by id esquire)
 * How do we name unit image in the battlefield view? Unit image? Update the glosary
-* Use picture image/esquire.webp (the file name is the same as the unit id) as the unit image
+* Use picture image/esquire.webp (the file name is the same as the unit id) as the unit image if the file exists, otherwise show the name
 * Show only stack count above the unit image (no need to show the name because we can see the image)
 
 
@@ -84,3 +84,7 @@
 
 ## Milestone ?: Combat simulation
 ## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
+
+## Backlog
+
+Combat log window, combat replay,  counter attack count, npc combat strategy with codex

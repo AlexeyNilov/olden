@@ -19,6 +19,7 @@ src/olden/
         app.py
         layout.py
         model.py
+        unit_images.py
 
     unit_data/
         __init__.py

@@ -115,6 +115,10 @@ This helps ensure requirements are:
 * **When** battlefield view data is produced for blocked coordinates, **the system shall** expose blocked state for those renderable hexes.
 * **When** battlefield view data is produced for occupied coordinates, **the system shall** expose the occupying unit identity for those renderable hexes.
 * **When** battlefield view data is produced, **the system shall** not mutate battlefield topology, field configuration, or occupancy.
+* **When** a unit stack is rendered with an existing unit image matching its unit definition ID, **the system shall** display the unit image on the occupied hex.
+* **When** a unit stack is rendered with an existing unit image, **the system shall** display only the stack count as the unit label.
+* **When** a unit stack is rendered without an existing unit image, **the system shall** display fallback text using the unit name and stack count.
+* **When** the demo battlefield view is launched, **the system shall** load the Swordsman unit definition from the packaged unit catalog record with ID `esquire`.
 
 ### Deferred behavior
 
