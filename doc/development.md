@@ -20,6 +20,12 @@ src/olden/
         layout.py
         model.py
 
+    unit_data/
+        __init__.py
+        catalog.py
+        packaged.py
+        units.yaml
+
     combat/
         __init__.py
         battlefield.py
@@ -58,6 +64,7 @@ tests/
 * Put shared combat side vocabulary in `sides.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
 * Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
+* Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
 * Add service modules only when behavior does not naturally belong to one domain object.
 * Add infrastructure modules only when there is real I/O, such as persistence, API handlers, CLI commands, or file loading.
 

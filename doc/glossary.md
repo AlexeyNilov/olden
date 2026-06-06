@@ -18,6 +18,7 @@
 * **Movement cost:** The number of movement points needed to traverse one step in a movement path. Current single-hex movement cost is always `1` per step.
 * **Movement path:** An ordered sequence of battlefield coordinates from a start coordinate to a destination coordinate.
 * **Movement radius:** The set of valid battlefield coordinates within a unit's speed distance from an origin, ignoring obstacles, occupancy, and pathfinding.
+* **Modifier range:** A minimum and maximum value for a future combat modifier such as morale or luck.
 * **Obstacle:** A whole-hex blocker covering one or more battlefield coordinates.
 * **Obstacle map:** The field configuration that answers whether a coordinate is blocked by an obstacle.
 * **Occupancy:** The dynamic mapping of units to battlefield coordinates.
@@ -25,6 +26,8 @@
 * **Range operation:** Hex-math behavior such as distance between hexes or movement radius by unit speed.
 * **Renderable hex:** Battlefield-view data for one valid hex coordinate, including display position and visual state.
 * **Unreachable path:** A movement request where no passable path exists from the start coordinate to the destination coordinate.
+* **Unit catalog:** A local collection of static unit records loaded from packaged data.
 * **Unit definition:** Static unit data shared by every stack of that unit type.
 * **Unit footprint:** The set of battlefield coordinates occupied by a unit stack when anchored at a coordinate.
+* **Unit record:** A catalog entry for one unit type, including source metadata and stats that may not yet affect combat simulation.
 * **Unit stack:** A battle-state instance of a unit definition with a side and creature count.

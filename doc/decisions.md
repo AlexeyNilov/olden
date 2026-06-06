@@ -34,6 +34,18 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-06: Use a YAML-backed local unit catalog
+
+**Status:** Accepted
+
+**Context:** Milestone 6 introduces static unit data and related lookup operations. Unit records need source metadata and may include stats that are not yet part of combat simulation. Some source data is licensed under CC BY-SA, while the project code is CC0.
+
+**Decision:** Store packaged unit records in YAML and load them through a small typed unit catalog API. Keep the catalog data in a separate package area with CC BY-SA license and notice files, while keeping simulator code under the project license. Use `yaml.safe_load`, validate loaded data into explicit dataclasses, reject duplicate IDs, and convert catalog records to the narrower combat `UnitDefinition` only through an explicit method.
+
+**Alternatives considered:** JSON was rejected because the catalog is expected to be hand-maintained and source-annotated, where comments and less punctuation are useful. SQLite was rejected because query needs are currently simple ID lookups. TOML was rejected because it is awkward for a growing list of nested records. A generic repository layer was rejected because `UnitCatalog` names the concrete domain need without adding broad infrastructure structure.
+
+**Consequences:** The project gains one runtime dependency on PyYAML and must treat YAML parsing as an I/O boundary. Catalog dates and other string-like scalar values need validation because YAML parsers may coerce unquoted values. Bundled data can carry CC BY-SA obligations separately from CC0 code, but downstream packaging and distribution must preserve those data notices.
+
 ### 2026-06-06: Use NiceGUI for the local battlefield view
 
 **Status:** Accepted

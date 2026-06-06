@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "olden"
-version = "0.0.6"
+version = "0.0.7"
 description = "Olden combat simulator."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -22,6 +22,7 @@ classifiers = [
 ]
 dependencies = [
     "python-dotenv>=1,<2",
+    "PyYAML>=6,<7",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +30,7 @@ dev = [
     "mypy>=2,<3",
     "pytest>=8,<9",
     "ruff>=0.15,<1",
+    "types-PyYAML>=6,<7",
 ]
 view = [
     "nicegui>=3.12,<4",
@@ -39,6 +41,9 @@ olden-battlefield-view = "olden.battlefield_view.app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"olden.unit_data" = ["*.yaml", "LICENSE-*.md", "NOTICE.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -60,3 +65,7 @@ warn_return_any = true
 warn_unused_ignores = true
 no_implicit_optional = true
 check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["yaml"]
+ignore_missing_imports = true

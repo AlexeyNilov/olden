@@ -1,0 +1,31 @@
+schema_version: 1
+license: CC-BY-SA-4.0
+license_url: https://creativecommons.org/licenses/by-sa/4.0/
+
+units:
+  - id: esquire
+    name: Swordsman
+    faction: temple
+    tier: 1
+    combat:
+      health: 12
+      attack: 4
+      defense: 4
+      damage:
+        min: 2
+        max: 3
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 5
+      speed: 4
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Swordsman
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-06"
+      modified: true

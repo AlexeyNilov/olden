@@ -51,14 +51,15 @@
 
 ## Milestone 6: Data layer
 
-**Status:** Next
+**Status:** Done
 
 * Unit database and related operations
-* Repository pattern
+* Local YAML-backed unit catalog
+* Packaged CC BY-SA unit data boundary
 
 ## Milestone 7: Combat actions
 
-**Status:** Later
+**Status:** Next
 
 * Attack targeting
 * Damage resolution

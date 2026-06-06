@@ -61,6 +61,17 @@ This helps ensure requirements are:
 * **When** a multi-hex unit footprint is anchored at a coordinate, **the system shall** derive occupied coordinates from the anchor and footprint offsets.
 * **When** a unit footprint is empty or omits the anchor offset, **the system shall** reject it as invalid.
 
+### Unit catalog
+
+* **When** the packaged unit catalog is loaded, **the system shall** expose unit records by stable unit ID.
+* **When** a requested unit ID is missing from a unit catalog, **the system shall** raise a dedicated missing-record exception.
+* **When** unit catalog data contains duplicate unit IDs, **the system shall** reject the catalog.
+* **When** unit catalog data is loaded, **the system shall** reject malformed required fields before exposing records to callers.
+* **When** unit catalog data represents morale or luck, **the system shall** preserve the modifier range as explicit minimum and maximum values.
+* **When** unit catalog data contains a modifier range whose maximum is lower than its minimum, **the system shall** reject the catalog.
+* **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition from only stable identity, display name, speed, and single-hex footprint data.
+* **When** bundled unit catalog data is derived from a CC BY-SA source, **the system shall** keep source attribution and catalog license metadata with the packaged data.
+
 ### Occupancy
 
 * **When** a unit occupies a coordinate, **the system shall** prevent another unit from occupying the same coordinate at the same time.
@@ -110,6 +121,7 @@ This helps ensure requirements are:
 * **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
 * **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
 * **While** combat action simulation is deferred, **the system shall** avoid exposing damage, morale, luck, attack-resolution, ability, cost, growth, or upgrade behavior as part of the Unit model.
+* **While** combat actions are deferred, **the system shall** avoid applying attack, defense, damage, morale, luck, initiative, economy, upgrade, or ability behavior from unit catalog records.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
 * **While** multi-hex movement is deferred, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior as part of single-hex movement simulation.
 * **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.
