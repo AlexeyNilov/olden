@@ -23,13 +23,13 @@ unit_stacks:
   anchor:
     column: 0
     row: 7
-- id: genetic-player-4
+- id: genetic-player-5
   unit_id: esquire
   side: player
   count: 12
   anchor:
     column: 0
-    row: 6
+    row: 5
 - id: enemy-esquire
   unit_id: esquire
   side: enemy
