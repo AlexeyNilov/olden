@@ -152,6 +152,7 @@
 
 ## Future plans
 
+* Improve simulation performance (use several cpu cores)
 * Later concern: decide whether exact initiative and speed ties should alternate
   between attacker and defender by odd/even round, as observed in Olden Era
   reference notes, instead of using stable configured order.
