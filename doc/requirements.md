@@ -147,16 +147,24 @@ This helps ensure requirements are:
 * **When** combat simulation selects a target with the nearest-opponent policy, **the system shall** target the nearest living opposing stack.
 * **When** combat simulation target selection has equal scores for multiple living opposing stacks, **the system shall** choose the nearest stack.
 * **When** combat simulation target selection has multiple living opposing stacks with equal scores and equal distance, **the system shall** preserve configured stack order.
+* **When** combat simulation selects an action for a unit stack, **the system shall** consider only actions configured for that stack's combat side.
+* **When** no configured action is applicable for a unit stack during combat simulation, **the system shall** raise an action-selection error.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
 * **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
 * **When** combat simulation movement brings the acting unit stack adjacent to its target, **the system shall** perform the melee attack in the same action opportunity.
+* **When** a configured stay-out-of-melee-reach action is selected, **the system shall** move the acting unit stack toward a selected opponent only to a reachable hex that is outside that opponent's next melee engagement reach.
+* **When** a unit stack waits during combat simulation, **the system shall** move that stack's action to the end of the current round without counting the wait itself as a completed action opportunity.
+* **When** multiple unit stacks wait in the same round, **the system shall** resolve their delayed actions in flipped initiative order, with lower-initiative stacks acting before higher-initiative stacks.
+* **When** a unit stack has already waited during the current round, **the system shall** prevent that stack from waiting again during that round.
+* **When** a unit stack skips during combat simulation, **the system shall** end that stack's current action opportunity without movement or attack and count the skip as a completed action opportunity.
 * **When** combat simulation resolves counterattacks, **the system shall** allow each defending unit stack to counterattack at most once per round.
 * **When** combat simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
+* **When** combat simulation records a wait or skip, **the system shall** use combat-log events that can be replayed from the original battle.
 * **When** one side has no living unit stacks, **the system shall** stop combat simulation.
-* **While** morale, luck, waiting, target selection beyond configured target policy, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
+* **While** morale, luck, target selection beyond configured target policy, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
 * **When** the demo combat simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the combat log in the `data` folder.
 
 ### Strategy discovery
@@ -178,6 +186,8 @@ This helps ensure requirements are:
 * **When** a battle-start event is recorded, **the system shall** assign it the next contiguous combat-log sequence number.
 * **When** a unit-moved event is recorded, **the system shall** include the next contiguous sequence number, turn marker, stack ID, start coordinate, destination coordinate, and movement path.
 * **When** a unit-attacked event is recorded, **the system shall** include the next contiguous sequence number, turn marker, attacker ID, defender ID, primary attack damage result, and optional counterattack damage result.
+* **When** a unit-waited event is recorded, **the system shall** include the next contiguous sequence number, turn marker, and stack ID.
+* **When** a unit-skipped event is recorded, **the system shall** include the next contiguous sequence number, turn marker, and stack ID.
 * **When** a combat log is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent combat log.
 * **When** a combat log is loaded from YAML, **the system shall** reject unsupported schema versions instead of migrating older log formats.
 * **When** a combat log is loaded from YAML, **the system shall** reject event sequences that are not contiguous from `1`.

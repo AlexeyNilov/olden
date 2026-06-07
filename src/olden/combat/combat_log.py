@@ -44,6 +44,20 @@ class UnitMovedEvent:
 
 
 @dataclass(frozen=True, slots=True)
+class UnitWaitedEvent:
+    sequence: int
+    turn: TurnMarker
+    stack_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class UnitSkippedEvent:
+    sequence: int
+    turn: TurnMarker
+    stack_id: str
+
+
+@dataclass(frozen=True, slots=True)
 class AttackDamageEventData:
     selected_damage: int
     final_damage: int
@@ -64,7 +78,7 @@ class UnitAttackedEvent:
     counterattack: AttackDamageEventData | None
 
 
-CombatLogEvent = BattleStartedEvent | UnitMovedEvent | UnitAttackedEvent
+CombatLogEvent = BattleStartedEvent | UnitMovedEvent | UnitWaitedEvent | UnitSkippedEvent | UnitAttackedEvent
 
 
 @dataclass(slots=True)
@@ -94,6 +108,16 @@ class CombatLog:
             destination=movement.destination,
             path=movement.path,
         )
+        self._events.append(event)
+        return event
+
+    def record_unit_waited(self, turn: TurnMarker, stack_id: str) -> UnitWaitedEvent:
+        event = UnitWaitedEvent(sequence=self._next_sequence(), turn=turn, stack_id=stack_id)
+        self._events.append(event)
+        return event
+
+    def record_unit_skipped(self, turn: TurnMarker, stack_id: str) -> UnitSkippedEvent:
+        event = UnitSkippedEvent(sequence=self._next_sequence(), turn=turn, stack_id=stack_id)
         self._events.append(event)
         return event
 
@@ -152,9 +176,13 @@ def apply_combat_log_event(battle: Battle, event: CombatLogEvent, replay_state: 
         return False
     if isinstance(event, UnitMovedEvent):
         _apply_unit_moved_event(battle, event)
-    else:
+        return True
+    if isinstance(event, UnitWaitedEvent | UnitSkippedEvent):
+        return True
+    if isinstance(event, UnitAttackedEvent):
         _apply_unit_attacked_event(battle, event, replay_state)
-    return True
+        return True
+    return False
 
 
 def _apply_unit_moved_event(battle: Battle, event: UnitMovedEvent) -> None:
@@ -181,6 +209,10 @@ def _parse_event(value: object, index: int) -> CombatLogEvent:
         return BattleStartedEvent(sequence=_require_int(data, "sequence", path, minimum=1))
     if event_type == "unit_moved":
         return _parse_unit_moved_event(data, path)
+    if event_type == "unit_waited":
+        return _parse_unit_waited_event(data, path)
+    if event_type == "unit_skipped":
+        return _parse_unit_skipped_event(data, path)
     if event_type == "unit_attacked":
         return _parse_unit_attacked_event(data, path)
     msg = f"{path}.type is unsupported: {event_type}"
@@ -200,6 +232,28 @@ def _parse_unit_moved_event(data: Mapping[str, Any], path: str) -> UnitMovedEven
         path=tuple(
             _parse_coord(coord, f"{path}.path[{index}]") for index, coord in enumerate(_require_list(data, "path", path))
         ),
+    )
+
+
+def _parse_unit_waited_event(data: Mapping[str, Any], path: str) -> UnitWaitedEvent:
+    return UnitWaitedEvent(
+        sequence=_require_int(data, "sequence", path, minimum=1),
+        turn=TurnMarker(
+            round_number=_require_int(data, "round", path, minimum=1),
+            turn_number=_require_int(data, "turn", path, minimum=1),
+        ),
+        stack_id=_require_str(data, "stack_id", path),
+    )
+
+
+def _parse_unit_skipped_event(data: Mapping[str, Any], path: str) -> UnitSkippedEvent:
+    return UnitSkippedEvent(
+        sequence=_require_int(data, "sequence", path, minimum=1),
+        turn=TurnMarker(
+            round_number=_require_int(data, "round", path, minimum=1),
+            turn_number=_require_int(data, "turn", path, minimum=1),
+        ),
+        stack_id=_require_str(data, "stack_id", path),
     )
 
 
@@ -230,6 +284,22 @@ def _dump_event(event: CombatLogEvent) -> dict[str, object]:
             "start": _dump_coord(event.start),
             "destination": _dump_coord(event.destination),
             "path": [_dump_coord(coord) for coord in event.path],
+        }
+    if isinstance(event, UnitWaitedEvent):
+        return {
+            "sequence": event.sequence,
+            "type": "unit_waited",
+            "round": event.turn.round_number,
+            "turn": event.turn.turn_number,
+            "stack_id": event.stack_id,
+        }
+    if isinstance(event, UnitSkippedEvent):
+        return {
+            "sequence": event.sequence,
+            "type": "unit_skipped",
+            "round": event.turn.round_number,
+            "turn": event.turn.turn_number,
+            "stack_id": event.stack_id,
         }
     data: dict[str, object] = {
         "sequence": event.sequence,

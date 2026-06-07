@@ -31,6 +31,8 @@ def run_demo_simulation(
         path_chooser=_path_chooser(random_source),
         damage_chooser=_damage_chooser(random_source),
         targeting_policy=config.combat_targeting_policy,
+        attacker_actions=config.combat_attacker_actions,
+        defender_actions=config.combat_defender_actions,
     )
     save_combat_log_file(combat_log_path, result.combat_log)
     return result

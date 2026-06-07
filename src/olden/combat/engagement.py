@@ -3,6 +3,7 @@ from collections.abc import Callable
 from olden.combat.battle import Battle
 from olden.combat.coordinates import HexCoord
 from olden.combat.movement import find_shortest_paths_to_any
+from olden.combat.range import distance_between
 from olden.combat.targeting import single_occupied_coordinate
 
 MovementPath = tuple[HexCoord, ...]
@@ -57,7 +58,55 @@ def destination_for_speed(path: MovementPath, speed: int) -> HexCoord:
     return path[min(speed, len(path) - 1)]
 
 
+def choose_stay_out_of_melee_reach_path(
+    battle: Battle,
+    actor_id: str,
+    opponent_id: str,
+    path_chooser: PathChooser,
+) -> MovementPath | None:
+    longest_candidates = stay_out_of_melee_reach_paths(battle, actor_id, opponent_id)
+    if not longest_candidates:
+        return None
+    chosen_path = path_chooser(longest_candidates)
+    if chosen_path not in longest_candidates:
+        msg = "Path chooser must return one of the available stay-out-of-melee-reach paths"
+        raise ValueError(msg)
+    return chosen_path
+
+
+def has_stay_out_of_melee_reach_path(battle: Battle, actor_id: str, opponent_id: str) -> bool:
+    return bool(stay_out_of_melee_reach_paths(battle, actor_id, opponent_id))
+
+
+def stay_out_of_melee_reach_paths(battle: Battle, actor_id: str, opponent_id: str) -> tuple[MovementPath, ...]:
+    paths = shortest_engagement_paths(battle, actor_id, opponent_id)
+    if not paths:
+        return ()
+    actor_speed = battle.stack(actor_id).definition.speed
+    opponent_speed = battle.stack(opponent_id).definition.speed
+    opponent_coord = single_occupied_coordinate(battle, opponent_id)
+    candidates = tuple(
+        path[: index + 1]
+        for path in paths
+        for index in range(min(actor_speed, len(path) - 1), 0, -1)
+        if _is_out_of_melee_reach(battle, path[index], opponent_coord, opponent_speed)
+    )
+    if not candidates:
+        return ()
+    longest_length = max(len(path) for path in candidates)
+    return tuple(path for path in candidates if len(path) == longest_length)
+
+
 def are_adjacent(battle: Battle, first_stack_id: str, second_stack_id: str) -> bool:
     first_coord = single_occupied_coordinate(battle, first_stack_id)
     second_coord = single_occupied_coordinate(battle, second_stack_id)
     return second_coord in battle.battlefield.neighbors(first_coord)
+
+
+def _is_out_of_melee_reach(
+    battle: Battle,
+    destination: HexCoord,
+    opponent_coord: HexCoord,
+    opponent_speed: int,
+) -> bool:
+    return distance_between(battle.battlefield, destination, opponent_coord) > opponent_speed + 1

@@ -8,6 +8,8 @@ from olden.combat.combat_log import (
     TurnMarker,
     UnitAttackedEvent,
     UnitMovedEvent,
+    UnitSkippedEvent,
+    UnitWaitedEvent,
     snapshot_attack_damage,
 )
 from olden.combat.coordinates import HexCoord
@@ -43,6 +45,14 @@ def apply_melee_attack_action(
     if attack.counterattack is not None:
         round_state.record_counterattack(defender_id)
     return combat_log.record_unit_attacked(turn, attack)
+
+
+def apply_wait_action(combat_log: CombatLog, turn: TurnMarker, stack_id: str) -> UnitWaitedEvent:
+    return combat_log.record_unit_waited(turn, stack_id)
+
+
+def apply_skip_action(combat_log: CombatLog, turn: TurnMarker, stack_id: str) -> UnitSkippedEvent:
+    return combat_log.record_unit_skipped(turn, stack_id)
 
 
 def apply_logged_movement_action(battle: Battle, event: UnitMovedEvent) -> None:

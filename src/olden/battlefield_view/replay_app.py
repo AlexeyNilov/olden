@@ -12,7 +12,14 @@ from olden.battlefield_view.svg import (
     render_battlefield_svg,
 )
 from olden.combat.battle_setup import load_battle_initial_state_file
-from olden.combat.combat_log import AttackDamageEventData, UnitAttackedEvent, UnitMovedEvent, load_combat_log_file
+from olden.combat.combat_log import (
+    AttackDamageEventData,
+    UnitAttackedEvent,
+    UnitMovedEvent,
+    UnitSkippedEvent,
+    UnitWaitedEvent,
+    load_combat_log_file,
+)
 from olden.combat.combat_replay import CombatReplayFrame, build_combat_replay_frames
 from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH, load_config
 from olden.unit_data.packaged import load_packaged_unit_catalog
@@ -190,6 +197,10 @@ def _frame_status(frame: CombatReplayFrame) -> str:
         )
     if isinstance(frame.event, UnitAttackedEvent):
         return f"{prefix} - {_attack_text(frame.event)}{_counterattack_status(frame.event.counterattack)}"
+    if isinstance(frame.event, UnitWaitedEvent):
+        return f"{prefix} - {_wait_text(frame.event)}"
+    if isinstance(frame.event, UnitSkippedEvent):
+        return f"{prefix} - {_skip_text(frame.event)}"
     return f"{prefix} - event {frame.event.sequence}"
 
 
@@ -213,6 +224,10 @@ def _log_entry_html(frame: CombatReplayFrame) -> str:
             f'<span class="event-detail">{_attack_text(frame.event)}</span>'
             f"{_counterattack_html(frame.event.counterattack)}"
         )
+    if isinstance(frame.event, UnitWaitedEvent):
+        return f'<span class="event-kind">Wait</span><span class="event-detail">{_wait_text(frame.event)}</span>'
+    if isinstance(frame.event, UnitSkippedEvent):
+        return f'<span class="event-kind">Skip</span><span class="event-detail">{_skip_text(frame.event)}</span>'
     return f'<span class="event-kind">Event</span><span class="event-detail">Event {frame.event.sequence}</span>'
 
 
@@ -232,6 +247,14 @@ def _attack_text(event: UnitAttackedEvent) -> str:
         f"{event.primary_damage.creatures_killed} killed, "
         f"{escape(event.defender_id)} {event.primary_damage.defender_count_after} left"
     )
+
+
+def _wait_text(event: UnitWaitedEvent) -> str:
+    return f"round {event.turn.round_number}, turn {event.turn.turn_number}: {escape(event.stack_id)} waited"
+
+
+def _skip_text(event: UnitSkippedEvent) -> str:
+    return f"round {event.turn.round_number}, turn {event.turn.turn_number}: {escape(event.stack_id)} skipped"
 
 
 def _counterattack_status(counterattack: AttackDamageEventData | None) -> str:

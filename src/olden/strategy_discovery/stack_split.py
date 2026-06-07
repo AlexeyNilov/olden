@@ -3,6 +3,7 @@ from concurrent.futures import Executor, ProcessPoolExecutor
 from dataclasses import dataclass
 from typing import TypeAlias
 
+from olden.combat.action_selection import CombatAction
 from olden.combat.battle import Battle
 from olden.combat.combat_simulation import CombatSimulationResult, MovementPath, simulate_combat
 from olden.combat.coordinates import HexCoord
@@ -25,6 +26,8 @@ class StackSplitScenario:
     generated_attacker_stack_id_prefix: str
     max_turns: int = 100
     targeting_policy: TargetingPolicy = TargetingPolicy.THREAT_REMOVED
+    attacker_actions: tuple[CombatAction, ...] = (CombatAction.MELEE_ENGAGE,)
+    defender_actions: tuple[CombatAction, ...] = (CombatAction.MELEE_ENGAGE,)
 
     def __post_init__(self) -> None:
         if self.unit_pool_size < 1:
@@ -38,6 +41,12 @@ class StackSplitScenario:
             raise ValueError(msg)
         if self.max_turns < 1:
             msg = "Maximum simulated turns must be positive"
+            raise ValueError(msg)
+        if not self.attacker_actions:
+            msg = "Attacker combat actions must be non-empty"
+            raise ValueError(msg)
+        if not self.defender_actions:
+            msg = "Defender combat actions must be non-empty"
             raise ValueError(msg)
         if not self.generated_attacker_stack_id_prefix:
             msg = "Generated attacker stack ID prefix must be non-empty"
@@ -136,6 +145,8 @@ def evaluate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         damage_chooser=average_damage,
         max_turns=scenario.max_turns,
         targeting_policy=scenario.targeting_policy,
+        attacker_actions=scenario.attacker_actions,
+        defender_actions=scenario.defender_actions,
     )
     return StackSplitEvaluation(
         fitness=_fitness_for_result(scenario, result),
@@ -152,6 +163,8 @@ def simulate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         damage_chooser=average_damage,
         max_turns=scenario.max_turns,
         targeting_policy=scenario.targeting_policy,
+        attacker_actions=scenario.attacker_actions,
+        defender_actions=scenario.defender_actions,
     )
 
 

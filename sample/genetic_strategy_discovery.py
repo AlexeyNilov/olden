@@ -66,6 +66,8 @@ def run_genetic_strategy_discovery(
         generated_attacker_stack_id_prefix="genetic-attacker",
         max_turns=resolved_max_turns,
         targeting_policy=config.combat_targeting_policy,
+        attacker_actions=config.combat_attacker_actions,
+        defender_actions=config.combat_defender_actions,
     )
     discovery_result = discover_stack_split_strategy(
         scenario,

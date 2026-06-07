@@ -1,10 +1,14 @@
+import pytest
+
+from olden.combat.action_selection import CombatAction, CombatActionSelectionError
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
-from olden.combat.combat_log import UnitAttackedEvent, UnitMovedEvent, replay_combat_log
+from olden.combat.combat_log import UnitAttackedEvent, UnitMovedEvent, UnitSkippedEvent, UnitWaitedEvent, replay_combat_log
 from olden.combat.combat_simulation import CombatSimulationStopReason, simulate_combat
 from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
+from olden.combat.range import distance_between
 from olden.combat.sides import CombatSide
 from olden.combat.targeting import TargetingPolicy
 from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
@@ -267,6 +271,107 @@ def test_combat_simulation_stops_when_no_engagement_path_is_reachable():
 
     assert result.stop_reason is CombatSimulationStopReason.NO_REACHABLE_ENGAGEMENT
     assert result.turns_taken == 0
+
+
+def test_combat_simulation_wait_reschedules_without_counting_as_completed_turn():
+    attacker = _stack("attacker-esquire", CombatSide.ATTACKER, count=10, initiative=9)
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=20, initiative=1)
+    initial_battle = _battle_with_stacks(
+        placements=((attacker, HexCoord(0, 0)), (defender, HexCoord(6, 0))),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("attacker-esquire", "defender-esquire"),
+        attacker_actions=(CombatAction.WAIT, CombatAction.SKIP),
+        defender_actions=(CombatAction.SKIP,),
+        action_chooser=lambda actions: CombatAction.WAIT if CombatAction.WAIT in actions else CombatAction.SKIP,
+        max_turns=1,
+    )
+
+    wait_events = [event for event in result.combat_log.events if isinstance(event, UnitWaitedEvent)]
+    skip_events = [event for event in result.combat_log.events if isinstance(event, UnitSkippedEvent)]
+    assert result.turns_taken == 1
+    assert len(wait_events) == 1
+    assert len(skip_events) == 1
+    assert skip_events[0].stack_id == "defender-esquire"
+
+
+def test_combat_simulation_wait_phase_uses_flipped_initiative_order_and_allows_one_wait_per_round():
+    attacker_high = _stack("attacker-high", CombatSide.ATTACKER, count=10, initiative=9)
+    attacker_low = _stack("attacker-low", CombatSide.ATTACKER, count=10, initiative=3)
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=20, initiative=1)
+    initial_battle = _battle_with_stacks(
+        placements=(
+            (attacker_high, HexCoord(0, 0)),
+            (attacker_low, HexCoord(0, 1)),
+            (defender, HexCoord(6, 0)),
+        ),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("attacker-high", "attacker-low", "defender-esquire"),
+        attacker_actions=(CombatAction.WAIT, CombatAction.SKIP),
+        defender_actions=(CombatAction.SKIP,),
+        action_chooser=lambda actions: CombatAction.WAIT if CombatAction.WAIT in actions else CombatAction.SKIP,
+        max_turns=3,
+    )
+
+    waited_stack_ids = [event.stack_id for event in result.combat_log.events if isinstance(event, UnitWaitedEvent)]
+    skipped_stack_ids = [event.stack_id for event in result.combat_log.events if isinstance(event, UnitSkippedEvent)]
+    assert waited_stack_ids == ["attacker-high", "attacker-low"]
+    assert skipped_stack_ids == ["defender-esquire", "attacker-low", "attacker-high"]
+    assert result.turns_taken == 3
+
+
+def test_combat_simulation_raises_when_no_configured_action_is_applicable():
+    initial_battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(6, 0),
+    )
+
+    with pytest.raises(CombatActionSelectionError, match="No configured combat action"):
+        simulate_combat(
+            initial_battle,
+            first_stack_id="attacker-esquire",
+            second_stack_id="defender-esquire",
+            attacker_actions=(),
+        )
+
+
+def test_combat_simulation_can_move_to_stay_out_of_melee_reach_when_selected():
+    initial_battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10, speed=4),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20, speed=4),
+        attacker_anchor=HexCoord(0, 5),
+        defender_anchor=HexCoord(8, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
+        attacker_actions=(CombatAction.STAY_OUT_OF_MELEE_REACH, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.SKIP,),
+        action_chooser=lambda actions: (
+            CombatAction.STAY_OUT_OF_MELEE_REACH if CombatAction.STAY_OUT_OF_MELEE_REACH in actions else actions[0]
+        ),
+        path_chooser=lambda paths: paths[0],
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    attacker_coord = result.battle.occupancy.coordinate_for("attacker-esquire")
+    defender_coord = result.battle.occupancy.coordinate_for("defender-esquire")
+    assert len(movement_events) == 1
+    assert not attack_events
+    assert attacker_coord is not None
+    assert defender_coord is not None
+    assert distance_between(result.battle.battlefield, attacker_coord, defender_coord) > 5
 
 
 def _battle(

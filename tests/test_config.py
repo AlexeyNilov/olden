@@ -3,8 +3,11 @@ from pathlib import Path
 
 import pytest
 
+from olden.combat.action_selection import CombatAction
 from olden.combat.targeting import TargetingPolicy
 from olden.config import (
+    DEFAULT_COMBAT_ATTACKER_ACTIONS,
+    DEFAULT_COMBAT_DEFENDER_ACTIONS,
     DEFAULT_COMBAT_TARGETING_POLICY,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS,
@@ -113,6 +116,49 @@ def test_load_config_falls_back_to_default_combat_targeting_policy(monkeypatch, 
     config = load_config()
 
     assert config.combat_targeting_policy is DEFAULT_COMBAT_TARGETING_POLICY
+
+
+def test_load_config_reads_combat_actions_from_dotenv_file(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_ATTACKER_ACTIONS", raising=False)
+    monkeypatch.delenv("COMBAT_DEFENDER_ACTIONS", raising=False)
+    tmp_path.joinpath(".env").write_text(
+        "COMBAT_ATTACKER_ACTIONS=stay_out_of_melee_reach,melee_engage\nCOMBAT_DEFENDER_ACTIONS=melee_engage,skip\n",
+        encoding="utf-8",
+    )
+
+    config = load_config()
+
+    assert config.combat_attacker_actions == (
+        CombatAction.STAY_OUT_OF_MELEE_REACH,
+        CombatAction.MELEE_ENGAGE,
+    )
+    assert config.combat_defender_actions == (
+        CombatAction.MELEE_ENGAGE,
+        CombatAction.SKIP,
+    )
+
+
+def test_load_config_rejects_unknown_combat_action(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_ATTACKER_ACTIONS", raising=False)
+    tmp_path.joinpath(".env").write_text("COMBAT_ATTACKER_ACTIONS=melee_engage,dance\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="COMBAT_ATTACKER_ACTIONS"):
+        load_config()
+
+
+def test_load_config_falls_back_to_default_combat_actions(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_ATTACKER_ACTIONS", raising=False)
+    monkeypatch.delenv("COMBAT_DEFENDER_ACTIONS", raising=False)
+
+    config = load_config()
+
+    assert config.combat_attacker_actions == DEFAULT_COMBAT_ATTACKER_ACTIONS
+    assert config.combat_defender_actions == DEFAULT_COMBAT_DEFENDER_ACTIONS
+    assert CombatAction.STAY_OUT_OF_MELEE_REACH in config.combat_attacker_actions
+    assert CombatAction.STAY_OUT_OF_MELEE_REACH not in config.combat_defender_actions
 
 
 def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(monkeypatch, tmp_path):

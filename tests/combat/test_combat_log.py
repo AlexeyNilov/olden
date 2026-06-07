@@ -8,6 +8,8 @@ from olden.combat.combat_log import (
     TurnMarker,
     UnitAttackedEvent,
     UnitMovedEvent,
+    UnitSkippedEvent,
+    UnitWaitedEvent,
     apply_combat_log_event,
     dump_combat_log_yaml,
     load_combat_log_file,
@@ -126,6 +128,19 @@ def test_combat_log_yaml_round_trips_attack_events():
     assert loaded_log.events == combat_log.events
 
 
+def test_combat_log_yaml_round_trips_wait_and_skip_events():
+    combat_log = CombatLog()
+    combat_log.record_battle_started()
+    combat_log.record_unit_waited(TurnMarker(round_number=1, turn_number=1), "attacker-esquire")
+    combat_log.record_unit_skipped(TurnMarker(round_number=1, turn_number=3), "attacker-esquire")
+
+    loaded_log = load_combat_log_yaml(dump_combat_log_yaml(combat_log))
+
+    assert loaded_log.events == combat_log.events
+    assert isinstance(loaded_log.events[1], UnitWaitedEvent)
+    assert isinstance(loaded_log.events[2], UnitSkippedEvent)
+
+
 def test_combat_log_file_writes_loadable_yaml(tmp_path):
     combat_log = CombatLog()
     combat_log.record_battle_started()
@@ -182,6 +197,19 @@ def test_replay_combat_log_reconstructs_attack_damage_state():
     assert replayed.stack("defender-esquire").wound_damage == executed_battle.stack("defender-esquire").wound_damage
     assert replayed.stack("attacker-esquire").count == executed_battle.stack("attacker-esquire").count
     assert replayed.stack("attacker-esquire").wound_damage == executed_battle.stack("attacker-esquire").wound_damage
+
+
+def test_replay_combat_log_accepts_wait_and_skip_events_without_mutating_battle():
+    catalog = load_packaged_unit_catalog()
+    initial_battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+    combat_log.record_unit_waited(TurnMarker(round_number=1, turn_number=1), "attacker-esquire")
+    combat_log.record_unit_skipped(TurnMarker(round_number=1, turn_number=3), "attacker-esquire")
+
+    replayed = replay_combat_log(initial_battle, combat_log)
+
+    assert replayed.unit_stacks == initial_battle.unit_stacks
+    assert replayed.occupancy.coordinate_for("attacker-esquire") == HexCoord(0, 5)
 
 
 def test_apply_combat_log_event_mutates_battle_using_shared_replay_state():

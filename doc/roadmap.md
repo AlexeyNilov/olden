@@ -8,13 +8,13 @@
 
 ## Milestone 21: Add more actions
 
-**Status:** Next
+**Status:** Done
 
 * For now stacks can only move or move+attack, but the game provides more options, see `doc/combat_system_reference.md`
 * Implement staying out of reach for the melee range action; Should be available by default only for the Attacker because currently in the game NPC(Defender) doesn't do it.
-* Make list of available action configurable via .env/our config.py, attacker/defender must have separate config options
+* Make list of available actions configurable via .env/config.py, attacker/defender must have separate config options
 * Implement wait and skip actions
-* Think carefuly, how can we extend gemon in the simulation with these new actions?
+* Think carefuly, how can we extend genome in the simulation with these new actions?
 
 ## Future plans
 

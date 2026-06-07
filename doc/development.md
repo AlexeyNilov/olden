@@ -156,6 +156,7 @@ tests/
 * Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
 * Put battle-level state orchestration in `battle.py`.
+* Put combat action vocabulary and action-selection errors in `action_selection.py`.
 * Put melee attack targeting and damage resolution in `attack.py`.
 * Put combat simulation loop orchestration and stop reasons in `combat_simulation.py`.
 * Put round and action-opportunity state in `action_opportunities.py`.

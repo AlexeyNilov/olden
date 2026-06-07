@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
+from olden.combat.action_selection import CombatAction
 from olden.combat.targeting import TargetingPolicy
 from olden.exceptions import ConfigError
 
@@ -18,6 +19,17 @@ DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS = 100
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE = 0.25
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS = max(1, (os.cpu_count() or 1) - 1)
 DEFAULT_COMBAT_TARGETING_POLICY = TargetingPolicy.THREAT_REMOVED
+DEFAULT_COMBAT_ATTACKER_ACTIONS = (
+    CombatAction.STAY_OUT_OF_MELEE_REACH,
+    CombatAction.MELEE_ENGAGE,
+    CombatAction.WAIT,
+    CombatAction.SKIP,
+)
+DEFAULT_COMBAT_DEFENDER_ACTIONS = (
+    CombatAction.MELEE_ENGAGE,
+    CombatAction.WAIT,
+    CombatAction.SKIP,
+)
 
 SUPPORTED_LOG_LEVELS = {
     "DEBUG": logging.DEBUG,
@@ -84,6 +96,14 @@ class Config:
             "COMBAT_TARGETING_POLICY",
             default=DEFAULT_COMBAT_TARGETING_POLICY,
         )
+        self.combat_attacker_actions = self.get_combat_actions_env(
+            "COMBAT_ATTACKER_ACTIONS",
+            default=DEFAULT_COMBAT_ATTACKER_ACTIONS,
+        )
+        self.combat_defender_actions = self.get_combat_actions_env(
+            "COMBAT_DEFENDER_ACTIONS",
+            default=DEFAULT_COMBAT_DEFENDER_ACTIONS,
+        )
 
     def get_required_env(self, key: str) -> str:
         value = os.getenv(key)
@@ -143,6 +163,26 @@ class Config:
         except ValueError as exc:
             supported = ", ".join(policy.value for policy in TargetingPolicy)
             raise ConfigError(f"Unsupported {key} {value!r}; expected one of: {supported}") from exc
+
+    def get_combat_actions_env(self, key: str, *, default: tuple[CombatAction, ...]) -> tuple[CombatAction, ...]:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+        actions: list[CombatAction] = []
+        for raw_action in value.split(","):
+            normalized = raw_action.strip().lower()
+            if not normalized:
+                continue
+            try:
+                action = CombatAction(normalized)
+            except ValueError as exc:
+                supported = ", ".join(action.value for action in CombatAction)
+                raise ConfigError(f"Unsupported {key} action {raw_action!r}; expected one of: {supported}") from exc
+            if action not in actions:
+                actions.append(action)
+        if not actions:
+            raise ConfigError(f"{key} must contain at least one combat action")
+        return tuple(actions)
 
 
 def load_config() -> Config:
