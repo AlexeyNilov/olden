@@ -3,7 +3,9 @@ from pathlib import Path
 
 import pytest
 
+from olden.combat.targeting import TargetingPolicy
 from olden.config import (
+    DEFAULT_COMBAT_TARGETING_POLICY,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE,
@@ -83,6 +85,34 @@ def test_load_config_falls_back_to_demo_replay_paths(monkeypatch, tmp_path):
 
     assert config.replay_battle_initial_state_path == DEMO_BATTLE_INITIAL_STATE_PATH
     assert config.replay_combat_log_path == DEMO_COMBAT_LOG_PATH
+
+
+def test_load_config_reads_combat_targeting_policy_from_dotenv_file(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_TARGETING_POLICY", raising=False)
+    tmp_path.joinpath(".env").write_text("COMBAT_TARGETING_POLICY=nearest_opponent\n", encoding="utf-8")
+
+    config = load_config()
+
+    assert config.combat_targeting_policy is TargetingPolicy.NEAREST_OPPONENT
+
+
+def test_load_config_rejects_unknown_combat_targeting_policy(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_TARGETING_POLICY", raising=False)
+    tmp_path.joinpath(".env").write_text("COMBAT_TARGETING_POLICY=reckless\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="COMBAT_TARGETING_POLICY"):
+        load_config()
+
+
+def test_load_config_falls_back_to_default_combat_targeting_policy(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("COMBAT_TARGETING_POLICY", raising=False)
+
+    config = load_config()
+
+    assert config.combat_targeting_policy is DEFAULT_COMBAT_TARGETING_POLICY
 
 
 def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(monkeypatch, tmp_path):

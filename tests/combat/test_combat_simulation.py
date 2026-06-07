@@ -6,6 +6,7 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
+from olden.combat.targeting import TargetingPolicy
 from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
@@ -112,12 +113,59 @@ def test_combat_simulation_targets_nearest_living_opponent_with_configured_order
         initial_battle,
         stack_ids=("attacker-esquire", "defender-first", "defender-second"),
         damage_chooser=lambda damage: damage.minimum,
+        targeting_policy=TargetingPolicy.NEAREST_OPPONENT,
         max_turns=1,
     )
 
     attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
     assert len(attack_events) == 1
     assert attack_events[0].defender_id == "defender-first"
+
+
+def test_combat_simulation_uses_threat_removed_targeting_by_default():
+    attacker = _stack(
+        "attacker-esquire",
+        CombatSide.ATTACKER,
+        count=10,
+        initiative=9,
+        speed=4,
+        damage=DamageRange(minimum=4, maximum=4),
+    )
+    defender_near = _stack(
+        "defender-near",
+        CombatSide.DEFENDER,
+        count=10,
+        initiative=5,
+        speed=4,
+        damage=DamageRange(minimum=1, maximum=1),
+    )
+    defender_dangerous = _stack(
+        "defender-dangerous",
+        CombatSide.DEFENDER,
+        count=1,
+        initiative=5,
+        speed=4,
+        health=10,
+        damage=DamageRange(minimum=10, maximum=10),
+    )
+    initial_battle = _battle_with_stacks(
+        placements=(
+            (attacker, HexCoord(4, 5)),
+            (defender_near, HexCoord(5, 5)),
+            (defender_dangerous, HexCoord(4, 4)),
+        )
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("attacker-esquire", "defender-near", "defender-dangerous"),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert len(attack_events) == 1
+    assert attack_events[0].defender_id == "defender-dangerous"
 
 
 def test_combat_simulation_allows_each_stack_to_counterattack_once_per_round():
@@ -268,6 +316,10 @@ def _stack(
     count: int,
     initiative: int = 5,
     speed: int = 4,
+    health: int = 12,
+    attack: int = 4,
+    defense: int = 4,
+    damage: DamageRange = DamageRange(minimum=2, maximum=3),
 ) -> UnitStack:
     return UnitStack(
         id=stack_id,
@@ -277,10 +329,10 @@ def _stack(
             initiative=initiative,
             speed=speed,
             combat=UnitCombatStats(
-                health=12,
-                attack=4,
-                defense=4,
-                damage=DamageRange(minimum=2, maximum=3),
+                health=health,
+                attack=attack,
+                defense=defense,
+                damage=damage,
                 attack_category=AttackCategory.MELEE,
             ),
         ),

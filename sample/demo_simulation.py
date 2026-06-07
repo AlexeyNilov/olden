@@ -6,6 +6,7 @@ from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.combat_log import save_combat_log_file
 from olden.combat.combat_simulation import CombatSimulationResult, MovementPath, simulate_combat
 from olden.combat.units import DamageRange
+from olden.config import load_config
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +22,7 @@ def run_demo_simulation(
     combat_log_path: Path = DEFAULT_COMBAT_LOG_PATH,
     seed: int | None = None,
 ) -> CombatSimulationResult:
+    config = load_config()
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
     random_source = random.Random(seed)
     result = simulate_combat(
@@ -28,6 +30,7 @@ def run_demo_simulation(
         stack_ids=(ATTACKER_STACK_ID, ATTACKER_GRIFFIN_STACK_ID, DEFENDER_STACK_ID),
         path_chooser=_path_chooser(random_source),
         damage_chooser=_damage_chooser(random_source),
+        targeting_policy=config.combat_targeting_policy,
     )
     save_combat_log_file(combat_log_path, result.combat_log)
     return result

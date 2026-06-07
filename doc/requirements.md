@@ -142,8 +142,11 @@ This helps ensure requirements are:
 * **When** combat simulation orders unit stacks within a round, **the system shall** act with higher initiative stacks before lower initiative stacks.
 * **When** combat simulation orders unit stacks with equal initiative, **the system shall** use higher speed as the tie-breaker.
 * **When** combat simulation orders unit stacks with equal initiative and speed, **the system shall** preserve configured stack order.
-* **When** combat simulation selects a target for the acting unit stack, **the system shall** target the nearest living opposing stack.
-* **When** multiple living opposing stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
+* **When** combat simulation selects a target for the acting unit stack by default, **the system shall** target the living opposing stack with the highest estimated threat removed by the acting stack's average-damage attack.
+* **When** combat simulation estimates threat removed for target selection, **the system shall** multiply the number of target creatures the acting stack can kill by the target stack's average per-creature damage against the acting stack.
+* **When** combat simulation selects a target with the nearest-opponent policy, **the system shall** target the nearest living opposing stack.
+* **When** combat simulation target selection has equal scores for multiple living opposing stacks, **the system shall** choose the nearest stack.
+* **When** combat simulation target selection has multiple living opposing stacks with equal scores and equal distance, **the system shall** preserve configured stack order.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
 * **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
@@ -153,7 +156,7 @@ This helps ensure requirements are:
 * **When** combat simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
 * **When** one side has no living unit stacks, **the system shall** stop combat simulation.
-* **While** morale, luck, waiting, advanced target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
+* **While** morale, luck, waiting, target selection beyond configured target policy, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
 * **When** the demo combat simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the combat log in the `data` folder.
 
 ### Strategy discovery

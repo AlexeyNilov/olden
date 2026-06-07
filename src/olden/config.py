@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
+from olden.combat.targeting import TargetingPolicy
 from olden.exceptions import ConfigError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -16,6 +17,7 @@ DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS = 20
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS = 100
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE = 0.25
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS = max(1, (os.cpu_count() or 1) - 1)
+DEFAULT_COMBAT_TARGETING_POLICY = TargetingPolicy.THREAT_REMOVED
 
 SUPPORTED_LOG_LEVELS = {
     "DEBUG": logging.DEBUG,
@@ -46,7 +48,7 @@ def load_environment(
 class Config:
     """Configuration sourced from environment variables."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Read settings from the current process environment."""
 
         self.log_level = self.get_log_level("LOG_LEVEL", default=logging.ERROR)
@@ -77,6 +79,10 @@ class Config:
         self.genetic_strategy_discovery_workers = self.get_positive_int_env(
             "GENETIC_STRATEGY_DISCOVERY_WORKERS",
             default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS,
+        )
+        self.combat_targeting_policy = self.get_targeting_policy_env(
+            "COMBAT_TARGETING_POLICY",
+            default=DEFAULT_COMBAT_TARGETING_POLICY,
         )
 
     def get_required_env(self, key: str) -> str:
@@ -126,6 +132,17 @@ class Config:
         if parsed < 0 or parsed > 1:
             raise ConfigError(f"{key} must be between 0 and 1")
         return parsed
+
+    def get_targeting_policy_env(self, key: str, *, default: TargetingPolicy) -> TargetingPolicy:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+        normalized = value.strip().lower()
+        try:
+            return TargetingPolicy(normalized)
+        except ValueError as exc:
+            supported = ", ".join(policy.value for policy in TargetingPolicy)
+            raise ConfigError(f"Unsupported {key} {value!r}; expected one of: {supported}") from exc
 
 
 def load_config() -> Config:

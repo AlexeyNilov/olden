@@ -9,7 +9,7 @@ from olden.combat.combat_actions import apply_melee_attack_action, apply_movemen
 from olden.combat.combat_log import CombatLog
 from olden.combat.engagement import MovementPath as MovementPath
 from olden.combat.engagement import PathChooser, are_adjacent, choose_engagement_path, destination_for_speed
-from olden.combat.targeting import is_defeated, nearest_living_opponent, one_side_defeated
+from olden.combat.targeting import TargetingPolicy, is_defeated, one_side_defeated, select_living_opponent
 from olden.combat.turn_order import order_stacks_for_round
 from olden.combat.units import DamageRange
 
@@ -36,6 +36,7 @@ def simulate_combat(
     damage_chooser: DamageChooser | None = None,
     max_turns: int = 50,
     stack_ids: tuple[str, ...] | None = None,
+    targeting_policy: TargetingPolicy = TargetingPolicy.THREAT_REMOVED,
 ) -> CombatSimulationResult:
     if max_turns < 1:
         msg = "Maximum simulated turns must be positive"
@@ -63,7 +64,7 @@ def simulate_combat(
             if one_side_defeated(battle):
                 return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
-            opponent_id = nearest_living_opponent(battle, actor_id, configured_stack_ids)
+            opponent_id = select_living_opponent(battle, actor_id, configured_stack_ids, targeting_policy)
             if opponent_id is None:
                 return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 

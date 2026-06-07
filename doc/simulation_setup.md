@@ -37,6 +37,7 @@ than seven slots or negative counts.
 Each candidate genome is materialized into a battle, then simulated with:
 
 * fixed stack order from the materialized battle
+* the configured combat targeting policy from `COMBAT_TARGETING_POLICY`
 * `first_path`, which picks the first available shortest engagement path
 * `average_damage`, which uses `(damage_min + damage_max) // 2`
 * `max_turns` of 100 for the stack-split scenario by default
@@ -48,11 +49,12 @@ same seed, and keeps the genetic algorithm from rewarding candidates that only
 won a favorable damage roll.
 
 The current combat simulator still applies normal committed combat rules during
-evaluation: one action opportunity per living stack per round, nearest living
-opponent targeting, movement toward an adjacent engagement hex, attack after
+evaluation: one action opportunity per living stack per round, configured target
+policy selection, movement toward an adjacent engagement hex, attack after
 movement if adjacency is reached, and at most one counterattack per defending
-stack per round. Deferred mechanics such as morale, luck, waiting, advanced
-target selection, and multi-stack battle strategy are not applied.
+stack per round. Deferred mechanics such as morale, luck, waiting, target
+selection beyond configured target policy, and multi-stack battle strategy are
+not applied.
 
 ## Fitness function
 
@@ -136,6 +138,12 @@ Population size, generation count, max turns, mutation rate, and worker count
 can be overridden through configuration. Mutation moves one unit from a
 non-empty slot to another slot. Crossover chooses each slot from one of two
 parents, then repairs the child so the total unit count matches the scenario.
+
+Combat target selection can be overridden with `COMBAT_TARGETING_POLICY`.
+Supported values are `threat_removed` and `nearest_opponent`. The default is
+`threat_removed`, which estimates the threat the acting stack removes by killing
+target creatures with an average-damage attack. `nearest_opponent` preserves the
+older nearest living opponent behavior.
 
 Within a single discovery run, repeated genomes reuse cached deterministic
 evaluations. The best individual is selected by score, with the genome tuple as

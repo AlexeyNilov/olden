@@ -8,6 +8,7 @@ from olden.combat.combat_simulation import CombatSimulationResult, MovementPath,
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
+from olden.combat.targeting import TargetingPolicy
 from olden.combat.units import DamageRange, UnitStack
 
 StackSplitGenome: TypeAlias = tuple[int, ...]
@@ -23,6 +24,7 @@ class StackSplitScenario:
     deployment_slots: tuple[HexCoord, ...]
     generated_attacker_stack_id_prefix: str
     max_turns: int = 100
+    targeting_policy: TargetingPolicy = TargetingPolicy.THREAT_REMOVED
 
     def __post_init__(self) -> None:
         if self.unit_pool_size < 1:
@@ -133,6 +135,7 @@ def evaluate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         path_chooser=first_path,
         damage_chooser=average_damage,
         max_turns=scenario.max_turns,
+        targeting_policy=scenario.targeting_policy,
     )
     return StackSplitEvaluation(
         fitness=_fitness_for_result(scenario, result),
@@ -148,6 +151,7 @@ def simulate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         path_chooser=first_path,
         damage_chooser=average_damage,
         max_turns=scenario.max_turns,
+        targeting_policy=scenario.targeting_policy,
     )
 
 

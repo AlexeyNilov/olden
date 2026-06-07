@@ -6,17 +6,15 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 20: Better targeting
+## Milestone 21: Add more actions
 
-**Status:** Later
+**Status:** Next
 
-* Replace nearest-opponent target selection with explicit combat strategy
-* Proposal: the optimal targeting is removing the most dangerous units from the field; dangerous means potentially applicabale damage; the math should include number of units the current stack can potentialy kill using its average damage; tie breaks could be solved by the nearest stack, and stack with zero counterattack count; in other cases the targeting could be just random;
-
-## Future plans
 
 * Implement staying out of melee range action; Attacker only? How to add it into the genom?
 * Implement wait and skip actions; how to add them into the genom?
+
+## Future plans
 
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
