@@ -3,10 +3,12 @@ import pytest
 from olden.combat.battle_setup import load_battle_initial_state_yaml
 from olden.combat.combat_log import (
     CombatLog,
+    CombatLogReplayState,
     CombatLogValidationError,
     TurnMarker,
     UnitAttackedEvent,
     UnitMovedEvent,
+    apply_combat_log_event,
     dump_combat_log_yaml,
     load_combat_log_file,
     load_combat_log_yaml,
@@ -180,6 +182,23 @@ def test_replay_combat_log_reconstructs_attack_damage_state():
     assert replayed.stack("defender-esquire").wound_damage == executed_battle.stack("defender-esquire").wound_damage
     assert replayed.stack("attacker-esquire").count == executed_battle.stack("attacker-esquire").count
     assert replayed.stack("attacker-esquire").wound_damage == executed_battle.stack("attacker-esquire").wound_damage
+
+
+def test_apply_combat_log_event_mutates_battle_using_shared_replay_state():
+    catalog = load_packaged_unit_catalog()
+    battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    executed_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+    event = combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        executed_battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
+    replay_state = CombatLogReplayState()
+
+    apply_combat_log_event(battle, event, replay_state)
+
+    assert battle.unit_stacks == executed_battle.unit_stacks
+    assert replay_state.counterattacked_stack_ids_by_round == {(1, "defender-esquire")}
 
 
 def test_replay_combat_log_rejects_movement_that_does_not_match_logged_path():

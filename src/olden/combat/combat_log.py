@@ -1,11 +1,11 @@
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-from olden.combat.attack import AttackDamageResult, MeleeAttackResult
+from olden.combat.attack import AttackDamageResult, DamageRange, MeleeAttackResult
 from olden.combat.battle import Battle, MovementResult
 from olden.combat.coordinates import HexCoord
 
@@ -65,6 +65,11 @@ class UnitAttackedEvent:
 
 
 CombatLogEvent = BattleStartedEvent | UnitMovedEvent | UnitAttackedEvent
+
+
+@dataclass(slots=True)
+class CombatLogReplayState:
+    counterattacked_stack_ids_by_round: set[tuple[int, str]] = field(default_factory=set)
 
 
 class CombatLog:
@@ -135,35 +140,41 @@ def dump_combat_log_yaml(combat_log: CombatLog) -> str:
 
 def replay_combat_log(initial_battle: Battle, combat_log: CombatLog) -> Battle:
     battle = initial_battle.copy()
-    counterattacked_stack_ids_by_round: set[tuple[int, str]] = set()
+    replay_state = CombatLogReplayState()
     for event in combat_log.events:
-        if isinstance(event, BattleStartedEvent):
-            continue
-        if isinstance(event, UnitMovedEvent):
-            _replay_unit_moved(battle, event)
-        else:
-            _replay_unit_attacked(battle, event, counterattacked_stack_ids_by_round)
+        apply_combat_log_event(battle, event, replay_state)
     return battle
 
 
-def _replay_unit_moved(battle: Battle, event: UnitMovedEvent) -> None:
+def apply_combat_log_event(battle: Battle, event: CombatLogEvent, replay_state: CombatLogReplayState) -> bool:
+    """Apply one event and return whether it changed battle state."""
+    if isinstance(event, BattleStartedEvent):
+        return False
+    if isinstance(event, UnitMovedEvent):
+        _apply_unit_moved_event(battle, event)
+    else:
+        _apply_unit_attacked_event(battle, event, replay_state)
+    return True
+
+
+def _apply_unit_moved_event(battle: Battle, event: UnitMovedEvent) -> None:
     movement = battle.move_stack(event.stack_id, event.destination)
     if movement.start != event.start or movement.path != event.path:
         msg = f"Combat log movement does not match replayed movement for unit stack: {event.stack_id}"
         raise CombatLogValidationError(msg)
 
 
-def _replay_unit_attacked(
+def _apply_unit_attacked_event(
     battle: Battle,
     event: UnitAttackedEvent,
-    counterattacked_stack_ids_by_round: set[tuple[int, str]],
+    replay_state: CombatLogReplayState,
 ) -> None:
     selected_damages = [event.primary_damage.selected_damage]
     if event.counterattack is not None:
         selected_damages.append(event.counterattack.selected_damage)
     selected_damage_index = 0
 
-    def choose_logged_damage(_: object) -> int:
+    def choose_logged_damage(_: DamageRange) -> int:
         nonlocal selected_damage_index
         if selected_damage_index >= len(selected_damages):
             msg = f"Combat log attack is missing replayed damage for unit stack: {event.attacker_id}"
@@ -177,7 +188,7 @@ def _replay_unit_attacked(
         event.attacker_id,
         event.defender_id,
         choose_logged_damage,
-        allow_counterattack=counterattack_key not in counterattacked_stack_ids_by_round,
+        allow_counterattack=counterattack_key not in replay_state.counterattacked_stack_ids_by_round,
     )
     if _snapshot_damage(attack.primary_damage) != event.primary_damage:
         msg = f"Combat log attack does not match replayed primary damage for unit stack: {event.attacker_id}"
@@ -187,7 +198,7 @@ def _replay_unit_attacked(
         msg = f"Combat log attack does not match replayed counterattack damage for unit stack: {event.attacker_id}"
         raise CombatLogValidationError(msg)
     if attack.counterattack is not None:
-        counterattacked_stack_ids_by_round.add(counterattack_key)
+        replay_state.counterattacked_stack_ids_by_round.add(counterattack_key)
 
 
 def _parse_event(value: object, index: int) -> CombatLogEvent:

@@ -133,3 +133,28 @@ def test_combat_replay_frames_reject_movement_events_that_do_not_replay():
 
     with pytest.raises(CombatLogValidationError, match="movement"):
         build_combat_replay_frames(initial_battle, combat_log)
+
+
+def test_combat_replay_frames_reject_attack_events_that_do_not_replay():
+    initial_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, load_packaged_unit_catalog())
+    executed_battle = initial_battle.copy()
+    combat_log = CombatLog()
+    event = combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        executed_battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
+    combat_log = CombatLog(
+        events=(
+            UnitAttackedEvent(
+                sequence=event.sequence,
+                turn=event.turn,
+                attacker_id=event.attacker_id,
+                defender_id=event.defender_id,
+                primary_damage=event.primary_damage,
+                counterattack=None,
+            ),
+        )
+    )
+
+    with pytest.raises(CombatLogValidationError, match="attack"):
+        build_combat_replay_frames(initial_battle, combat_log)

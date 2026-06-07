@@ -85,6 +85,35 @@ evidence. If later evidence proves large units exist, multi-coordinate
 occupancy will need a new requirements slice, tests, and likely changes to
 movement, adjacency, serialization, and replay.
 
+### 2026-06-07: Treat combat logs as current-development replay artifacts
+
+**Status:** Accepted
+
+**Context:** Combat logs are currently generated and consumed by one local
+developer workflow. Replay and replay-frame generation had duplicated movement
+and attack application logic, and the roadmap raised whether logs should become
+durable historical battle facts or remain tied to current combat rules.
+
+**Decision:** Treat combat logs as current-development replay artifacts generated
+by the current Olden codebase. Do not maintain compatibility with old local log
+files and do not add combat-rule versioning yet. Keep the YAML `schema_version`
+as a file-shape guard only. Centralize combat-log event application in
+`combat_log.py` so full replay and replay-frame generation share movement,
+attack, damage, and counterattack handling.
+
+**Alternatives considered:** Durable authoritative logs were rejected for now
+because they require old-log compatibility, richer event payloads, migrations,
+and combat-rule versioning before combat mechanics have stabilized. Removing
+replay checks entirely was rejected because comparing logged movement and damage
+against replayed outcomes is still a cheap way to catch internal drift between
+simulation recording and replay application.
+
+**Consequences:** Existing local combat logs may fail after intentional schema or
+combat-rule changes and can be regenerated from current samples or strategy
+discovery output. The replay app stays simple: it loads current logs, applies
+events, and fails fast on stale or malformed data instead of providing a rich
+validation workflow.
+
 ### 2026-06-07: Show combat logs beside battlefield replay
 
 **Status:** Accepted
