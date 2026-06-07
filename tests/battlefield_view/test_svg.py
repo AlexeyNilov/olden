@@ -22,7 +22,7 @@ def test_svg_renderer_outputs_one_polygon_per_renderable_hex_and_unit_label():
 
 
 def test_svg_renderer_uses_unit_image_and_count_label_when_definition_image_exists(tmp_path):
-    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    stack = _stack_for_unit("attacker-esquire", "esquire", "Swordsman", 10)
     occupancy = Occupancy()
     occupancy.place(stack.id, HexCoord(4, 5))
     (tmp_path / "esquire.webp").write_bytes(b"image")
@@ -33,12 +33,12 @@ def test_svg_renderer_uses_unit_image_and_count_label_when_definition_image_exis
     assert '<image href="/unit-images/esquire.webp"' in svg
     assert ">10</text>" in svg
     assert "Swordsman 10" not in svg
-    assert 'class="unit-side player"' in svg
-    assert ">P</text>" in svg
+    assert 'class="unit-side attacker"' in svg
+    assert ">A</text>" in svg
 
 
 def test_svg_renderer_sizes_unit_image_to_fill_the_hex_bounds(tmp_path):
-    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    stack = _stack_for_unit("attacker-esquire", "esquire", "Swordsman", 10)
     occupancy = Occupancy()
     occupancy.place(stack.id, HexCoord(4, 5))
     (tmp_path / "esquire.webp").write_bytes(b"image")
@@ -58,7 +58,7 @@ def test_svg_renderer_sizes_unit_image_to_fill_the_hex_bounds(tmp_path):
 
 
 def test_svg_renderer_places_unit_image_count_near_the_bottom_of_the_hex(tmp_path):
-    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    stack = _stack_for_unit("attacker-esquire", "esquire", "Swordsman", 10)
     occupancy = Occupancy()
     occupancy.place(stack.id, HexCoord(4, 5))
     (tmp_path / "esquire.webp").write_bytes(b"image")
@@ -72,7 +72,7 @@ def test_svg_renderer_places_unit_image_count_near_the_bottom_of_the_hex(tmp_pat
 
 
 def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is_missing(tmp_path):
-    stack = _stack_for_unit("player-esquire", "esquire", "Swordsman", 10)
+    stack = _stack_for_unit("attacker-esquire", "esquire", "Swordsman", 10)
     occupancy = Occupancy()
     occupancy.place(stack.id, HexCoord(4, 5))
     view = build_battlefield_view(Battlefield.default(), occupancy, unit_stacks={stack.id: stack})
@@ -81,12 +81,12 @@ def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is
 
     assert "<image " not in svg
     assert "Swordsman 10" in svg
-    assert 'class="unit-side player"' in svg
+    assert 'class="unit-side attacker"' in svg
 
 
-def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
+def test_svg_renderer_marks_defender_unit_stacks_with_defender_side_badge(tmp_path):
     stack = UnitStack(
-        id="enemy-esquire",
+        id="defender-esquire",
         definition=UnitDefinition(
             id="esquire",
             name="Swordsman",
@@ -94,7 +94,7 @@ def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
             speed=4,
             combat=_combat_stats(),
         ),
-        side=CombatSide.ENEMY,
+        side=CombatSide.DEFENDER,
         count=20,
     )
     occupancy = Occupancy()
@@ -103,8 +103,8 @@ def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
 
     svg = render_battlefield_svg(view, unit_image_directory=tmp_path)
 
-    assert 'class="unit-side enemy"' in svg
-    assert ">E</text>" in svg
+    assert 'class="unit-side defender"' in svg
+    assert ">D</text>" in svg
 
 
 def test_register_unit_image_static_files_uses_local_image_directory(tmp_path):
@@ -123,7 +123,7 @@ def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitS
         speed=4,
         combat=_combat_stats(),
     )
-    return UnitStack(id=stack_id, definition=definition, side=CombatSide.PLAYER, count=count)
+    return UnitStack(id=stack_id, definition=definition, side=CombatSide.ATTACKER, count=count)
 
 
 def _combat_stats() -> UnitCombatStats:

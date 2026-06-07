@@ -6,7 +6,7 @@ events:
   type: unit_moved
   round: 1
   turn: 1
-  stack_id: player-griffin
+  stack_id: attacker-griffin
   start:
     column: 0
     row: 8
@@ -30,7 +30,7 @@ events:
   type: unit_moved
   round: 1
   turn: 2
-  stack_id: player-esquire
+  stack_id: attacker-esquire
   start:
     column: 0
     row: 9
@@ -52,7 +52,7 @@ events:
   type: unit_moved
   round: 1
   turn: 3
-  stack_id: enemy-esquire
+  stack_id: defender-esquire
   start:
     column: 12
     row: 5
@@ -74,7 +74,7 @@ events:
   type: unit_moved
   round: 2
   turn: 1
-  stack_id: player-griffin
+  stack_id: attacker-griffin
   start:
     column: 5
     row: 8
@@ -94,7 +94,7 @@ events:
   type: unit_moved
   round: 2
   turn: 2
-  stack_id: player-esquire
+  stack_id: attacker-esquire
   start:
     column: 4
     row: 9
@@ -116,8 +116,8 @@ events:
   type: unit_attacked
   round: 2
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-griffin
+  attacker_id: defender-esquire
+  defender_id: attacker-griffin
   primary_damage:
     selected_damage: 2
     final_damage: 36
@@ -138,8 +138,8 @@ events:
   type: unit_attacked
   round: 3
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 6
     final_damage: 27
@@ -160,7 +160,7 @@ events:
   type: unit_moved
   round: 3
   turn: 2
-  stack_id: player-esquire
+  stack_id: attacker-esquire
   start:
     column: 6
     row: 6
@@ -176,8 +176,8 @@ events:
   type: unit_attacked
   round: 3
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-esquire
+  attacker_id: defender-esquire
+  defender_id: attacker-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 32
@@ -198,8 +198,8 @@ events:
   type: unit_attacked
   round: 4
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 9
     final_damage: 30
@@ -220,8 +220,8 @@ events:
   type: unit_attacked
   round: 4
   turn: 2
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
+  attacker_id: attacker-esquire
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 3
     final_damage: 24
@@ -234,8 +234,8 @@ events:
   type: unit_attacked
   round: 4
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-esquire
+  attacker_id: defender-esquire
+  defender_id: attacker-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 22
@@ -256,8 +256,8 @@ events:
   type: unit_attacked
   round: 5
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 8
     final_damage: 18
@@ -278,8 +278,8 @@ events:
   type: unit_attacked
   round: 5
   turn: 2
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
+  attacker_id: attacker-esquire
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 12
@@ -292,8 +292,8 @@ events:
   type: unit_attacked
   round: 5
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-esquire
+  attacker_id: defender-esquire
+  defender_id: attacker-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 14
@@ -314,8 +314,8 @@ events:
   type: unit_attacked
   round: 6
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 8
     final_damage: 9
@@ -336,8 +336,8 @@ events:
   type: unit_attacked
   round: 6
   turn: 2
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
+  attacker_id: attacker-esquire
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 10
@@ -350,8 +350,8 @@ events:
   type: unit_attacked
   round: 6
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-esquire
+  attacker_id: defender-esquire
+  defender_id: attacker-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 10
@@ -372,8 +372,8 @@ events:
   type: unit_attacked
   round: 7
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 8
     final_damage: 9
@@ -394,8 +394,8 @@ events:
   type: unit_attacked
   round: 7
   turn: 2
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
+  attacker_id: attacker-esquire
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 3
     final_damage: 12
@@ -408,8 +408,8 @@ events:
   type: unit_attacked
   round: 7
   turn: 3
-  attacker_id: enemy-esquire
-  defender_id: player-esquire
+  attacker_id: defender-esquire
+  defender_id: attacker-esquire
   primary_damage:
     selected_damage: 3
     final_damage: 6
@@ -430,8 +430,8 @@ events:
   type: unit_attacked
   round: 8
   turn: 1
-  attacker_id: player-griffin
-  defender_id: enemy-esquire
+  attacker_id: attacker-griffin
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 6
     final_damage: 6
@@ -452,8 +452,8 @@ events:
   type: unit_attacked
   round: 8
   turn: 2
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
+  attacker_id: attacker-esquire
+  defender_id: defender-esquire
   primary_damage:
     selected_damage: 3
     final_damage: 9

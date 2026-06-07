@@ -17,11 +17,11 @@ StackSplitEvaluationCache: TypeAlias = dict[StackSplitGenome, "StackSplitEvaluat
 @dataclass(frozen=True, slots=True)
 class StackSplitScenario:
     base_battle: Battle
-    player_pool_stack_id: str
+    attacker_pool_stack_id: str
     unit_pool_size: int
     max_slots: int
     deployment_slots: tuple[HexCoord, ...]
-    generated_player_stack_id_prefix: str
+    generated_attacker_stack_id_prefix: str
     max_turns: int = 100
 
     def __post_init__(self) -> None:
@@ -37,10 +37,10 @@ class StackSplitScenario:
         if self.max_turns < 1:
             msg = "Maximum simulated turns must be positive"
             raise ValueError(msg)
-        if not self.generated_player_stack_id_prefix:
-            msg = "Generated player stack ID prefix must be non-empty"
+        if not self.generated_attacker_stack_id_prefix:
+            msg = "Generated attacker stack ID prefix must be non-empty"
             raise ValueError(msg)
-        self.base_battle.stack(self.player_pool_stack_id)
+        self.base_battle.stack(self.attacker_pool_stack_id)
         for slot in self.deployment_slots:
             self.base_battle.battlefield.require_valid(slot)
 
@@ -48,9 +48,9 @@ class StackSplitScenario:
 @dataclass(frozen=True, slots=True)
 class StackSplitFitness:
     score: int
-    player_surviving_units: int
-    player_surviving_health: int
-    enemy_units_killed: int
+    attacker_surviving_units: int
+    attacker_surviving_health: int
+    defender_units_killed: int
     turns_taken: int
 
 
@@ -90,25 +90,25 @@ def validate_stack_split(genome: StackSplitGenome, unit_pool_size: int, max_slot
 def materialize_stack_split_battle(scenario: StackSplitScenario, genome: StackSplitGenome) -> Battle:
     validate_stack_split(genome, unit_pool_size=scenario.unit_pool_size, max_slots=scenario.max_slots)
     normalized_genome = _normalize_genome(genome, scenario.max_slots)
-    player_pool_stack = scenario.base_battle.stack(scenario.player_pool_stack_id)
+    attacker_pool_stack = scenario.base_battle.stack(scenario.attacker_pool_stack_id)
     occupancy = Occupancy(blocked_coordinates=scenario.base_battle.battlefield.blocked_coordinates)
     unit_stacks: dict[str, UnitStack] = {}
 
     for index, count in enumerate(normalized_genome, start=1):
         if count == 0:
             continue
-        stack_id = f"{scenario.generated_player_stack_id_prefix}-{index}"
+        stack_id = f"{scenario.generated_attacker_stack_id_prefix}-{index}"
         stack = UnitStack(
             id=stack_id,
-            definition=player_pool_stack.definition,
-            side=player_pool_stack.side,
+            definition=attacker_pool_stack.definition,
+            side=attacker_pool_stack.side,
             count=count,
         )
         occupancy.place(stack_id, scenario.deployment_slots[index - 1])
         unit_stacks[stack_id] = stack
 
     for stack_id, stack in scenario.base_battle.unit_stacks.items():
-        if stack_id == scenario.player_pool_stack_id:
+        if stack_id == scenario.attacker_pool_stack_id:
             continue
         unit_stacks[stack_id] = stack
         coord = scenario.base_battle.occupancy.coordinate_for(stack_id)
@@ -230,17 +230,22 @@ def first_path(paths: tuple[MovementPath, ...]) -> MovementPath:
 
 
 def _fitness_for_result(scenario: StackSplitScenario, result: CombatSimulationResult) -> StackSplitFitness:
-    player_side = scenario.base_battle.stack(scenario.player_pool_stack_id).side
-    initial_enemy_count = _side_unit_count(scenario.base_battle, side_to_exclude=player_side)
-    player_surviving_units = _side_unit_count(result.battle, side=player_side)
-    player_surviving_health = _side_remaining_health(result.battle, player_side)
-    enemy_units_killed = initial_enemy_count - _side_unit_count(result.battle, side_to_exclude=player_side)
-    score = player_surviving_units * 1_000_000 + player_surviving_health * 1_000 + enemy_units_killed * 100 - result.turns_taken
+    attacker_side = scenario.base_battle.stack(scenario.attacker_pool_stack_id).side
+    initial_defender_count = _side_unit_count(scenario.base_battle, side_to_exclude=attacker_side)
+    attacker_surviving_units = _side_unit_count(result.battle, side=attacker_side)
+    attacker_surviving_health = _side_remaining_health(result.battle, attacker_side)
+    defender_units_killed = initial_defender_count - _side_unit_count(result.battle, side_to_exclude=attacker_side)
+    score = (
+        attacker_surviving_units * 1_000_000
+        + attacker_surviving_health * 1_000
+        + defender_units_killed * 100
+        - result.turns_taken
+    )
     return StackSplitFitness(
         score=score,
-        player_surviving_units=player_surviving_units,
-        player_surviving_health=player_surviving_health,
-        enemy_units_killed=enemy_units_killed,
+        attacker_surviving_units=attacker_surviving_units,
+        attacker_surviving_health=attacker_surviving_health,
+        defender_units_killed=defender_units_killed,
         turns_taken=result.turns_taken,
     )
 

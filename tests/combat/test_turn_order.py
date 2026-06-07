@@ -65,6 +65,6 @@ def _stack(stack_id: str, initiative: int, speed: int) -> UnitStack:
                 attack_category=AttackCategory.MELEE,
             ),
         ),
-        side=CombatSide.PLAYER,
+        side=CombatSide.ATTACKER,
         count=10,
     )

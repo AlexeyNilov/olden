@@ -13,9 +13,9 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
@@ -26,9 +26,9 @@ unit_stacks:
 def test_battlefield_view_exposes_deployment_zone_state_for_each_renderable_hex():
     view = build_battlefield_view(Battlefield.default(), Occupancy())
 
-    assert view.hex_at(HexCoord(0, 4)).deployment_side is CombatSide.PLAYER
+    assert view.hex_at(HexCoord(0, 4)).deployment_side is CombatSide.ATTACKER
     assert view.hex_at(HexCoord(5, 4)).deployment_side is None
-    assert view.hex_at(HexCoord(11, 4)).deployment_side is CombatSide.ENEMY
+    assert view.hex_at(HexCoord(11, 4)).deployment_side is CombatSide.DEFENDER
 
 
 def test_battlefield_view_exposes_blocked_state_for_obstacle_coordinates():
@@ -51,7 +51,7 @@ def test_battlefield_view_exposes_occupying_unit_identity_and_optional_stack_met
             speed=4,
             combat=_combat_stats(),
         ),
-        side=CombatSide.PLAYER,
+        side=CombatSide.ATTACKER,
         count=12,
     )
     occupancy = Occupancy()
@@ -79,8 +79,8 @@ def test_battlefield_view_can_render_loaded_battle_state():
     view = build_battlefield_view_for_battle(battle)
 
     renderable_hex = view.hex_at(HexCoord(0, 5))
-    assert renderable_hex.occupant_id == "player-esquire"
-    assert renderable_hex.unit_stack == battle.unit_stacks["player-esquire"]
+    assert renderable_hex.occupant_id == "attacker-esquire"
+    assert renderable_hex.unit_stack == battle.unit_stacks["attacker-esquire"]
 
 
 def _combat_stats() -> UnitCombatStats:

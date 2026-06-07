@@ -52,10 +52,10 @@ def _polygon(hex_data: RenderableHex) -> str:
 
 def _hex_classes(hex_data: RenderableHex) -> str:
     classes = ["hex"]
-    if hex_data.deployment_side is CombatSide.PLAYER:
-        classes.append("player")
-    if hex_data.deployment_side is CombatSide.ENEMY:
-        classes.append("enemy")
+    if hex_data.deployment_side is CombatSide.ATTACKER:
+        classes.append("attacker")
+    if hex_data.deployment_side is CombatSide.DEFENDER:
+        classes.append("defender")
     if hex_data.is_blocked:
         classes.append("blocked")
     if hex_data.occupant_id is not None:
@@ -70,9 +70,9 @@ def _points(hex_data: RenderableHex) -> str:
 def _hex_fill(hex_data: RenderableHex) -> str:
     if hex_data.is_blocked:
         return "#3a3a34"
-    if hex_data.deployment_side is CombatSide.PLAYER:
+    if hex_data.deployment_side is CombatSide.ATTACKER:
         return "#3f6fa8"
-    if hex_data.deployment_side is CombatSide.ENEMY:
+    if hex_data.deployment_side is CombatSide.DEFENDER:
         return "#9a4f46"
     return "#556b3d"
 
@@ -145,7 +145,7 @@ def _unit_side_badge(hex_data: RenderableHex) -> str:
     center_x = bounds.min_x + radius + 3
     center_y = bounds.min_y + radius + 3
     side = hex_data.unit_stack.side
-    marker = "P" if side is CombatSide.PLAYER else "E"
+    marker = "A" if side is CombatSide.ATTACKER else "D"
     return (
         f'<circle class="unit-side {side.value}" cx="{center_x:.2f}" cy="{center_y:.2f}" r="{radius}" '
         f'fill="{_unit_side_fill(side)}" stroke="#111111" stroke-width="2" />'
@@ -156,7 +156,7 @@ def _unit_side_badge(hex_data: RenderableHex) -> str:
 
 
 def _unit_side_fill(side: CombatSide) -> str:
-    if side is CombatSide.PLAYER:
+    if side is CombatSide.ATTACKER:
         return "#2f80d0"
     return "#c6534a"
 

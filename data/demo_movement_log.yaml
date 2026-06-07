@@ -6,7 +6,7 @@ events:
   type: unit_moved
   round: 1
   turn: 1
-  stack_id: player-esquire
+  stack_id: attacker-esquire
   start:
     column: 0
     row: 9
@@ -28,7 +28,7 @@ events:
   type: unit_moved
   round: 1
   turn: 2
-  stack_id: enemy-esquire
+  stack_id: defender-esquire
   start:
     column: 12
     row: 5
@@ -50,7 +50,7 @@ events:
   type: unit_moved
   round: 2
   turn: 1
-  stack_id: player-esquire
+  stack_id: attacker-esquire
   start:
     column: 4
     row: 9
@@ -72,7 +72,7 @@ events:
   type: unit_moved
   round: 2
   turn: 2
-  stack_id: enemy-esquire
+  stack_id: defender-esquire
   start:
     column: 8
     row: 5

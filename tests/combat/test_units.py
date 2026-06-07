@@ -67,14 +67,14 @@ def test_unit_stack_exposes_side_definition_and_count():
     stack = UnitStack(
         id="temple-frontline",
         definition=swordsman,
-        side=CombatSide.PLAYER,
+        side=CombatSide.ATTACKER,
         count=25,
         wound_damage=3,
     )
 
     assert stack.id == "temple-frontline"
     assert stack.definition is swordsman
-    assert stack.side is CombatSide.PLAYER
+    assert stack.side is CombatSide.ATTACKER
     assert stack.count == 25
     assert stack.wound_damage == 3
 
@@ -92,7 +92,7 @@ def test_unit_stack_rejects_non_positive_count():
         UnitStack(
             id="temple-frontline",
             definition=swordsman,
-            side=CombatSide.PLAYER,
+            side=CombatSide.ATTACKER,
             count=0,
         )
 
@@ -110,7 +110,7 @@ def test_unit_stack_rejects_wound_damage_outside_current_creature_health():
         UnitStack(
             id="temple-frontline",
             definition=swordsman,
-            side=CombatSide.PLAYER,
+            side=CombatSide.ATTACKER,
             count=25,
             wound_damage=-1,
         )
@@ -118,7 +118,7 @@ def test_unit_stack_rejects_wound_damage_outside_current_creature_health():
         UnitStack(
             id="temple-frontline",
             definition=swordsman,
-            side=CombatSide.PLAYER,
+            side=CombatSide.ATTACKER,
             count=25,
             wound_damage=swordsman.combat.health,
         )

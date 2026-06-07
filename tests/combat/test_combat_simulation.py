@@ -11,16 +11,16 @@ from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, Uni
 
 def test_combat_simulation_moves_until_adjacent_then_logs_melee_attacks():
     initial_battle = _battle(
-        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),
-        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=20),
-        player_anchor=HexCoord(0, 9),
-        enemy_anchor=HexCoord(12, 5),
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 9),
+        defender_anchor=HexCoord(12, 5),
     )
 
     result = simulate_combat(
         initial_battle,
-        first_stack_id="player-esquire",
-        second_stack_id="enemy-esquire",
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
         path_chooser=lambda paths: paths[0],
         damage_chooser=lambda damage: damage.minimum,
     )
@@ -32,21 +32,21 @@ def test_combat_simulation_moves_until_adjacent_then_logs_melee_attacks():
     assert attack_events
     assert movement_events[-1].sequence < attack_events[0].sequence
     assert attack_events[0].attacker_id == movement_events[-1].stack_id
-    assert "player-esquire" not in result.battle.unit_stacks or "enemy-esquire" not in result.battle.unit_stacks
+    assert "attacker-esquire" not in result.battle.unit_stacks or "defender-esquire" not in result.battle.unit_stacks
 
 
 def test_combat_simulation_attacks_after_moving_into_reach_in_same_turn():
     initial_battle = _battle(
-        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10, speed=4),
-        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=20),
-        player_anchor=HexCoord(0, 5),
-        enemy_anchor=HexCoord(5, 5),
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10, speed=4),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 5),
+        defender_anchor=HexCoord(5, 5),
     )
 
     result = simulate_combat(
         initial_battle,
-        first_stack_id="player-esquire",
-        second_stack_id="enemy-esquire",
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
         path_chooser=lambda paths: next(path for path in paths if path[-1] == HexCoord(4, 5)),
         damage_chooser=lambda damage: damage.minimum,
         max_turns=1,
@@ -61,26 +61,26 @@ def test_combat_simulation_attacks_after_moving_into_reach_in_same_turn():
     assert movement_events[0].sequence < attack_events[0].sequence
     assert movement_events[0].turn == attack_events[0].turn
     assert movement_events[0].destination == HexCoord(4, 5)
-    assert attack_events[0].attacker_id == "player-esquire"
-    assert attack_events[0].defender_id == "enemy-esquire"
+    assert attack_events[0].attacker_id == "attacker-esquire"
+    assert attack_events[0].defender_id == "defender-esquire"
     assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
 def test_combat_simulation_uses_initiative_order_with_multiple_stacks():
-    player_esquire = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=5, speed=4)
-    player_griffin = _stack("player-griffin", CombatSide.PLAYER, count=5, initiative=9, speed=5)
-    enemy_esquire = _stack("enemy-esquire", CombatSide.ENEMY, count=20, initiative=5, speed=4)
+    attacker_esquire = _stack("attacker-esquire", CombatSide.ATTACKER, count=10, initiative=5, speed=4)
+    attacker_griffin = _stack("attacker-griffin", CombatSide.ATTACKER, count=5, initiative=9, speed=5)
+    defender_esquire = _stack("defender-esquire", CombatSide.DEFENDER, count=20, initiative=5, speed=4)
     initial_battle = _battle_with_stacks(
         placements=(
-            (player_esquire, HexCoord(0, 9)),
-            (player_griffin, HexCoord(11, 5)),
-            (enemy_esquire, HexCoord(12, 5)),
+            (attacker_esquire, HexCoord(0, 9)),
+            (attacker_griffin, HexCoord(11, 5)),
+            (defender_esquire, HexCoord(12, 5)),
         )
     )
 
     result = simulate_combat(
         initial_battle,
-        stack_ids=("player-esquire", "player-griffin", "enemy-esquire"),
+        stack_ids=("attacker-esquire", "attacker-griffin", "defender-esquire"),
         path_chooser=lambda paths: paths[0],
         damage_chooser=lambda damage: damage.minimum,
         max_turns=1,
@@ -90,78 +90,78 @@ def test_combat_simulation_uses_initiative_order_with_multiple_stacks():
     assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
     assert result.turns_taken == 1
     assert len(attack_events) == 1
-    assert attack_events[0].attacker_id == "player-griffin"
-    assert attack_events[0].defender_id == "enemy-esquire"
+    assert attack_events[0].attacker_id == "attacker-griffin"
+    assert attack_events[0].defender_id == "defender-esquire"
     assert attack_events[0].turn.round_number == 1
     assert attack_events[0].turn.turn_number == 1
 
 
-def test_combat_simulation_targets_nearest_living_enemy_with_configured_order_tie_break():
-    player = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=9, speed=4)
-    enemy_first = _stack("enemy-first", CombatSide.ENEMY, count=20, initiative=5, speed=4)
-    enemy_second = _stack("enemy-second", CombatSide.ENEMY, count=20, initiative=5, speed=4)
+def test_combat_simulation_targets_nearest_living_opponent_with_configured_order_tie_break():
+    attacker = _stack("attacker-esquire", CombatSide.ATTACKER, count=10, initiative=9, speed=4)
+    defender_first = _stack("defender-first", CombatSide.DEFENDER, count=20, initiative=5, speed=4)
+    defender_second = _stack("defender-second", CombatSide.DEFENDER, count=20, initiative=5, speed=4)
     initial_battle = _battle_with_stacks(
         placements=(
-            (player, HexCoord(4, 5)),
-            (enemy_first, HexCoord(5, 5)),
-            (enemy_second, HexCoord(4, 4)),
+            (attacker, HexCoord(4, 5)),
+            (defender_first, HexCoord(5, 5)),
+            (defender_second, HexCoord(4, 4)),
         )
     )
 
     result = simulate_combat(
         initial_battle,
-        stack_ids=("player-esquire", "enemy-first", "enemy-second"),
+        stack_ids=("attacker-esquire", "defender-first", "defender-second"),
         damage_chooser=lambda damage: damage.minimum,
         max_turns=1,
     )
 
     attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
     assert len(attack_events) == 1
-    assert attack_events[0].defender_id == "enemy-first"
+    assert attack_events[0].defender_id == "defender-first"
 
 
 def test_combat_simulation_allows_each_stack_to_counterattack_once_per_round():
-    player_griffin = _stack("player-griffin", CombatSide.PLAYER, count=5, initiative=9, speed=5)
-    player_esquire = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=5, speed=4)
-    enemy_esquire = _stack("enemy-esquire", CombatSide.ENEMY, count=20, initiative=1, speed=4)
+    attacker_griffin = _stack("attacker-griffin", CombatSide.ATTACKER, count=5, initiative=9, speed=5)
+    attacker_esquire = _stack("attacker-esquire", CombatSide.ATTACKER, count=10, initiative=5, speed=4)
+    defender_esquire = _stack("defender-esquire", CombatSide.DEFENDER, count=20, initiative=1, speed=4)
     initial_battle = _battle_with_stacks(
         placements=(
-            (player_griffin, HexCoord(4, 5)),
-            (player_esquire, HexCoord(5, 4)),
-            (enemy_esquire, HexCoord(5, 5)),
+            (attacker_griffin, HexCoord(4, 5)),
+            (attacker_esquire, HexCoord(5, 4)),
+            (defender_esquire, HexCoord(5, 5)),
         )
     )
 
     result = simulate_combat(
         initial_battle,
-        stack_ids=("player-griffin", "player-esquire", "enemy-esquire"),
+        stack_ids=("attacker-griffin", "attacker-esquire", "defender-esquire"),
         damage_chooser=lambda damage: damage.minimum,
         max_turns=2,
     )
 
     attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
     assert len(attack_events) == 2
-    assert attack_events[0].attacker_id == "player-griffin"
-    assert attack_events[0].defender_id == "enemy-esquire"
+    assert attack_events[0].attacker_id == "attacker-griffin"
+    assert attack_events[0].defender_id == "defender-esquire"
     assert attack_events[0].counterattack is not None
-    assert attack_events[1].attacker_id == "player-esquire"
-    assert attack_events[1].defender_id == "enemy-esquire"
+    assert attack_events[1].attacker_id == "attacker-esquire"
+    assert attack_events[1].defender_id == "defender-esquire"
     assert attack_events[1].counterattack is None
     assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
 def test_combat_simulation_stops_after_first_attack_when_defender_is_defeated():
     initial_battle = _battle(
-        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),
-        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=1),
-        player_anchor=HexCoord(0, 0),
-        enemy_anchor=HexCoord(1, 0),
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=1),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
     )
 
     result = simulate_combat(
         initial_battle,
-        first_stack_id="player-esquire",
-        second_stack_id="enemy-esquire",
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
         damage_chooser=lambda damage: damage.minimum,
     )
 
@@ -169,37 +169,37 @@ def test_combat_simulation_stops_after_first_attack_when_defender_is_defeated():
     assert result.stop_reason is CombatSimulationStopReason.STACK_DEFEATED
     assert result.turns_taken == 1
     assert len(attack_events) == 1
-    assert "enemy-esquire" not in result.battle.unit_stacks
+    assert "defender-esquire" not in result.battle.unit_stacks
 
 
 def test_combat_simulation_does_not_mutate_initial_battle_and_log_replays_to_final_state():
     initial_battle = _battle(
-        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),
-        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=1),
-        player_anchor=HexCoord(0, 0),
-        enemy_anchor=HexCoord(1, 0),
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=1),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
     )
 
     result = simulate_combat(
         initial_battle,
-        first_stack_id="player-esquire",
-        second_stack_id="enemy-esquire",
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
         damage_chooser=lambda damage: damage.minimum,
     )
     replayed = replay_combat_log(initial_battle, result.combat_log)
 
-    assert "enemy-esquire" in initial_battle.unit_stacks
-    assert "enemy-esquire" not in replayed.unit_stacks
+    assert "defender-esquire" in initial_battle.unit_stacks
+    assert "defender-esquire" not in replayed.unit_stacks
     assert replayed.unit_stacks == result.battle.unit_stacks
     assert replayed.occupancy.unit_at(HexCoord(1, 0)) is None
 
 
 def test_combat_simulation_stops_when_no_engagement_path_is_reachable():
     initial_battle = _battle(
-        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),
-        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=20),
-        player_anchor=HexCoord(0, 0),
-        enemy_anchor=HexCoord(6, 5),
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(6, 5),
         obstacles=(
             HexCoord(5, 5),
             HexCoord(7, 5),
@@ -212,8 +212,8 @@ def test_combat_simulation_stops_when_no_engagement_path_is_reachable():
 
     result = simulate_combat(
         initial_battle,
-        first_stack_id="player-esquire",
-        second_stack_id="enemy-esquire",
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
         damage_chooser=lambda damage: damage.minimum,
     )
 
@@ -222,10 +222,10 @@ def test_combat_simulation_stops_when_no_engagement_path_is_reachable():
 
 
 def _battle(
-    player_stack: UnitStack,
-    enemy_stack: UnitStack,
-    player_anchor: HexCoord,
-    enemy_anchor: HexCoord,
+    attacker_stack: UnitStack,
+    defender_stack: UnitStack,
+    attacker_anchor: HexCoord,
+    defender_anchor: HexCoord,
     obstacles: tuple[HexCoord, ...] = (),
 ) -> Battle:
     battlefield = Battlefield.default(
@@ -234,12 +234,12 @@ def _battle(
         )
     )
     occupancy = Occupancy(blocked_coordinates=battlefield.blocked_coordinates)
-    occupancy.place(player_stack.id, player_anchor)
-    occupancy.place(enemy_stack.id, enemy_anchor)
+    occupancy.place(attacker_stack.id, attacker_anchor)
+    occupancy.place(defender_stack.id, defender_anchor)
     return Battle(
         battlefield=battlefield,
         occupancy=occupancy,
-        unit_stacks={player_stack.id: player_stack, enemy_stack.id: enemy_stack},
+        unit_stacks={attacker_stack.id: attacker_stack, defender_stack.id: defender_stack},
     )
 
 

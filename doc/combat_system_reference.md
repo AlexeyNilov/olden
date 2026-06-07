@@ -64,8 +64,7 @@ Planning implications:
 
 * Unit definitions need both initiative and speed eventually, but Milestone 2
   only needs speed per the roadmap.
-* A future turn-order model will need battle role concepts such as attacker and
-  defender, not only player and enemy.
+* A future turn-order model will need attacker and defender battle roles.
 * Army-slot order is a separate input from battlefield placement.
 * Tie-breaking should be delayed until turn-order work; do not bake it into the
   Unit model.
@@ -73,7 +72,6 @@ Planning implications:
 Open questions:
 
 * Is the observed odd/even round tie-breaker stable game behavior?
-* How should attacker/defender relate to player/enemy for manual simulations?
 * Does waiting affect only the current round or also later initiative ordering?
 
 ## Waiting and skipping
@@ -94,7 +92,7 @@ Planning implications:
 
 The page identifies three basic attack categories:
 
-* Melee attacks target adjacent enemy units and usually provoke counterattacks.
+* Melee attacks target adjacent opposing units and usually provoke counterattacks.
 * Long-reach attacks target enemies exactly one hex away and do not provoke
   counterattacks.
 * Ranged attacks can target enemies across the battlefield, but adjacent enemies
@@ -199,7 +197,7 @@ Planning implications:
 * Creature types constrain morale ranges.
 * Mixed-faction armies affect morale: a single-faction army gains morale, while
   each additional faction reduces morale.
-* Extra morale bonuses can still matter when counteracting enemy morale
+* Extra morale bonuses can still matter when counteracting opposing morale
   penalties, even if the effective creature range is capped.
 
 Planning implications:

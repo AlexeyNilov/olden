@@ -10,23 +10,23 @@ battlefield:
         - column: 2
           row: 6
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 9
-  - id: player-griffin
+  - id: attacker-griffin
     unit_id: griffin
-    side: player
+    side: attacker
     count: 5
     anchor:
       column: 0
       row: 8
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 12

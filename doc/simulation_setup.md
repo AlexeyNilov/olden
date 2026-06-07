@@ -10,15 +10,15 @@ canonical owner for committed testable behavior.
 `sample/genetic_strategy_discovery.py` loads `data/genetic_battle.yaml` and uses
 the packaged unit catalog. The current sample battle is:
 
-* player: 15 Swordsmen from stack `player-esquire`
-* enemy: 20 Swordsmen from stack `enemy-esquire`
+* attacker: 15 Swordsmen from stack `attacker-esquire`
+* defender: 20 Swordsmen from stack `defender-esquire`
 * battlefield: no obstacles
 
-The sample searches only for the player's initial stack split. It does not
+The sample searches only for the attacker's initial stack split. It does not
 search for turn-level tactics, target choices, spell use, morale handling, luck
 handling, or other battle strategy.
 
-The player unit pool is assigned to seven fixed deployment slots:
+The attacker unit pool is assigned to seven fixed deployment slots:
 
 * `HexCoord(0, 9)`
 * `HexCoord(0, 8)`
@@ -29,8 +29,8 @@ The player unit pool is assigned to seven fixed deployment slots:
 * `HexCoord(0, 3)`
 
 Each genome position maps to one deployment slot. A zero value leaves that slot
-empty. A positive value creates one generated player stack with that many units.
-The genome must assign exactly the full player unit pool and cannot contain more
+empty. A positive value creates one generated attacker stack with that many units.
+The genome must assign exactly the full attacker unit pool and cannot contain more
 than seven slots or negative counts.
 
 ## Evaluation
@@ -50,7 +50,7 @@ won a favorable damage roll.
 
 The current combat simulator still applies normal committed combat rules during
 evaluation: one action opportunity per living stack per round, nearest living
-enemy targeting, movement toward an adjacent engagement hex, attack after
+opponent targeting, movement toward an adjacent engagement hex, attack after
 movement if adjacency is reached, and at most one counterattack per defending
 stack per round. Deferred mechanics such as morale, luck, waiting, advanced
 target selection, and multi-stack battle strategy are not applied.
@@ -61,19 +61,19 @@ The current stack-split fitness score is:
 
 ```text
 score =
-    player_surviving_units * 1_000_000
-  + player_surviving_health * 1_000
-  + enemy_units_killed * 100
+    attacker_surviving_units * 1_000_000
+  + attacker_surviving_health * 1_000
+  + defender_units_killed * 100
   - turns_taken
 ```
 
 Where:
 
-* `player_surviving_units` is the total count of living player creatures after
+* `attacker_surviving_units` is the total count of living attacker creatures after
   simulation.
-* `player_surviving_health` is the total remaining player health, including
+* `attacker_surviving_health` is the total remaining attacker health, including
   current wound damage on surviving stacks.
-* `enemy_units_killed` is the initial enemy creature count minus the final enemy
+* `defender_units_killed` is the initial defender creature count minus the final defender
   creature count.
 * `turns_taken` is the number of simulated action opportunities consumed before
   the simulation stops.
@@ -81,17 +81,17 @@ Where:
 The weights make the score lexicographic for the expected scale of current
 sample battles:
 
-* Surviving player creatures dominate all other goals. A strategy that keeps
+* Surviving attacker creatures dominate all other goals. A strategy that keeps
   units alive should beat one that trades them away for more kills.
-* Remaining player health breaks ties among strategies with the same survivor
+* Remaining attacker health breaks ties among strategies with the same survivor
   count. This favors less damaged wins without needing a separate comparison
   object.
-* Enemy units killed matters after player survival and remaining health. This
+* Defender units killed matters after attacker survival and remaining health. This
   still gives losing strategies a useful gradient, which helps search compare
   partial progress.
 * Faster completion is the final tie-breaker. It is intentionally weak so the
   search does not prefer a quick loss over a slower result with more survival or
-  enemy casualties.
+  defender casualties.
 
 This fitness function is therefore defensive first, then attritional, then fast.
 That matches the current use case: discover robust initial formations, not

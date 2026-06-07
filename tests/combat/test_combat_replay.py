@@ -18,16 +18,16 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 5
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 12
@@ -39,16 +39,16 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 5
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 1
@@ -62,7 +62,7 @@ def test_combat_replay_frames_include_initial_frame_and_one_frame_per_movement_e
     combat_log.record_battle_started()
     combat_log.record_unit_moved(
         TurnMarker(round_number=1, turn_number=1),
-        initial_battle.copy().move_stack("player-esquire", HexCoord(2, 5)),
+        initial_battle.copy().move_stack("attacker-esquire", HexCoord(2, 5)),
     )
 
     frames = build_combat_replay_frames(initial_battle, combat_log)
@@ -71,11 +71,11 @@ def test_combat_replay_frames_include_initial_frame_and_one_frame_per_movement_e
     assert frames[0].index == 0
     assert frames[0].total == 2
     assert frames[0].event is None
-    assert frames[0].battle.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
+    assert frames[0].battle.occupancy.unit_at(HexCoord(0, 5)) == "attacker-esquire"
     assert frames[1].index == 1
     assert frames[1].total == 2
     assert isinstance(frames[1].event, UnitMovedEvent)
-    assert frames[1].battle.occupancy.unit_at(HexCoord(2, 5)) == "player-esquire"
+    assert frames[1].battle.occupancy.unit_at(HexCoord(2, 5)) == "attacker-esquire"
 
 
 def test_combat_replay_final_frame_matches_full_combat_log_replay():
@@ -84,11 +84,11 @@ def test_combat_replay_final_frame_matches_full_combat_log_replay():
     combat_log = CombatLog()
     combat_log.record_unit_moved(
         TurnMarker(round_number=1, turn_number=1),
-        executed_battle.move_stack("player-esquire", HexCoord(2, 5)),
+        executed_battle.move_stack("attacker-esquire", HexCoord(2, 5)),
     )
     combat_log.record_unit_moved(
         TurnMarker(round_number=1, turn_number=2),
-        executed_battle.move_stack("enemy-esquire", HexCoord(10, 5)),
+        executed_battle.move_stack("defender-esquire", HexCoord(10, 5)),
     )
 
     frames = build_combat_replay_frames(initial_battle, combat_log)
@@ -105,15 +105,15 @@ def test_combat_replay_frames_include_attack_events_and_updated_stack_state():
     combat_log.record_battle_started()
     combat_log.record_unit_attacked(
         TurnMarker(round_number=1, turn_number=1),
-        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+        executed_battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
     )
 
     frames = build_combat_replay_frames(initial_battle, combat_log)
 
     assert len(frames) == 2
     assert isinstance(frames[1].event, UnitAttackedEvent)
-    assert frames[1].battle.stack("enemy-esquire").count == executed_battle.stack("enemy-esquire").count
-    assert frames[1].battle.stack("player-esquire").wound_damage == executed_battle.stack("player-esquire").wound_damage
+    assert frames[1].battle.stack("defender-esquire").count == executed_battle.stack("defender-esquire").count
+    assert frames[1].battle.stack("attacker-esquire").wound_damage == executed_battle.stack("attacker-esquire").wound_damage
 
 
 def test_combat_replay_frames_reject_movement_events_that_do_not_replay():
@@ -123,7 +123,7 @@ def test_combat_replay_frames_reject_movement_events_that_do_not_replay():
             UnitMovedEvent(
                 sequence=1,
                 turn=TurnMarker(round_number=1, turn_number=1),
-                stack_id="player-esquire",
+                stack_id="attacker-esquire",
                 start=HexCoord(0, 5),
                 destination=HexCoord(2, 5),
                 path=(HexCoord(0, 5), HexCoord(2, 5)),

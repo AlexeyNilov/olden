@@ -65,7 +65,7 @@ def simulate_combat(
             if _one_side_defeated(battle):
                 return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
-            opponent_id = _nearest_living_enemy(battle, actor_id, configured_stack_ids)
+            opponent_id = _nearest_living_opponent(battle, actor_id, configured_stack_ids)
             if opponent_id is None:
                 return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
@@ -232,7 +232,7 @@ def _one_side_defeated(battle: Battle) -> bool:
     return len(living_sides) < 2
 
 
-def _nearest_living_enemy(battle: Battle, actor_id: str, configured_stack_ids: tuple[str, ...]) -> str | None:
+def _nearest_living_opponent(battle: Battle, actor_id: str, configured_stack_ids: tuple[str, ...]) -> str | None:
     actor = battle.stack(actor_id)
     actor_coord = _single_occupied_coordinate(battle, actor_id)
     candidates = tuple(

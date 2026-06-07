@@ -44,8 +44,8 @@ This helps ensure requirements are:
 ### Deployment zones
 
 * **When** deployment zones are represented, **the system shall** assign zones by battlefield side.
-* **When** the player-controlled side is represented, **the system shall** place that side's deployment zone on the left side of the battlefield.
-* **When** the enemy side is represented, **the system shall** place that side's deployment zone on the right side of the battlefield.
+* **When** the attacker side is represented, **the system shall** place that side's deployment zone on the left side of the battlefield.
+* **When** the defender side is represented, **the system shall** place that side's deployment zone on the right side of the battlefield.
 
 ### Battle state
 
@@ -142,8 +142,8 @@ This helps ensure requirements are:
 * **When** combat simulation orders unit stacks within a round, **the system shall** act with higher initiative stacks before lower initiative stacks.
 * **When** combat simulation orders unit stacks with equal initiative, **the system shall** use higher speed as the tie-breaker.
 * **When** combat simulation orders unit stacks with equal initiative and speed, **the system shall** preserve configured stack order.
-* **When** combat simulation selects a target for the acting unit stack, **the system shall** target the nearest living enemy stack.
-* **When** multiple living enemy stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
+* **When** combat simulation selects a target for the acting unit stack, **the system shall** target the nearest living opposing stack.
+* **When** multiple living opposing stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
 * **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
@@ -158,12 +158,12 @@ This helps ensure requirements are:
 
 ### Strategy discovery
 
-* **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed player deployment coordinate and create one player unit stack for each non-empty slot.
-* **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured player unit pool size.
+* **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed attacker deployment coordinate and create one attacker unit stack for each non-empty slot.
+* **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured attacker unit pool size.
 * **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
 * **When** stack-split strategy discovery encounters the same genome more than once in one discovery run, **the system shall** reuse its deterministic evaluation.
 * **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
-* **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving player units, then remaining player health, then enemy units killed, and then faster completion.
+* **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving attacker units, then remaining attacker health, then defender units killed, and then faster completion.
 * **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 action opportunities.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS` to override the stack-split scenario turn cap.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE` from `0` through `1` to override the stack-split mutation rate.

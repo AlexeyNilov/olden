@@ -2,16 +2,16 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 20
     anchor:
       column: 0
       row: 9
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 12

@@ -34,6 +34,32 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-07: Rename combat sides to attacker and defender
+
+**Status:** Accepted
+
+**Context:** The codebase used `player` and `enemy` as combat sides, but those
+terms represented battle roles rather than control ownership. Current combat
+behavior treats the former player side as the side that starts on the left and
+the former enemy side as the side that starts on the right. Future turn-order
+work needs explicit attacker and defender roles for exact initiative and speed
+ties.
+
+**Decision:** Rename combat sides to attacker and defender across code,
+serialized battle data, sample combat logs, tests, samples, strategy discovery,
+and battlefield rendering. Use `CombatSide.ATTACKER` with serialized value
+`attacker`, and `CombatSide.DEFENDER` with serialized value `defender`. Reject
+old `player` and `enemy` side values instead of maintaining compatibility.
+
+**Alternatives considered:** Keeping `player` and `enemy` was rejected because
+it conflates battle role with human or NPC control. Supporting both old and new
+serialized side values was rejected because the project is pre-release and a
+compatibility layer would preserve terminology drift.
+
+**Consequences:** Combat terminology is aligned with turn-order reference notes
+and future attacker/defender tie-breaking. Existing local battle YAML and combat
+logs must use the new side values and stack IDs.
+
 ### 2026-06-07: Keep unit stacks single-coordinate
 
 **Status:** Accepted
@@ -203,7 +229,7 @@ presentation data.
 
 **Context:** The combat simulator needs a deterministic field model before movement, targeting, occupancy, obstacles, and deployment zones can be implemented. The field screenshot shows flat-top hexes arranged in staggered rows. The user clarified that the canonical row lengths are `[12, 13, 12, 13, 12, 13, 12, 13, 12, 13, 12]`, for 137 total hexes, that the Python API should use zero-based coordinates, and that Olden Era follows older Heroes combat-grid conventions.
 
-**Decision:** Use `HexCoord(column: int, row: int)` as the public coordinate model. The default battlefield has 11 rows. Even-numbered rows have 12 hexes, odd-numbered rows have 13 hexes, and coordinate validation is based on each row's length. The first model includes topology, occupancy, whole-hex obstacles, and side-fixed deployment zones with the player-controlled side on the left and the enemy side on the right. Pathfinding and movement range are deferred.
+**Decision:** Use `HexCoord(column: int, row: int)` as the public coordinate model. The default battlefield has 11 rows. Even-numbered rows have 12 hexes, odd-numbered rows have 13 hexes, and coordinate validation is based on each row's length. The first model includes topology, occupancy, whole-hex obstacles, and side-fixed deployment zones with the attacker side on the left and the defender side on the right. Pathfinding and movement range are deferred.
 
 **Alternatives considered:** A rectangular 12 by 11 grid was rejected because it would omit the longer odd rows. A rectangular 13 by 11 grid was rejected because it would introduce non-existent coordinates on even rows. Axial or cube coordinates remain useful for future hex math, but exposing them now would make the public API less direct for a row-based battlefield.
 

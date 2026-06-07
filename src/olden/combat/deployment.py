@@ -10,8 +10,8 @@ class DeploymentZones:
     def default(cls, row_lengths: tuple[int, ...]) -> "DeploymentZones":
         sides_by_coord: dict[HexCoord, CombatSide] = {}
         for row, row_length in enumerate(row_lengths):
-            sides_by_coord[HexCoord(0, row)] = CombatSide.PLAYER
-            sides_by_coord[HexCoord(row_length - 1, row)] = CombatSide.ENEMY
+            sides_by_coord[HexCoord(0, row)] = CombatSide.ATTACKER
+            sides_by_coord[HexCoord(row_length - 1, row)] = CombatSide.DEFENDER
         return cls(sides_by_coord)
 
     def side_for(self, coord: HexCoord) -> CombatSide | None:

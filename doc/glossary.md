@@ -9,12 +9,12 @@
 * **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
 * **Attack category:** Unit attack classification. Current combat simulation supports melee; long-reach and ranged attacks are deferred.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
-* **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
+* **Combat side:** One of the opposing sides in combat. The attacker side starts on the left; the defender side starts on the right.
 * **Combat log:** Ordered combat-event history that can be replayed from a battle initial state.
 * **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
 * **Combat replay frame:** One renderable battle state in a combat-log replay, optionally associated with the event that produced it.
 * **Combat replay view:** A local browser view that steps through combat replay frames with configurable playback delay.
-* **Combat simulation:** A limited battle simulation that orders unit-stack action opportunities, moves stacks toward selected enemies, and resolves melee attacks until one side is defeated or simulation stops.
+* **Combat simulation:** A limited battle simulation that orders unit-stack action opportunities, moves stacks toward selected opponents, and resolves melee attacks until one side is defeated or simulation stops.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that combat simulation can move toward before resolving melee attacks.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.

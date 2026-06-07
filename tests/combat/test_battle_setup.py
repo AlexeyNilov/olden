@@ -21,16 +21,16 @@ battlefield:
         - column: 5
           row: 4
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 5
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 12
@@ -43,10 +43,10 @@ def test_load_battle_initial_state_builds_battle_with_units_and_obstacles():
 
     assert isinstance(battle, Battle)
     assert battle.battlefield.is_blocked(HexCoord(5, 4))
-    assert battle.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
-    assert battle.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
-    assert battle.unit_stacks["player-esquire"].definition.id == "esquire"
-    assert battle.unit_stacks["player-esquire"].side is CombatSide.PLAYER
+    assert battle.occupancy.unit_at(HexCoord(0, 5)) == "attacker-esquire"
+    assert battle.occupancy.unit_at(HexCoord(12, 5)) == "defender-esquire"
+    assert battle.unit_stacks["attacker-esquire"].definition.id == "esquire"
+    assert battle.unit_stacks["attacker-esquire"].side is CombatSide.ATTACKER
 
 
 def test_load_battle_initial_state_rejects_blocked_starting_units():
@@ -63,6 +63,16 @@ def test_load_battle_initial_state_rejects_overlapping_starting_units():
         load_battle_initial_state_yaml(overlapping_state, load_packaged_unit_catalog())
 
 
+def test_load_battle_initial_state_rejects_old_player_enemy_side_values():
+    old_side_state = VALID_INITIAL_STATE_YAML.replace("side: attacker", "side: player").replace(
+        "side: defender",
+        "side: enemy",
+    )
+
+    with pytest.raises(BattleSetupValidationError, match="known combat side"):
+        load_battle_initial_state_yaml(old_side_state, load_packaged_unit_catalog())
+
+
 def test_save_battle_initial_state_round_trips_loaded_battle():
     catalog = load_packaged_unit_catalog()
     battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
@@ -72,8 +82,8 @@ def test_save_battle_initial_state_round_trips_loaded_battle():
 
     assert loaded.battlefield.obstacles == battle.battlefield.obstacles
     assert loaded.unit_stacks == battle.unit_stacks
-    assert loaded.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
-    assert loaded.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
+    assert loaded.occupancy.unit_at(HexCoord(0, 5)) == "attacker-esquire"
+    assert loaded.occupancy.unit_at(HexCoord(12, 5)) == "defender-esquire"
 
 
 def test_save_battle_initial_state_file_writes_loadable_yaml(tmp_path):
@@ -85,4 +95,4 @@ def test_save_battle_initial_state_file_writes_loadable_yaml(tmp_path):
     loaded = load_battle_initial_state_file(path, catalog)
 
     assert loaded.unit_stacks == battle.unit_stacks
-    assert loaded.occupancy.unit_at(HexCoord(0, 5)) == "player-esquire"
+    assert loaded.occupancy.unit_at(HexCoord(0, 5)) == "attacker-esquire"

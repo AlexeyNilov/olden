@@ -20,9 +20,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "genetic_battle.yaml"
 DEFAULT_BEST_BATTLE_PATH = PROJECT_ROOT / "data" / "genetic_best_battle.yaml"
 DEFAULT_BEST_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "genetic_best_combat_log.yaml"
-PLAYER_POOL_STACK_ID = "player-esquire"
+ATTACKER_POOL_STACK_ID = "attacker-esquire"
 
-DEFAULT_PLAYER_DEPLOYMENT_SLOTS = (
+DEFAULT_ATTACKER_DEPLOYMENT_SLOTS = (
     HexCoord(0, 9),
     HexCoord(0, 8),
     HexCoord(0, 7),
@@ -59,11 +59,11 @@ def run_genetic_strategy_discovery(
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
     scenario = StackSplitScenario(
         base_battle=battle,
-        player_pool_stack_id=PLAYER_POOL_STACK_ID,
-        unit_pool_size=battle.stack(PLAYER_POOL_STACK_ID).count,
-        max_slots=len(DEFAULT_PLAYER_DEPLOYMENT_SLOTS),
-        deployment_slots=DEFAULT_PLAYER_DEPLOYMENT_SLOTS,
-        generated_player_stack_id_prefix="genetic-player",
+        attacker_pool_stack_id=ATTACKER_POOL_STACK_ID,
+        unit_pool_size=battle.stack(ATTACKER_POOL_STACK_ID).count,
+        max_slots=len(DEFAULT_ATTACKER_DEPLOYMENT_SLOTS),
+        deployment_slots=DEFAULT_ATTACKER_DEPLOYMENT_SLOTS,
+        generated_attacker_stack_id_prefix="genetic-attacker",
         max_turns=resolved_max_turns,
     )
     discovery_result = discover_stack_split_strategy(
@@ -88,8 +88,8 @@ def main() -> None:
     fitness = best.evaluation.fitness
     print(f"Best genome: {best.genome}")
     print(f"Fitness: {fitness.score}")
-    print(f"Player survivors: {fitness.player_surviving_units}")
-    print(f"Enemy units killed: {fitness.enemy_units_killed}")
+    print(f"Attacker survivors: {fitness.attacker_surviving_units}")
+    print(f"Defender units killed: {fitness.defender_units_killed}")
     print(f"Turns: {fitness.turns_taken}")
     print("Replay:")
     print(f"  battle: {DEFAULT_BEST_BATTLE_PATH}")

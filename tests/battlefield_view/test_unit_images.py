@@ -33,7 +33,7 @@ def _stack_for_unit_id(unit_id: str) -> UnitStack:
         speed=4,
         combat=_combat_stats(),
     )
-    return UnitStack(id="player-stack", definition=definition, side=CombatSide.PLAYER, count=10)
+    return UnitStack(id="attacker-stack", definition=definition, side=CombatSide.ATTACKER, count=10)
 
 
 def _combat_stats() -> UnitCombatStats:

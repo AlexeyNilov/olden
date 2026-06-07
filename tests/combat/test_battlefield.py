@@ -88,9 +88,9 @@ def test_battlefield_hex_exposes_deployment_zone_without_affecting_coordinate_va
     center_hex = battlefield.hex_at(HexCoord(5, 4))
     right_hex = battlefield.hex_at(HexCoord(11, 4))
 
-    assert left_hex.deployment_side is CombatSide.PLAYER
+    assert left_hex.deployment_side is CombatSide.ATTACKER
     assert center_hex.deployment_side is None
-    assert right_hex.deployment_side is CombatSide.ENEMY
+    assert right_hex.deployment_side is CombatSide.DEFENDER
 
 
 def test_obstacle_blocks_all_coordinates_it_covers():

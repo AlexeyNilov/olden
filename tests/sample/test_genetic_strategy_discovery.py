@@ -63,9 +63,9 @@ def test_genetic_strategy_discovery_passes_configured_mutation_rate(monkeypatch,
             evaluation=StackSplitEvaluation(
                 fitness=StackSplitFitness(
                     score=0,
-                    player_surviving_units=0,
-                    player_surviving_health=0,
-                    enemy_units_killed=0,
+                    attacker_surviving_units=0,
+                    attacker_surviving_health=0,
+                    defender_units_killed=0,
                     turns_taken=0,
                 ),
                 stop_reason="test",

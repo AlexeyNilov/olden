@@ -21,16 +21,16 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 5
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 12
@@ -42,16 +42,16 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-  - id: player-esquire
+  - id: attacker-esquire
     unit_id: esquire
-    side: player
+    side: attacker
     count: 10
     anchor:
       column: 0
       row: 5
-  - id: enemy-esquire
+  - id: defender-esquire
     unit_id: esquire
-    side: enemy
+    side: defender
     count: 20
     anchor:
       column: 1
@@ -64,13 +64,13 @@ def test_combat_log_records_unit_movement_with_replayable_path():
     battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
     combat_log = CombatLog()
 
-    movement = battle.move_stack("player-esquire", HexCoord(2, 5))
+    movement = battle.move_stack("attacker-esquire", HexCoord(2, 5))
     combat_log.record_unit_moved(TurnMarker(round_number=1, turn_number=1), movement)
 
     event = combat_log.events[0]
     assert isinstance(event, UnitMovedEvent)
     assert event.sequence == 1
-    assert event.stack_id == "player-esquire"
+    assert event.stack_id == "attacker-esquire"
     assert event.start == HexCoord(0, 5)
     assert event.destination == HexCoord(2, 5)
     assert event.path == (HexCoord(0, 5), HexCoord(1, 5), HexCoord(2, 5))
@@ -81,7 +81,9 @@ def test_combat_log_yaml_round_trips_movement_events():
     battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
     combat_log = CombatLog()
     combat_log.record_battle_started()
-    combat_log.record_unit_moved(TurnMarker(round_number=1, turn_number=1), battle.move_stack("player-esquire", HexCoord(2, 5)))
+    combat_log.record_unit_moved(
+        TurnMarker(round_number=1, turn_number=1), battle.move_stack("attacker-esquire", HexCoord(2, 5))
+    )
 
     loaded_log = load_combat_log_yaml(dump_combat_log_yaml(combat_log))
 
@@ -93,14 +95,14 @@ def test_combat_log_records_unit_attack_with_replayable_damage():
     battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
     combat_log = CombatLog()
 
-    attack = battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum)
+    attack = battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
     combat_log.record_unit_attacked(TurnMarker(round_number=1, turn_number=1), attack)
 
     event = combat_log.events[0]
     assert isinstance(event, UnitAttackedEvent)
     assert event.sequence == 1
-    assert event.attacker_id == "player-esquire"
-    assert event.defender_id == "enemy-esquire"
+    assert event.attacker_id == "attacker-esquire"
+    assert event.defender_id == "defender-esquire"
     assert event.primary_damage.selected_damage == 2
     assert event.primary_damage.final_damage == 20
     assert event.counterattack is not None
@@ -114,7 +116,7 @@ def test_combat_log_yaml_round_trips_attack_events():
     combat_log.record_battle_started()
     combat_log.record_unit_attacked(
         TurnMarker(round_number=1, turn_number=1),
-        battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+        battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
     )
 
     loaded_log = load_combat_log_yaml(dump_combat_log_yaml(combat_log))
@@ -152,14 +154,14 @@ def test_replay_combat_log_reconstructs_final_occupancy():
     combat_log = CombatLog()
     combat_log.record_unit_moved(
         TurnMarker(round_number=1, turn_number=1),
-        executed_battle.move_stack("player-esquire", HexCoord(2, 5)),
+        executed_battle.move_stack("attacker-esquire", HexCoord(2, 5)),
     )
 
     replayed = replay_combat_log(initial_battle, combat_log)
 
     assert replayed.occupancy.unit_at(HexCoord(0, 5)) is None
-    assert replayed.occupancy.unit_at(HexCoord(2, 5)) == "player-esquire"
-    assert replayed.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
+    assert replayed.occupancy.unit_at(HexCoord(2, 5)) == "attacker-esquire"
+    assert replayed.occupancy.unit_at(HexCoord(12, 5)) == "defender-esquire"
 
 
 def test_replay_combat_log_reconstructs_attack_damage_state():
@@ -169,15 +171,15 @@ def test_replay_combat_log_reconstructs_attack_damage_state():
     combat_log = CombatLog()
     combat_log.record_unit_attacked(
         TurnMarker(round_number=1, turn_number=1),
-        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+        executed_battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
     )
 
     replayed = replay_combat_log(initial_battle, combat_log)
 
-    assert replayed.stack("enemy-esquire").count == executed_battle.stack("enemy-esquire").count
-    assert replayed.stack("enemy-esquire").wound_damage == executed_battle.stack("enemy-esquire").wound_damage
-    assert replayed.stack("player-esquire").count == executed_battle.stack("player-esquire").count
-    assert replayed.stack("player-esquire").wound_damage == executed_battle.stack("player-esquire").wound_damage
+    assert replayed.stack("defender-esquire").count == executed_battle.stack("defender-esquire").count
+    assert replayed.stack("defender-esquire").wound_damage == executed_battle.stack("defender-esquire").wound_damage
+    assert replayed.stack("attacker-esquire").count == executed_battle.stack("attacker-esquire").count
+    assert replayed.stack("attacker-esquire").wound_damage == executed_battle.stack("attacker-esquire").wound_damage
 
 
 def test_replay_combat_log_rejects_movement_that_does_not_match_logged_path():
@@ -188,7 +190,7 @@ def test_replay_combat_log_rejects_movement_that_does_not_match_logged_path():
             UnitMovedEvent(
                 sequence=1,
                 turn=TurnMarker(round_number=1, turn_number=1),
-                stack_id="player-esquire",
+                stack_id="attacker-esquire",
                 start=HexCoord(0, 5),
                 destination=HexCoord(2, 5),
                 path=(HexCoord(0, 5), HexCoord(2, 5)),
@@ -207,7 +209,7 @@ def test_replay_combat_log_rejects_attack_that_does_not_match_logged_damage():
     combat_log = CombatLog()
     event = combat_log.record_unit_attacked(
         TurnMarker(round_number=1, turn_number=1),
-        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+        executed_battle.attack_stack("attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum),
     )
     combat_log = CombatLog(
         events=(

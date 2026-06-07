@@ -15,7 +15,7 @@ from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH
 def test_load_demo_replay_frames_uses_packaged_demo_files():
     frames = load_demo_replay_frames()
 
-    assert frames[0].battle.occupancy.unit_at(DEFAULT_PLAYER_START) == "player-esquire"
+    assert frames[0].battle.occupancy.unit_at(DEFAULT_ATTACKER_START) == "attacker-esquire"
     assert any(isinstance(frame.event, UnitAttackedEvent) for frame in frames)
     assert DEMO_BATTLE_INITIAL_STATE_PATH.name == "demo_battle.yaml"
     assert DEMO_COMBAT_LOG_PATH.name == "demo_combat_log.yaml"
@@ -69,7 +69,7 @@ def test_replay_controller_formats_attack_events_in_status_and_combat_log():
     assert "attacked" in status_label.text
     assert "damage" in status_label.text
     assert "counterattack" in status_label.text
-    assert "player-esquire attacked enemy-esquire" in log_container.html_updates[-1]
+    assert "attacker-esquire attacked defender-esquire" in log_container.html_updates[-1]
     assert "Counterattack:" in log_container.html_updates[-1]
     assert "; counterattack:" not in log_container.html_updates[-1]
 
@@ -127,15 +127,15 @@ def test_replay_page_css_is_loaded_from_packaged_stylesheet():
     assert ".combat-log-panel" in css
 
 
-def _default_player_start() -> HexCoord:
-    coord = load_demo_replay_frames()[0].battle.occupancy.coordinate_for("player-esquire")
+def _default_attacker_start() -> HexCoord:
+    coord = load_demo_replay_frames()[0].battle.occupancy.coordinate_for("attacker-esquire")
     if coord is None:
-        msg = "Demo replay is missing the player stack start coordinate"
+        msg = "Demo replay is missing the attacker stack start coordinate"
         raise AssertionError(msg)
     return coord
 
 
-DEFAULT_PLAYER_START = _default_player_start()
+DEFAULT_ATTACKER_START = _default_attacker_start()
 
 
 class FakeTimer:

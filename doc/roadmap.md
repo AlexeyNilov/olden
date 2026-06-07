@@ -16,7 +16,7 @@
 * Move target selection, engagement-path choice, and action selection behind explicit strategy or policy boundaries.
 * Keep movement and attack application in focused combat-action code that can be called by simulation, replay, and future manual control.
 * Centralize combat-log event recording around applied battle actions so simulation does not hand-build every event.
-* Preserve existing observable behavior for initiative ordering, nearest-enemy targeting, movement, melee attacks, counterattack limits, and replay.
+* Preserve existing observable behavior for initiative ordering, nearest-opponent targeting, movement, melee attacks, counterattack limits, and replay.
 * Add behavior tests that prove the refactor preserves simulation output and replayability.
 
 ## Milestone 18: Damage calculation and application split
@@ -49,20 +49,20 @@
 **Status:** Next
 
 * Consolidate side terminology around attacker and defender as battle roles.
-* Treat the current player side as the attacker role and the current enemy side as the defender role.
-* Decide whether to rename `CombatSide.PLAYER` and `CombatSide.ENEMY` to attacker and defender, or introduce a compatibility migration for serialized battle data first.
-* Keep player control, NPC control, and strategy ownership separate from attacker/defender battle roles.
+* Rename `CombatSide.PLAYER` and `CombatSide.ENEMY` to `CombatSide.ATTACKER` and `CombatSide.DEFENDER`.
+* Reject old serialized `player` and `enemy` side values rather than maintaining compatibility.
+* Keep human control, NPC control, and strategy ownership separate from attacker/defender battle roles.
 * Update glossary, requirements, battle setup YAML, sample data, tests, combat logs, battlefield view labels, and strategy-discovery naming consistently.
 * Add explicit army-slot order metadata separate from deployment coordinates and stack insertion order.
 * Use attacker/defender roles and army-slot order as prerequisites for exact initiative and speed tie-breaking.
-* Preserve current behavior during the terminology migration: attacker starts on the left, defender starts on the right, and existing sample battles still load through the chosen compatibility path.
+* Preserve current behavior during the terminology migration: attacker starts on the left and defender starts on the right.
 
 ## Future plans
 
 * Later concern: decide whether exact initiative and speed ties should alternate
   between attacker and defender by odd/even round, as observed in Olden Era
   reference notes, instead of using stable configured order.
-* Later concern: replace nearest-enemy target selection with explicit combat
+* Later concern: replace nearest-opponent target selection with explicit combat
   strategy once multi-stack NPC planning is implemented.
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
