@@ -47,12 +47,14 @@ def run_genetic_strategy_discovery(
     population_size: int | None = None,
     generations: int | None = None,
     max_turns: int | None = None,
+    mutation_rate: float | None = None,
     worker_count: int | None = None,
 ) -> GeneticStrategyDiscoverySampleResult:
     config = load_config()
     resolved_population_size = config.genetic_strategy_discovery_population_size if population_size is None else population_size
     resolved_generations = config.genetic_strategy_discovery_generations if generations is None else generations
     resolved_max_turns = config.genetic_strategy_discovery_max_turns if max_turns is None else max_turns
+    resolved_mutation_rate = config.genetic_strategy_discovery_mutation_rate if mutation_rate is None else mutation_rate
     resolved_worker_count = config.genetic_strategy_discovery_workers if worker_count is None else worker_count
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
     scenario = StackSplitScenario(
@@ -69,6 +71,7 @@ def run_genetic_strategy_discovery(
         random_source=random.Random(seed),
         population_size=resolved_population_size,
         generations=resolved_generations,
+        mutation_rate=resolved_mutation_rate,
         worker_count=resolved_worker_count,
     )
     best_genome = discovery_result.best_individual.genome

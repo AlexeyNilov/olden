@@ -124,16 +124,18 @@ candidate battle. It bounds slow or stuck evaluations and can be overridden with
 `mutation rate` is the probability that a newly bred child genome is mutated.
 The current mutation moves one unit from a non-empty deployment slot to another
 slot. A rate of `0.25` means about one in four children gets this extra
-variation step.
+variation step. It can be overridden with
+`GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE`, which accepts values from `0`
+through `1`.
 
 `tournament size` is the number of randomly sampled candidates competing when
 choosing each parent. A larger tournament increases selection pressure toward
 high-scoring genomes; a smaller tournament preserves more diversity.
 
-Population size, generation count, max turns, and worker count can be
-overridden through configuration. Mutation moves one unit from a non-empty slot
-to another slot. Crossover chooses each slot from one of two parents, then
-repairs the child so the total unit count matches the scenario.
+Population size, generation count, max turns, mutation rate, and worker count
+can be overridden through configuration. Mutation moves one unit from a
+non-empty slot to another slot. Crossover chooses each slot from one of two
+parents, then repairs the child so the total unit count matches the scenario.
 
 Within a single discovery run, repeated genomes reuse cached deterministic
 evaluations. The best individual is selected by score, with the genome tuple as

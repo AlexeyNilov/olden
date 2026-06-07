@@ -14,6 +14,7 @@ DEMO_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE = 24
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS = 20
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS = 100
+DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE = 0.25
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS = max(1, (os.cpu_count() or 1) - 1)
 
 SUPPORTED_LOG_LEVELS = {
@@ -69,6 +70,10 @@ class Config:
             "GENETIC_STRATEGY_DISCOVERY_MAX_TURNS",
             default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS,
         )
+        self.genetic_strategy_discovery_mutation_rate = self.get_rate_env(
+            "GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE",
+            default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE,
+        )
         self.genetic_strategy_discovery_workers = self.get_positive_int_env(
             "GENETIC_STRATEGY_DISCOVERY_WORKERS",
             default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS,
@@ -108,6 +113,18 @@ class Config:
             raise ConfigError(f"{key} must be a positive integer") from exc
         if parsed < 1:
             raise ConfigError(f"{key} must be a positive integer")
+        return parsed
+
+    def get_rate_env(self, key: str, *, default: float) -> float:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+        try:
+            parsed = float(value.strip())
+        except ValueError as exc:
+            raise ConfigError(f"{key} must be between 0 and 1") from exc
+        if parsed < 0 or parsed > 1:
+            raise ConfigError(f"{key} must be between 0 and 1")
         return parsed
 
 

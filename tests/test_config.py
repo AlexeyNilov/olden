@@ -6,6 +6,7 @@ import pytest
 from olden.config import (
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS,
+    DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS,
     DEMO_BATTLE_INITIAL_STATE_PATH,
@@ -89,11 +90,13 @@ def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_GENERATIONS", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MAX_TURNS", raising=False)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_WORKERS", raising=False)
     tmp_path.joinpath(".env").write_text(
         "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=12\n"
         "GENETIC_STRATEGY_DISCOVERY_GENERATIONS=5\n"
         "GENETIC_STRATEGY_DISCOVERY_MAX_TURNS=7\n"
+        "GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE=0.5\n"
         "GENETIC_STRATEGY_DISCOVERY_WORKERS=3\n",
         encoding="utf-8",
     )
@@ -103,6 +106,7 @@ def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(
     assert config.genetic_strategy_discovery_population_size == 12
     assert config.genetic_strategy_discovery_generations == 5
     assert config.genetic_strategy_discovery_max_turns == 7
+    assert config.genetic_strategy_discovery_mutation_rate == 0.5
     assert config.genetic_strategy_discovery_workers == 3
 
 
@@ -133,11 +137,22 @@ def test_load_config_rejects_non_positive_genetic_strategy_discovery_max_turns(m
         load_config()
 
 
+@pytest.mark.parametrize("value", ["-0.1", "1.1", "many"])
+def test_load_config_rejects_invalid_genetic_strategy_discovery_mutation_rate(monkeypatch, tmp_path, value):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE", raising=False)
+    tmp_path.joinpath(".env").write_text(f"GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE={value}\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE"):
+        load_config()
+
+
 def test_load_config_falls_back_to_genetic_strategy_discovery_defaults(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_GENERATIONS", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MAX_TURNS", raising=False)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_WORKERS", raising=False)
 
     config = load_config()
@@ -145,4 +160,5 @@ def test_load_config_falls_back_to_genetic_strategy_discovery_defaults(monkeypat
     assert config.genetic_strategy_discovery_population_size == DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE
     assert config.genetic_strategy_discovery_generations == DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS
     assert config.genetic_strategy_discovery_max_turns == DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS
+    assert config.genetic_strategy_discovery_mutation_rate == DEFAULT_GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE
     assert config.genetic_strategy_discovery_workers == DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS
