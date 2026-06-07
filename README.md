@@ -13,11 +13,6 @@ Heroes of Might and Magic: Olden Era combat simulator.
 * `doc/roadmap.md` owns future sequencing and deferred scope.
 * `TODO.md` owns active implementation tasks only.
 
-## Configuration
-
-The server reads local configuration from `.env`. Values already set in the process
-environment take precedence over `.env` values.
-
 ## Local combat replay view
 
 Install the optional view dependency group to launch the local combat-log replay view:
