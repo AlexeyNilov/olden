@@ -8,7 +8,7 @@
 
 ## Milestone 17: Combat simulation responsibility split
 
-**Status:** Next
+**Status:** Later
 
 * Review `src/olden/combat/combat_simulation.py` responsibilities before adding more combat mechanics.
 * Keep combat simulation responsible for advancing the simulation, not for owning every policy and rule detail.
@@ -46,7 +46,7 @@
 
 ## Milestone 20: Combat side terminology and army order
 
-**Status:** Later
+**Status:** Next
 
 * Consolidate side terminology around attacker and defender as battle roles.
 * Treat the current player side as the attacker role and the current enemy side as the defender role.
