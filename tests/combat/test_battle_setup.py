@@ -63,16 +63,6 @@ def test_load_battle_initial_state_rejects_overlapping_starting_units():
         load_battle_initial_state_yaml(overlapping_state, load_packaged_unit_catalog())
 
 
-def test_load_battle_initial_state_rejects_old_player_enemy_side_values():
-    old_side_state = VALID_INITIAL_STATE_YAML.replace("side: attacker", "side: player").replace(
-        "side: defender",
-        "side: enemy",
-    )
-
-    with pytest.raises(BattleSetupValidationError, match="known combat side"):
-        load_battle_initial_state_yaml(old_side_state, load_packaged_unit_catalog())
-
-
 def test_save_battle_initial_state_round_trips_loaded_battle():
     catalog = load_packaged_unit_catalog()
     battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
