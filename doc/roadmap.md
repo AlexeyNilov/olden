@@ -19,19 +19,6 @@
 * Preserve existing observable behavior for initiative ordering, nearest-opponent targeting, movement, melee attacks, counterattack limits, and replay.
 * Add behavior tests that prove the refactor preserves simulation output and replayability.
 
-## Milestone 18: Damage calculation and application split
-
-**Status:** Next
-
-* Review `src/olden/combat/attack.py` responsibilities before adding more damage modifiers.
-* Separate pure damage calculation from battle-state mutation.
-* Introduce an explicit damage context that carries attacker, defender, selected damage, and future modifier inputs.
-* Return damage results without requiring a mutable `Battle`.
-* Keep wound carryover, creature deaths, stack removal, and occupancy updates in focused damage-application code.
-* Preserve current melee damage behavior: selected unit damage, attack/defense modifier, floor rounding, minimum `1` final damage, wound carryover, and defeated-stack removal.
-* Leave hero stats, damage tags, luck, range penalties, abilities, and other deferred modifiers out until their requirements are committed.
-* Add behavior tests for pure damage calculation and separate damage application.
-
 ## Milestone 20: Better targeting
 
 **Status:** Later

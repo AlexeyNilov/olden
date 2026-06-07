@@ -1,6 +1,12 @@
 import pytest
 
-from olden.combat.attack import MeleeAttackError, resolve_melee_attack
+from olden.combat.attack import (
+    DamageContext,
+    MeleeAttackError,
+    apply_damage_to_stack,
+    calculate_attack_damage,
+    resolve_melee_attack,
+)
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
@@ -136,6 +142,75 @@ def test_melee_attack_rounds_fractional_damage_down_with_minimum_one_damage():
 
     assert result.primary_damage.final_damage == 1
     assert battle.stack("defender-esquire").wound_damage == 1
+
+
+def test_attack_damage_calculation_uses_selected_damage_and_attack_defense_modifier():
+    attacker = _stack("attacker-esquire", CombatSide.ATTACKER, count=10)
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=20)
+
+    result = calculate_attack_damage(DamageContext(attacker=attacker, defender=defender, selected_damage=2))
+
+    assert result.selected_damage == 2
+    assert result.final_damage == 20
+
+
+def test_attack_damage_calculation_rounds_fractional_damage_down_with_minimum_one_damage():
+    attacker = _stack(
+        "attacker-esquire",
+        CombatSide.ATTACKER,
+        count=1,
+        stats=UnitCombatStats(
+            health=12,
+            attack=0,
+            defense=4,
+            damage=DamageRange(minimum=1, maximum=1),
+            attack_category=AttackCategory.MELEE,
+        ),
+    )
+    defender = _stack(
+        "defender-esquire",
+        CombatSide.DEFENDER,
+        count=20,
+        stats=UnitCombatStats(
+            health=12,
+            attack=4,
+            defense=100,
+            damage=DamageRange(minimum=2, maximum=3),
+            attack_category=AttackCategory.MELEE,
+        ),
+    )
+
+    result = calculate_attack_damage(DamageContext(attacker=attacker, defender=defender, selected_damage=1))
+
+    assert result.final_damage == 1
+
+
+def test_damage_application_carries_wounds_and_reports_surviving_stack_state():
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=2, wound_damage=11)
+
+    result = apply_damage_to_stack(defender, final_damage=2)
+
+    assert result.updated_stack is not None
+    assert result.creatures_killed == 1
+    assert result.defender_count_before == 2
+    assert result.defender_count_after == 1
+    assert result.defender_wound_damage_after == 1
+    assert result.defender_defeated is False
+    assert result.updated_stack.count == 1
+    assert result.updated_stack.wound_damage == 1
+
+
+def test_damage_application_reports_defeated_stack_without_mutating_battle():
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=1)
+
+    result = apply_damage_to_stack(defender, final_damage=12)
+
+    assert result.updated_stack is None
+    assert result.creatures_killed == 1
+    assert result.defender_count_before == 1
+    assert result.defender_count_after == 0
+    assert result.defender_wound_damage_after == 0
+    assert result.defender_defeated is True
 
 
 def _battle(
