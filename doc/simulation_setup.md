@@ -7,12 +7,11 @@ canonical owner for committed testable behavior.
 
 ## Current sample
 
-`sample/genetic_strategy_discovery.py` loads `data/genetic_battle.yaml` and uses
-the packaged unit catalog. The current sample battle is:
-
-* attacker: 15 Swordsmen from stack `attacker-esquire`
-* defender: 20 Swordsmen from stack `defender-esquire`
-* battlefield: no obstacles
+`sample/genetic_strategy_discovery.py` loads the editable
+`data/genetic_battle.yaml` initial state and uses the packaged unit catalog. The
+sample expects that battle to include the attacker pool stack
+`attacker-esquire`; its current unit counts, defender stacks, anchors, and
+obstacles come from the YAML file.
 
 The sample searches only for the attacker's initial stack split. It does not
 search for turn-level tactics, target choices, spell use, morale handling, luck

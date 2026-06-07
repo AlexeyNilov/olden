@@ -21,7 +21,6 @@ from olden.strategy_discovery.stack_split import (
     validate_stack_split,
 )
 from olden.unit_data.packaged import load_packaged_unit_catalog
-from sample.genetic_strategy_discovery import ATTACKER_POOL_STACK_ID, DEFAULT_ATTACKER_DEPLOYMENT_SLOTS
 
 
 def test_materialize_stack_split_battle_maps_non_empty_genome_slots_to_fixed_deployment_slots():
@@ -95,7 +94,7 @@ def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
 
 
 def test_evaluate_stack_split_prioritizes_defender_casualties_over_attacker_survival():
-    scenario = _genetic_sample_scenario()
+    scenario = _scenario(attacker_count=20)
 
     survival_first = evaluate_stack_split(scenario, (3, 9, 1, 4, 1, 1, 1))
     victory_progress_first = evaluate_stack_split(scenario, (1, 1, 0, 18, 0, 0, 0))
@@ -190,11 +189,11 @@ def test_average_damage_chooses_middle_value():
     assert average_damage(DamageRange(minimum=1, maximum=5)) == 3
 
 
-def _scenario() -> StackSplitScenario:
+def _scenario(attacker_count: int = 10, defender_count: int = 20) -> StackSplitScenario:
     return StackSplitScenario(
-        base_battle=_base_battle(),
+        base_battle=_base_battle(attacker_count=attacker_count, defender_count=defender_count),
         attacker_pool_stack_id="attacker-esquire",
-        unit_pool_size=10,
+        unit_pool_size=attacker_count,
         max_slots=7,
         deployment_slots=(
             HexCoord(0, 9),
@@ -210,32 +209,16 @@ def _scenario() -> StackSplitScenario:
     )
 
 
-def _base_battle() -> Battle:
+def _base_battle(attacker_count: int = 10, defender_count: int = 20) -> Battle:
     definition = load_packaged_unit_catalog().get("esquire").to_unit_definition()
     battlefield = Battlefield.default()
     occupancy = Occupancy(blocked_coordinates=battlefield.blocked_coordinates)
-    attacker = UnitStack(id="attacker-esquire", definition=definition, side=CombatSide.ATTACKER, count=10)
-    defender = UnitStack(id="defender-esquire", definition=definition, side=CombatSide.DEFENDER, count=20)
+    attacker = UnitStack(id="attacker-esquire", definition=definition, side=CombatSide.ATTACKER, count=attacker_count)
+    defender = UnitStack(id="defender-esquire", definition=definition, side=CombatSide.DEFENDER, count=defender_count)
     occupancy.place(attacker.id, HexCoord(0, 9))
     occupancy.place(defender.id, HexCoord(12, 5))
     return Battle(
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={attacker.id: attacker, defender.id: defender},
-    )
-
-
-def _genetic_sample_scenario() -> StackSplitScenario:
-    from olden.combat.battle_setup import load_battle_initial_state_file
-    from sample.genetic_strategy_discovery import DEFAULT_BATTLE_INITIAL_STATE_PATH
-
-    battle = load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
-    return StackSplitScenario(
-        base_battle=battle,
-        attacker_pool_stack_id=ATTACKER_POOL_STACK_ID,
-        unit_pool_size=battle.stack(ATTACKER_POOL_STACK_ID).count,
-        max_slots=len(DEFAULT_ATTACKER_DEPLOYMENT_SLOTS),
-        deployment_slots=DEFAULT_ATTACKER_DEPLOYMENT_SLOTS,
-        generated_attacker_stack_id_prefix="genetic-attacker",
-        max_turns=100,
     )

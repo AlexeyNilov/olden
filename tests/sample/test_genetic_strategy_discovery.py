@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from olden.combat.combat_simulation import CombatSimulationStopReason
 from olden.strategy_discovery.stack_split import (
     StackSplitDiscoveryResult,
@@ -8,6 +10,27 @@ from olden.strategy_discovery.stack_split import (
 )
 from sample import genetic_strategy_discovery
 from sample.genetic_strategy_discovery import run_genetic_strategy_discovery
+
+SAMPLE_INITIAL_STATE_YAML = """\
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: attacker-esquire
+    unit_id: esquire
+    side: attacker
+    count: 10
+    anchor:
+      column: 0
+      row: 9
+  - id: defender-esquire
+    unit_id: esquire
+    side: defender
+    count: 20
+    anchor:
+      column: 12
+      row: 5
+"""
 
 
 def test_genetic_strategy_discovery_uses_configured_default_population_size(monkeypatch, tmp_path):
@@ -25,8 +48,10 @@ def test_genetic_strategy_discovery_uses_configured_default_population_size(monk
         "GENETIC_STRATEGY_DISCOVERY_WORKERS=1\n",
         encoding="utf-8",
     )
+    initial_state_path = _write_sample_initial_state(tmp_path)
 
     result = run_genetic_strategy_discovery(
+        initial_state_path=initial_state_path,
         best_battle_path=tmp_path / "genetic_best_battle.yaml",
         best_combat_log_path=tmp_path / "genetic_best_combat_log.yaml",
         seed=3,
@@ -48,6 +73,7 @@ def test_genetic_strategy_discovery_passes_configured_mutation_rate(monkeypatch,
         "GENETIC_STRATEGY_DISCOVERY_WORKERS=1\n",
         encoding="utf-8",
     )
+    initial_state_path = _write_sample_initial_state(tmp_path)
     captured: dict[str, float] = {}
 
     def discover_with_captured_mutation_rate(
@@ -76,9 +102,16 @@ def test_genetic_strategy_discovery_passes_configured_mutation_rate(monkeypatch,
     monkeypatch.setattr(genetic_strategy_discovery, "discover_stack_split_strategy", discover_with_captured_mutation_rate)
 
     run_genetic_strategy_discovery(
+        initial_state_path=initial_state_path,
         best_battle_path=tmp_path / "genetic_best_battle.yaml",
         best_combat_log_path=tmp_path / "genetic_best_combat_log.yaml",
         seed=3,
     )
 
     assert captured["mutation_rate"] == 0.75
+
+
+def _write_sample_initial_state(tmp_path: Path) -> Path:
+    initial_state_path = tmp_path / "genetic_battle.yaml"
+    initial_state_path.write_text(SAMPLE_INITIAL_STATE_YAML, encoding="utf-8")
+    return initial_state_path
