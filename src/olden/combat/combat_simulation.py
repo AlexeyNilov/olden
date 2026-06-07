@@ -71,15 +71,15 @@ def simulate_combat(
 
             turn = TurnMarker(round_number=round_number, turn_number=turn_number)
             if _are_adjacent(battle, actor_id, opponent_id):
-                attack = battle.attack_stack(
+                _attack_and_record(
+                    battle,
+                    combat_log,
+                    turn,
                     actor_id,
                     opponent_id,
                     resolved_damage_chooser,
-                    allow_counterattack=opponent_id not in counterattacked_stack_ids,
+                    counterattacked_stack_ids,
                 )
-                if attack.counterattack is not None:
-                    counterattacked_stack_ids.add(opponent_id)
-                combat_log.record_unit_attacked(turn, attack)
                 turns_taken += 1
                 if _one_side_defeated(battle):
                     return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
@@ -92,7 +92,19 @@ def simulate_combat(
             destination = _destination_for_speed(path, battle.stack(actor_id).definition.speed)
             movement = battle.move_stack(actor_id, destination)
             combat_log.record_unit_moved(turn, movement)
+            if _are_adjacent(battle, actor_id, opponent_id):
+                _attack_and_record(
+                    battle,
+                    combat_log,
+                    turn,
+                    actor_id,
+                    opponent_id,
+                    resolved_damage_chooser,
+                    counterattacked_stack_ids,
+                )
             turns_taken += 1
+            if _one_side_defeated(battle):
+                return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
         round_number += 1
 
     return _result(battle, combat_log, CombatSimulationStopReason.MAX_TURNS_REACHED, max_turns)
@@ -100,6 +112,26 @@ def simulate_combat(
 
 def random_damage(damage: DamageRange) -> int:
     return random.randint(damage.minimum, damage.maximum)
+
+
+def _attack_and_record(
+    battle: Battle,
+    combat_log: CombatLog,
+    turn: TurnMarker,
+    actor_id: str,
+    opponent_id: str,
+    damage_chooser: DamageChooser,
+    counterattacked_stack_ids: set[str],
+) -> None:
+    attack = battle.attack_stack(
+        actor_id,
+        opponent_id,
+        damage_chooser,
+        allow_counterattack=opponent_id not in counterattacked_stack_ids,
+    )
+    if attack.counterattack is not None:
+        counterattacked_stack_ids.add(opponent_id)
+    combat_log.record_unit_attacked(turn, attack)
 
 
 def _result(

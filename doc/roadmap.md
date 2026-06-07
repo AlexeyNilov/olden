@@ -76,7 +76,7 @@
 * Replay combat logs from battle initial state to reconstruct movement occupancy
 * Render loaded battle state through the battlefield view model
 
-## Milestone 9: Movement-only battle simulation
+## Milestone 9: Engagement movement simulation foundation
 
 **Status:** Done
 
@@ -109,7 +109,7 @@
 
 **Status:** Done
 
-* Rename `sample/demo_movement_simulation.py` to `sample/demo_simulation.py`
+* Rename the early movement demo to `sample/demo_simulation.py`
 * Add the melee combat simulation to `sample/demo_simulation.py` 
 * Log attacks in the combat log
 
@@ -144,11 +144,10 @@
 
 ## Milestone 16: Move and attack
 
-**Status:** Next
+**Status:** Done
 
-* Move and apply melee attack in the same turn if target is in reach
-* Decide whether movement-only simulation should remain separate
-  or be consolidated with the full combat simulation once both paths stabilize
+* Move and apply melee attack in the same turn if target is in reach.
+* Removed the separate movement simulation API; full combat simulation owns engagement movement.
 
 ## Future plans
 

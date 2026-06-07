@@ -98,7 +98,6 @@ src/olden/
         combat_log.py
         combat_replay.py
         coordinates.py
-        movement_simulation.py
         occupancy.py
         obstacles.py
         deployment.py
@@ -130,7 +129,6 @@ tests/
         test_combat_simulation.py
         test_combat_replay.py
         test_movement.py
-        test_movement_simulation.py
         test_occupancy.py
         test_range.py
         test_units.py
@@ -148,7 +146,6 @@ tests/
 * Put battlefield topology, row validation, and neighbor lookup in `battlefield.py`.
 * Put dynamic unit placement rules in `occupancy.py`.
 * Put movement validation and pathfinding rules in `movement.py`.
-* Put movement-only battle simulation rules in `movement_simulation.py`.
 * Put blocked-coordinate rules in `obstacles.py`.
 * Put deployment-zone rules in `deployment.py`.
 * Put pure distance and movement-radius calculations in `range.py`.

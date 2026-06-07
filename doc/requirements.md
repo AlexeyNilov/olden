@@ -138,18 +138,6 @@ This helps ensure requirements are:
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
 * **While** morale, luck, hero stats, damage tags, abilities, range penalties, and initiative are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
-### Movement-only simulation
-
-* **When** movement-only simulation starts, **the system shall** copy the initial battle before moving unit stacks.
-* **When** movement-only simulation starts, **the system shall** record a battle-start event in the combat log.
-* **When** movement-only simulation runs without initiative, **the system shall** move the configured first stack before the configured second stack.
-* **When** movement-only simulation advances turns, **the system shall** alternate between the two configured unit stacks.
-* **When** a simulated unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
-* **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
-* **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
-* **When** simulated unit stacks are adjacent, **the system shall** stop before adding combat actions.
-* **When** movement-only simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
-
 ### Combat simulation
 
 * **When** combat simulation starts, **the system shall** copy the initial battle before moving or attacking with unit stacks.
@@ -161,8 +149,12 @@ This helps ensure requirements are:
 * **When** combat simulation selects a target for the acting unit stack, **the system shall** target the nearest living enemy stack.
 * **When** multiple living enemy stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
+* **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
+* **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
+* **When** combat simulation movement brings the acting unit stack adjacent to its target, **the system shall** perform the melee attack in the same action opportunity.
 * **When** combat simulation resolves counterattacks, **the system shall** allow each defending unit stack to counterattack at most once per round.
+* **When** combat simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
 * **When** one side has no living unit stacks, **the system shall** stop combat simulation.
 * **While** morale, luck, waiting, advanced target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.

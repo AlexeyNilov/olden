@@ -14,9 +14,9 @@
 * **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
 * **Combat replay frame:** One renderable battle state in a combat-log replay, optionally associated with the event that produced it.
 * **Combat replay view:** A local browser view that steps through combat replay frames with configurable playback delay.
-* **Combat simulation:** A limited battle simulation that alternates turns between two unit stacks, moving until engagement and then resolving melee attacks until one configured stack is defeated or simulation stops.
+* **Combat simulation:** A limited battle simulation that orders unit-stack action opportunities, moves stacks toward selected enemies, and resolves melee attacks until one side is defeated or simulation stops.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
-* **Engagement hex:** A passable hex adjacent to an opposing unit stack that a movement-only simulation can move toward before combat actions exist.
+* **Engagement hex:** A passable hex adjacent to an opposing unit stack that combat simulation can move toward before resolving melee attacks.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
 * **Hex coordinate:** A zero-based `(column, row)` address for one battlefield hex.
 * **Initiative:** Future unit stat that contributes to turn order.
@@ -24,7 +24,6 @@
 * **Morale:** Future combat modifier that can grant an extra action or cause a lost action.
 * **Movement cost:** The number of movement points needed to traverse one step in a movement path. Current single-hex movement cost is always `1` per step.
 * **Movement path:** An ordered sequence of battlefield coordinates from a start coordinate to a destination coordinate.
-* **Movement-only simulation:** A limited battle simulation that alternates movement between two unit stacks until they become adjacent, without initiative or combat actions.
 * **Movement radius:** The set of valid battlefield coordinates within a unit's speed distance from an origin, ignoring obstacles, occupancy, and pathfinding.
 * **Modifier range:** A minimum and maximum value for a future combat modifier such as morale or luck.
 * **Obstacle:** A whole-hex blocker covering one or more battlefield coordinates.

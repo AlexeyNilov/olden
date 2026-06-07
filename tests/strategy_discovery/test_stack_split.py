@@ -64,9 +64,9 @@ def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
     second = evaluate_stack_split(scenario, (10, 0, 0, 0, 0, 0, 0))
 
     assert first == second
-    assert first.fitness.enemy_units_killed == 3
+    assert first.fitness.enemy_units_killed == 2
     assert first.fitness.player_surviving_units == 0
-    assert first.fitness.score == 292
+    assert first.fitness.score == 193
 
 
 def test_mutate_stack_split_preserves_pool_size_and_slot_count():

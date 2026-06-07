@@ -31,8 +31,39 @@ def test_combat_simulation_moves_until_adjacent_then_logs_melee_attacks():
     assert movement_events
     assert attack_events
     assert movement_events[-1].sequence < attack_events[0].sequence
-    assert attack_events[0].attacker_id == "player-esquire"
+    assert attack_events[0].attacker_id == movement_events[-1].stack_id
     assert "player-esquire" not in result.battle.unit_stacks or "enemy-esquire" not in result.battle.unit_stacks
+
+
+def test_combat_simulation_attacks_after_moving_into_reach_in_same_turn():
+    initial_battle = _battle(
+        player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10, speed=4),
+        enemy_stack=_stack("enemy-esquire", CombatSide.ENEMY, count=20),
+        player_anchor=HexCoord(0, 5),
+        enemy_anchor=HexCoord(5, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="player-esquire",
+        second_stack_id="enemy-esquire",
+        path_chooser=lambda paths: next(path for path in paths if path[-1] == HexCoord(4, 5)),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert len(movement_events) == 1
+    assert len(attack_events) == 1
+    assert movement_events[0].sequence < attack_events[0].sequence
+    assert movement_events[0].turn == attack_events[0].turn
+    assert movement_events[0].destination == HexCoord(4, 5)
+    assert attack_events[0].attacker_id == "player-esquire"
+    assert attack_events[0].defender_id == "enemy-esquire"
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
 def test_combat_simulation_uses_initiative_order_with_multiple_stacks():
