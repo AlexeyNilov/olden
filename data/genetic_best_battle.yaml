@@ -5,7 +5,7 @@ unit_stacks:
 - id: genetic-player-1
   unit_id: esquire
   side: player
-  count: 15
+  count: 10
   anchor:
     column: 0
     row: 9
@@ -15,4 +15,4 @@ unit_stacks:
   count: 20
   anchor:
     column: 12
-    row: 1
+    row: 5
