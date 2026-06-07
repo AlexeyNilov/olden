@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from html import escape
 from importlib import import_module
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
@@ -18,117 +19,7 @@ from olden.unit_data.packaged import load_packaged_unit_catalog
 
 DEFAULT_REPLAY_DELAY_SECONDS = 1.0
 DEFAULT_REPLAY_PORT = 8081
-REPLAY_PAGE_CSS = """
-body {
-    background: #10131f;
-    color: #f7f0d0;
-}
-
-.replay-delay-input {
-    min-width: 9rem;
-}
-
-.replay-delay-input .q-field__control {
-    background: #1f2a44;
-    color: #f2d27a;
-}
-
-.replay-delay-input .q-field__control::before {
-    border-color: #8fa4c7;
-}
-
-.replay-delay-input .q-field__control::after {
-    border-color: #f2d27a;
-}
-
-.replay-delay-input .q-field__label {
-    color: #f7f0d0;
-}
-
-.replay-delay-input .q-field__native {
-    color: #ffffff;
-}
-
-.replay-delay-input .q-field__append {
-    color: #f2d27a;
-}
-
-.replay-surface {
-    width: 100%;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.battlefield-view {
-    flex: 0 1 auto;
-    min-width: 0;
-}
-
-.combat-log-panel {
-    flex: 0 0 26rem;
-    max-width: 26rem;
-    max-height: calc(100vh - 9rem);
-    overflow-y: auto;
-    border-left: 1px solid #3c465f;
-    padding-left: 0.75rem;
-}
-
-.combat-log {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.combat-log-entry {
-    border-bottom: 1px solid #2a3042;
-    color: #f7f0d0;
-    font-family: sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.35;
-    padding: 0.55rem 0.4rem;
-}
-
-.combat-log-entry.active {
-    background: #24344f;
-    color: #ffffff;
-}
-
-.combat-log-entry .event-kind {
-    color: #f2d27a;
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.combat-log-entry .event-detail {
-    display: block;
-}
-
-.combat-log-entry .counterattack-detail {
-    color: #d7e4f5;
-    display: block;
-    margin-top: 0.25rem;
-}
-
-@media (max-width: 900px) {
-    .replay-surface {
-        flex-direction: column;
-    }
-
-    .combat-log-panel {
-        flex: 0 0 auto;
-        max-width: none;
-        width: 100%;
-        max-height: 18rem;
-        border-left: 0;
-        border-top: 1px solid #3c465f;
-        padding-left: 0;
-        padding-top: 0.75rem;
-    }
-}
-"""
+REPLAY_PAGE_CSS_FILENAME = "replay_app.css"
 
 
 class ReplayController:
@@ -231,6 +122,10 @@ def load_replay_frames(initial_state_path: Path, combat_log_path: Path) -> tuple
     return build_combat_replay_frames(battle, combat_log)
 
 
+def load_replay_page_css() -> str:
+    return files("olden.battlefield_view").joinpath(REPLAY_PAGE_CSS_FILENAME).read_text(encoding="utf-8")
+
+
 def _build_page(
     ui: Any,
     frames: Sequence[CombatReplayFrame],
@@ -238,7 +133,7 @@ def _build_page(
     unit_image_directory: Path = DEFAULT_UNIT_IMAGE_DIRECTORY,
 ) -> ReplayController:
     ui.page_title("Olden Combat Replay")
-    ui.add_css(REPLAY_PAGE_CSS)
+    ui.add_css(load_replay_page_css())
     with ui.column().classes("w-full items-center q-pa-md"):
         status_label = ui.label("")
         with ui.row().classes("replay-surface"):

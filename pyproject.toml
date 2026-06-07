@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "olden"
-version = "0.0.27"
+version = "0.0.28"
 description = "Olden combat simulator."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -43,6 +43,7 @@ olden-combat-replay-view = "olden.battlefield_view.replay_app:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
+"olden.battlefield_view" = ["*.css"]
 "olden.unit_data" = ["*.yaml", "LICENSE-*.md", "NOTICE.md"]
 
 [tool.pytest.ini_options]

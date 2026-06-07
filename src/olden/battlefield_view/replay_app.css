@@ -1,0 +1,112 @@
+body {
+    background: #10131f;
+    color: #f7f0d0;
+    --battlefield-view-height: 560px;
+}
+
+.replay-delay-input {
+    min-width: 9rem;
+}
+
+.replay-delay-input .q-field__control {
+    background: #1f2a44;
+    color: #f2d27a;
+}
+
+.replay-delay-input .q-field__control::before {
+    border-color: #8fa4c7;
+}
+
+.replay-delay-input .q-field__control::after {
+    border-color: #f2d27a;
+}
+
+.replay-delay-input .q-field__label {
+    color: #f7f0d0;
+}
+
+.replay-delay-input .q-field__native {
+    color: #ffffff;
+}
+
+.replay-delay-input .q-field__append {
+    color: #f2d27a;
+}
+
+.replay-surface {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.battlefield-view {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.combat-log-panel {
+    flex: 0 0 26rem;
+    max-width: 26rem;
+    height: var(--battlefield-view-height);
+    max-height: var(--battlefield-view-height);
+    overflow-y: auto;
+    border-left: 1px solid #3c465f;
+    box-sizing: border-box;
+    padding-left: 0.75rem;
+}
+
+.combat-log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.combat-log-entry {
+    border-bottom: 1px solid #2a3042;
+    color: #f7f0d0;
+    font-family: sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    padding: 0.55rem 0.4rem;
+}
+
+.combat-log-entry.active {
+    background: #24344f;
+    color: #ffffff;
+}
+
+.combat-log-entry .event-kind {
+    color: #f2d27a;
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.combat-log-entry .event-detail {
+    display: block;
+}
+
+.combat-log-entry .counterattack-detail {
+    color: #d7e4f5;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 900px) {
+    .replay-surface {
+        flex-direction: column;
+    }
+
+    .combat-log-panel {
+        flex: 0 0 auto;
+        max-width: none;
+        width: 100%;
+        max-height: 18rem;
+        border-left: 0;
+        border-top: 1px solid #3c465f;
+        padding-left: 0;
+        padding-top: 0.75rem;
+    }
+}

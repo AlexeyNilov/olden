@@ -5,6 +5,7 @@ from olden.battlefield_view.replay_app import (
     ReplayController,
     _build_page,
     load_demo_replay_frames,
+    load_replay_page_css,
 )
 from olden.combat.combat_log import UnitAttackedEvent
 from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH
@@ -111,10 +112,18 @@ def test_build_page_applies_high_contrast_delay_input_and_scrollable_log_styles(
     assert "#f7f0d0" in ui.css
     assert "#1f2a44" in ui.css
     assert ".combat-log-panel" in ui.css
+    assert "height: var(--battlefield-view-height)" in ui.css
     assert "flex: 0 1 auto" in ui.css
     assert "overflow-y: auto" in ui.css
     assert "replay-delay-input" in ui.number_element.class_values
     assert "combat-log-panel" in ui.html_elements[-1].class_values
+
+
+def test_replay_page_css_is_loaded_from_packaged_stylesheet():
+    css = load_replay_page_css()
+
+    assert ".replay-delay-input .q-field__label" in css
+    assert ".combat-log-panel" in css
 
 
 DEFAULT_PLAYER_START = next(iter(load_demo_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
