@@ -1,6 +1,14 @@
-# olden
+# Heroes of Might and Magic: Olden Era combat simulator
 
-Heroes of Might and Magic: Olden Era combat simulator.
+Olden is a Python combat-simulation sandbox for exploring Heroes of Might and
+Magic: Olden Era battle mechanics. It models battlefield topology, unit stacks,
+movement, melee attacks, counterattacks, replayable combat logs, and a local
+browser replay view.
+
+The current research focus is deterministic stack-split strategy discovery:
+given a fixed battle setup and player unit pool, the simulator searches initial
+army formations, scores the resulting combat simulation, and saves the best
+battle plus combat log for inspection.
 
 ## Documentation map
 
