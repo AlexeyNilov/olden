@@ -141,6 +141,43 @@ Within a single discovery run, repeated genomes reuse cached deterministic
 evaluations. The best individual is selected by score, with the genome tuple as
 the deterministic tie-breaker.
 
+## Tuning guidance
+
+Increase `GENETIC_STRATEGY_DISCOVERY_GENERATIONS` first when the discovery run
+sometimes finds strong splits but misses them on other runs. More generations
+give the algorithm more chances to refine, recombine, and mutate useful
+patterns that are already present in the population.
+
+Increase `GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE` when results appear too
+dependent on lucky initial candidates. A larger population samples more of the
+search space in each generation, but every generation also becomes more
+expensive.
+
+For local tuning, prefer increasing generations before increasing population
+size. For example, try:
+
+```text
+GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=100
+GENETIC_STRATEGY_DISCOVERY_GENERATIONS=150
+```
+
+before:
+
+```text
+GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=200
+GENETIC_STRATEGY_DISCOVERY_GENERATIONS=50
+```
+
+Raise both when reliability matters more than runtime:
+
+```text
+GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=200
+GENETIC_STRATEGY_DISCOVERY_GENERATIONS=150
+```
+
+The genetic algorithm is still probabilistic. For small deterministic scenarios,
+exhaustive enumeration is a better way to prove the true optimum.
+
 ## Outputs
 
 When `sample/genetic_strategy_discovery.py` completes, it writes:
