@@ -112,6 +112,7 @@ def test_build_page_applies_high_contrast_delay_input_and_scrollable_log_styles(
     assert "#f7f0d0" in ui.css
     assert "#1f2a44" in ui.css
     assert ".combat-log-panel" in ui.css
+    assert "flex: 0 1 auto" in ui.css
     assert "overflow-y: auto" in ui.css
     assert "replay-delay-input" in ui.number_element.class_values
     assert "combat-log-panel" in ui.html_elements[-1].class_values
