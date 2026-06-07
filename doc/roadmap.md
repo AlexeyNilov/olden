@@ -146,7 +146,7 @@
 
 **Status:** Next
 
-* Move and attack in the same turn if target is in reach
+* Move and apply melee attack in the same turn if target is in reach
 * Decide whether movement-only simulation should remain separate
   or be consolidated with the full combat simulation once both paths stabilize
 
