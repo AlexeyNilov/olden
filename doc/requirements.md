@@ -169,6 +169,7 @@ This helps ensure requirements are:
 * **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
 * **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving player units, then remaining player health, then enemy units killed, and then faster completion.
 * **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 action opportunities.
+* **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS` to override the stack-split scenario turn cap.
 * **When** the genetic strategy discovery sample completes, **the system shall** save the best discovered initial battle and a replayable combat log for that battle.
 * **While** turn-level combat strategy is deferred, **the system shall** keep stack-split strategy discovery limited to initial army formation and fixed deployment slots.
 

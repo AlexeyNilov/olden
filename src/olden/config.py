@@ -13,6 +13,7 @@ DEMO_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
 DEMO_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE = 24
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS = 20
+DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS = 100
 DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS = max(1, (os.cpu_count() or 1) - 1)
 
 SUPPORTED_LOG_LEVELS = {
@@ -63,6 +64,10 @@ class Config:
         self.genetic_strategy_discovery_generations = self.get_positive_int_env(
             "GENETIC_STRATEGY_DISCOVERY_GENERATIONS",
             default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
+        )
+        self.genetic_strategy_discovery_max_turns = self.get_positive_int_env(
+            "GENETIC_STRATEGY_DISCOVERY_MAX_TURNS",
+            default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_MAX_TURNS,
         )
         self.genetic_strategy_discovery_workers = self.get_positive_int_env(
             "GENETIC_STRATEGY_DISCOVERY_WORKERS",

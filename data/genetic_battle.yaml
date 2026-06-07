@@ -5,7 +5,7 @@ unit_stacks:
   - id: player-esquire
     unit_id: esquire
     side: player
-    count: 15
+    count: 20
     anchor:
       column: 0
       row: 9

@@ -40,7 +40,7 @@ Each candidate genome is materialized into a battle, then simulated with:
 * fixed stack order from the materialized battle
 * `first_path`, which picks the first available shortest engagement path
 * `average_damage`, which uses `(damage_min + damage_max) // 2`
-* `max_turns` of 100 for the stack-split scenario
+* `max_turns` of 100 for the stack-split scenario by default
 
 Average damage is intentional for strategy discovery. It removes random damage
 variance so a genome has one deterministic score. That makes repeated
@@ -104,6 +104,7 @@ splits. By default it uses:
 
 * population size: 24
 * generations: 20
+* max turns: 100
 * mutation rate: 0.25
 * tournament size: 3
 * workers: CPU count minus one, minimum one
@@ -116,6 +117,10 @@ costs more simulations.
 the current one. More generations give selection, crossover, and mutation more
 chances to improve the result.
 
+`max turns` is the maximum number of action opportunities simulated for one
+candidate battle. It bounds slow or stuck evaluations and can be overridden with
+`GENETIC_STRATEGY_DISCOVERY_MAX_TURNS`.
+
 `mutation rate` is the probability that a newly bred child genome is mutated.
 The current mutation moves one unit from a non-empty deployment slot to another
 slot. A rate of `0.25` means about one in four children gets this extra
@@ -125,10 +130,10 @@ variation step.
 choosing each parent. A larger tournament increases selection pressure toward
 high-scoring genomes; a smaller tournament preserves more diversity.
 
-Population size, generation count, and worker count can be overridden through
-configuration. Mutation moves one unit from a non-empty slot to another slot.
-Crossover chooses each slot from one of two parents, then repairs the child so
-the total unit count matches the scenario.
+Population size, generation count, max turns, and worker count can be
+overridden through configuration. Mutation moves one unit from a non-empty slot
+to another slot. Crossover chooses each slot from one of two parents, then
+repairs the child so the total unit count matches the scenario.
 
 Within a single discovery run, repeated genomes reuse cached deterministic
 evaluations. The best individual is selected by score, with the genome tuple as
