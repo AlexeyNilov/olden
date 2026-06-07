@@ -53,6 +53,9 @@
 
 ## Future plans
 
+* Implement staying out of melee range action; Attacker only? How to add it into the genom?
+* Implement wait and skip actions; how to add them into the genom?
+
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
   two counterattacks per round, and Alert II units allowing unlimited
