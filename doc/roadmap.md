@@ -6,156 +6,62 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 1: Battlefield model
+## Milestone 17: Combat simulation responsibility split
 
-**Status:** Done
+**Status:** Next
 
-* Battlefield topology
-* Coordinate validation
-* Neighbor lookup
-* Whole-hex obstacles
-* Side-based deployment zones
-* Occupancy rules
+* Review `src/olden/combat/combat_simulation.py` responsibilities before adding more combat mechanics.
+* Keep combat simulation responsible for advancing the simulation, not for owning every policy and rule detail.
+* Separate round and action-opportunity state from the simulation loop.
+* Move target selection, engagement-path choice, and action selection behind explicit strategy or policy boundaries.
+* Keep movement and attack application in focused combat-action code that can be called by simulation, replay, and future manual control.
+* Centralize combat-log event recording around applied battle actions so simulation does not hand-build every event.
+* Preserve existing observable behavior for initiative ordering, nearest-enemy targeting, movement, melee attacks, counterattack limits, and replay.
+* Add behavior tests that prove the refactor preserves simulation output and replayability.
 
-## Milestone 2: Unit model
+## Milestone 18: Damage calculation and application split
 
-**Status:** Done
+**Status:** Later
 
-* Unit identity
-* Unit side
-* Unit stack data
-* Unit speed
-* Single-coordinate unit occupancy
+* Review `src/olden/combat/attack.py` responsibilities before adding more damage modifiers.
+* Separate pure damage calculation from battle-state mutation.
+* Introduce an explicit damage context that carries attacker, defender, selected damage, and future modifier inputs.
+* Return damage results without requiring a mutable `Battle`.
+* Keep wound carryover, creature deaths, stack removal, and occupancy updates in focused damage-application code.
+* Preserve current melee damage behavior: selected unit damage, attack/defense modifier, floor rounding, minimum `1` final damage, wound carryover, and defeated-stack removal.
+* Leave hero stats, damage tags, luck, range penalties, abilities, and other deferred modifiers out until their requirements are committed.
+* Add behavior tests for pure damage calculation and separate damage application.
 
-## Milestone 3: Range and movement math
+## Milestone 19: Combat log replay contract and event application
 
-**Status:** Done
+**Status:** Later
 
-* Distance between two hexes
-* Movement radius by unit speed
+* Decide whether combat logs are authoritative battle-event facts or validation fixtures against current combat rules.
+* Centralize combat-log event application so replay, replay-frame generation, tests, and future tools do not duplicate movement and attack replay logic.
+* Define how combat-log schema versions and combat-rule versions are represented.
+* If combat logs are durable artifacts, include enough event payload to apply logged outcomes without recomputing changed future mechanics.
+* If combat logs remain rule-validation artifacts, document that older logs may fail when combat rules intentionally change.
+* Preserve current replay validation behavior for movement paths, selected damage, final damage, wound damage, defeated stacks, and counterattacks until the contract changes.
+* Add behavior tests that cover centralized event application from an initial battle into final battle state and replay frames.
 
-## Milestone 4: Movement simulation
+## Milestone 20: Combat side terminology and army order
 
-**Status:** Done
+**Status:** Later
 
-* Single-hex movement validation with obstacles and occupancy
-* Movement cost rules
-* Pathfinding
-
-## Milestone 5: Battlefield view
-
-**Status:** Done
-
-* Field rendering
-* Unit placement display
-
-## Milestone 6: Data layer
-
-**Status:** Done
-
-* Unit database and related operations
-* Local YAML-backed unit catalog
-* Packaged CC BY-SA unit data boundary
-
-## Milestone 7: Battlefield unit image
-
-**Status:** Done
-
-* _demo_stack: use load_packaged_unit_catalog() to load the swordsman (by id esquire)
-* How do we name unit image in the battlefield view? Unit image? Update the glosary
-* Use picture image/esquire.webp (the file name is the same as the unit id) as the unit image if the file exists, otherwise show the name
-* Show only stack count above the unit image (no need to show the name because we can see the image)
-
-## Milestone 8: Battlefield state and combat log
-
-**Status:** Done
-
-* Minimal round and turn markers for replay metadata
-* Save/load battle initial state from/to YAML files in the `data` folder
-* Save/load combat log events for battle start and unit movement
-* Replay combat logs from battle initial state to reconstruct movement occupancy
-* Render loaded battle state through the battlefield view model
-
-## Milestone 9: Engagement movement simulation foundation
-
-**Status:** Done
-
-* Fixed two-stack movement order without initiative
-* Random tie-breaking among equally short engagement paths
-* Turn-by-turn movement until adjacent engagement
-* Replayable movement combat log
-
-## Milestone 10: Combat log replay view
-
-**Status:** Done
-
-* Separate combat replay view app
-* Replay frame generation from initial battle state and combat log
-* Event-by-event battlefield rendering
-* Configurable playback delay
-* Playback controls for play, pause, restart, previous, and next
-
-
-## Milestone 11: Combat actions: Melee attack
-
-**Status:** Done
-
-* Review `doc/combat_system_reference.md`
-* Attack targeting
-* Damage resolution
-* Counter attack
-
-## Milestone 12: Combat simulation
-
-**Status:** Done
-
-* Rename the early movement demo to `sample/demo_simulation.py`
-* Add the melee combat simulation to `sample/demo_simulation.py` 
-* Log attacks in the combat log
-
-## Milestone 13: Combat simulation view
-
-**Status:** Done
-
-* How do we show attacks using `src/olden/battlefield_view/replay_app.py`
-* Add combat log window to the right side of the view
-* The combat log window must be scrollable
-
-## Milestone 14: Implement initiative
-
-**Status:** Done
-
-* Add griffin to the `units.yaml` from https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Griffin
-* Add stack of 5 grifins to the player in `data/demo_battle.yaml`
-* Review `doc/combat_system_reference.md`
-* How do we integrate the initiative into the current combat logic?
-* Update `sample/demo_simulation.py` with the new logic and grffin
-
-## Milestone 15: Use genetic algorithm for combat strategy optimization/discovery
-
-**Status:** Done
-
-* Added stack-split strategy discovery as initial army formation optimization.
-* Added `data/genetic_battle.yaml` with a stack of 10 player-owned Swordsmen and a stack of 20 enemy-owned Swordsmen.
-* Added a genetic algorithm over a genome of up to 7 fixed player deployment slots.
-* Added deterministic average-damage evaluation.
-* Added fitness scoring that prioritizes player survivors, remaining player health, enemy kills, and faster completion.
-* Added `sample/genetic_strategy_discovery.py`, which writes the best discovered battle to `data/genetic_best_battle.yaml` and its replayable combat log to `data/genetic_best_combat_log.yaml`.
-
-## Milestone 16: Move and attack
-
-**Status:** Done
-
-* Move and apply melee attack in the same turn if target is in reach.
-* Removed the separate movement simulation API; full combat simulation owns engagement movement.
+* Consolidate side terminology around attacker and defender as battle roles.
+* Treat the current player side as the attacker role and the current enemy side as the defender role.
+* Decide whether to rename `CombatSide.PLAYER` and `CombatSide.ENEMY` to attacker and defender, or introduce a compatibility migration for serialized battle data first.
+* Keep player control, NPC control, and strategy ownership separate from attacker/defender battle roles.
+* Update glossary, requirements, battle setup YAML, sample data, tests, combat logs, battlefield view labels, and strategy-discovery naming consistently.
+* Add explicit army-slot order metadata separate from deployment coordinates and stack insertion order.
+* Use attacker/defender roles and army-slot order as prerequisites for exact initiative and speed tie-breaking.
+* Preserve current behavior during the terminology migration: attacker starts on the left, defender starts on the right, and existing sample battles still load through the chosen compatibility path.
 
 ## Future plans
 
 * Later concern: decide whether exact initiative and speed ties should alternate
   between attacker and defender by odd/even round, as observed in Olden Era
   reference notes, instead of using stable configured order.
-* Later concern: decide how attacker and defender battle roles should relate to
-  player and enemy sides in manual simulations.
 * Later concern: replace nearest-enemy target selection with explicit combat
   strategy once multi-stack NPC planning is implemented.
 * Later concern: model counterattack capacity as unit combat data, with normal

@@ -132,7 +132,7 @@ This helps ensure requirements are:
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
-* **While** morale, luck, hero stats, damage tags, abilities, range penalties, and initiative are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **While** morale, luck, hero stats, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Combat simulation
 
@@ -217,9 +217,9 @@ This helps ensure requirements are:
 ### Deferred behavior
 
 * **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
-* **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
+* **While** attacker/defender tie alternation and army-slot ordering are deferred, **the system shall** preserve configured stack order for exact initiative and speed ties.
 * **While** non-melee combat action simulation is deferred, **the system shall** avoid exposing morale, luck, ability, cost, growth, upgrade, long-reach attack, ranged attack, or other deferred behavior as part of the Unit model.
-* **While** combat mechanics beyond committed melee attack behavior are deferred, **the system shall** avoid applying morale, luck, initiative, economy, upgrade, ability, long-reach attack, ranged attack, or other deferred behavior from unit catalog records.
+* **While** combat mechanics beyond committed turn ordering and melee attack behavior are deferred, **the system shall** avoid applying morale, luck, economy, upgrade, ability, long-reach attack, ranged attack, or other deferred behavior from unit catalog records.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
 * **While** all unit stacks occupy exactly one coordinate, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior.
 * **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.

@@ -19,7 +19,7 @@
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that combat simulation can move toward before resolving melee attacks.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
 * **Hex coordinate:** A zero-based `(column, row)` address for one battlefield hex.
-* **Initiative:** Future unit stat that contributes to turn order.
+* **Initiative:** Unit stat that determines combat simulation turn order before speed and configured stack order tie-breakers.
 * **Luck:** Future combat modifier that can alter damage up or down during attack resolution.
 * **Morale:** Future combat modifier that can grant an extra action or cause a lost action.
 * **Movement cost:** The number of movement points needed to traverse one step in a movement path. Current single-hex movement cost is always `1` per step.
