@@ -34,9 +34,9 @@
 
 ## Milestone 19: Combat log replay contract and event application
 
-**Status:** Later
+**Status:** Next
 
-* Decide whether combat logs are authoritative battle-event facts or validation fixtures against current combat rules.
+* Decide whether combat logs are authoritative battle-event facts or validation fixtures against current combat rules. List pros and cons of these two options.
 * Centralize combat-log event application so replay, replay-frame generation, tests, and future tools do not duplicate movement and attack replay logic.
 * Define how combat-log schema versions and combat-rule versions are represented.
 * If combat logs are durable artifacts, include enough event payload to apply logged outcomes without recomputing changed future mechanics.
@@ -44,30 +44,21 @@
 * Preserve current replay validation behavior for movement paths, selected damage, final damage, wound damage, defeated stacks, and counterattacks until the contract changes.
 * Add behavior tests that cover centralized event application from an initial battle into final battle state and replay frames.
 
-## Milestone 20: Combat side terminology and army order
+## Milestone 20: Better targeting
 
-**Status:** Next
+**Status:** Later
 
-* Consolidate side terminology around attacker and defender as battle roles.
-* Rename `CombatSide.PLAYER` and `CombatSide.ENEMY` to `CombatSide.ATTACKER` and `CombatSide.DEFENDER`.
-* Reject old serialized `player` and `enemy` side values rather than maintaining compatibility.
-* Keep human control, NPC control, and strategy ownership separate from attacker/defender battle roles.
-* Update glossary, requirements, battle setup YAML, sample data, tests, combat logs, battlefield view labels, and strategy-discovery naming consistently.
-* Add explicit army-slot order metadata separate from deployment coordinates and stack insertion order.
-* Use attacker/defender roles and army-slot order as prerequisites for exact initiative and speed tie-breaking.
-* Preserve current behavior during the terminology migration: attacker starts on the left and defender starts on the right.
+* Replace nearest-opponent target selection with explicit combat strategy
+* Proposal: the optimal targeting is removing the most dangerous units from the field; dangerous means potentially applicabale damage; the math should include number of units the current stack can potentialy kill using its average damage; tie breaks could be solved by the nearest stack, and stack with zero counterattack count; in other cases the targeting could be just random;
 
 ## Future plans
 
-* Later concern: decide whether exact initiative and speed ties should alternate
-  between attacker and defender by odd/even round, as observed in Olden Era
-  reference notes, instead of using stable configured order.
-* Later concern: replace nearest-opponent target selection with explicit combat
-  strategy once multi-stack NPC planning is implemented.
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
   two counterattacks per round, and Alert II units allowing unlimited
   counterattacks per round.
 * Later concern: decide how Guardian Griffin's Loyal Protector passive should
   interact with counterattack capacity, adjacency, and target selection.
-* NPC combat strategy
+* Later concern: decide whether exact initiative and speed ties should alternate
+  between attacker and defender by odd/even round, as observed in Olden Era
+  reference notes, instead of using stable configured order. Add initiative visualization to the replay app?
