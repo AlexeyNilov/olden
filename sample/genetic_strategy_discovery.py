@@ -6,6 +6,7 @@ from olden.combat.battle_setup import load_battle_initial_state_file, save_battl
 from olden.combat.combat_log import save_combat_log_file
 from olden.combat.combat_simulation import CombatSimulationResult
 from olden.combat.coordinates import HexCoord
+from olden.config import load_config
 from olden.strategy_discovery.stack_split import (
     StackSplitDiscoveryResult,
     StackSplitScenario,
@@ -43,9 +44,12 @@ def run_genetic_strategy_discovery(
     best_battle_path: Path = DEFAULT_BEST_BATTLE_PATH,
     best_combat_log_path: Path = DEFAULT_BEST_COMBAT_LOG_PATH,
     seed: int | None = None,
-    population_size: int = 24,
-    generations: int = 20,
+    population_size: int | None = None,
+    generations: int | None = None,
 ) -> GeneticStrategyDiscoverySampleResult:
+    config = load_config()
+    resolved_population_size = config.genetic_strategy_discovery_population_size if population_size is None else population_size
+    resolved_generations = config.genetic_strategy_discovery_generations if generations is None else generations
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
     scenario = StackSplitScenario(
         base_battle=battle,
@@ -58,8 +62,8 @@ def run_genetic_strategy_discovery(
     discovery_result = discover_stack_split_strategy(
         scenario,
         random_source=random.Random(seed),
-        population_size=population_size,
-        generations=generations,
+        population_size=resolved_population_size,
+        generations=resolved_generations,
     )
     best_genome = discovery_result.best_individual.genome
     best_battle = materialize_stack_split_battle(scenario, best_genome)

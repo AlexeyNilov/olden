@@ -11,6 +11,8 @@ from olden.exceptions import ConfigError
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEMO_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
 DEMO_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
+DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE = 24
+DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS = 20
 
 SUPPORTED_LOG_LEVELS = {
     "DEBUG": logging.DEBUG,
@@ -53,6 +55,14 @@ class Config:
             "REPLAY_COMBAT_LOG_PATH",
             default=DEMO_COMBAT_LOG_PATH,
         )
+        self.genetic_strategy_discovery_population_size = self.get_positive_int_env(
+            "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE",
+            default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE,
+        )
+        self.genetic_strategy_discovery_generations = self.get_positive_int_env(
+            "GENETIC_STRATEGY_DISCOVERY_GENERATIONS",
+            default=DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
+        )
 
     def get_required_env(self, key: str) -> str:
         value = os.getenv(key)
@@ -77,6 +87,18 @@ class Config:
         if not value or not value.strip():
             return default
         return Path(value.strip()).expanduser()
+
+    def get_positive_int_env(self, key: str, *, default: int) -> int:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+        try:
+            parsed = int(value.strip())
+        except ValueError as exc:
+            raise ConfigError(f"{key} must be a positive integer") from exc
+        if parsed < 1:
+            raise ConfigError(f"{key} must be a positive integer")
+        return parsed
 
 
 def load_config() -> Config:
