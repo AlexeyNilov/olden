@@ -98,7 +98,20 @@ def test_unit_record_converts_to_current_combat_unit_definition():
     assert definition.id == "esquire"
     assert definition.name == "Swordsman"
     assert definition.speed == 4
+    assert definition.combat.health == 12
+    assert definition.combat.attack == 4
+    assert definition.combat.defense == 4
+    assert definition.combat.damage.minimum == 2
+    assert definition.combat.damage.maximum == 3
+    assert definition.combat.attack_category.value == "melee"
     assert len(definition.footprint.offsets) == 1
+
+
+def test_unit_record_rejects_unsupported_attack_category_during_conversion():
+    catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: ranged"))
+
+    with pytest.raises(UnitCatalogValidationError, match="attack_category"):
+        catalog.get("esquire").to_unit_definition()
 
 
 def test_packaged_unit_catalog_loads_attributed_sample_records():

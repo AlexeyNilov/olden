@@ -1,6 +1,6 @@
 from olden.battlefield_view.unit_images import resolve_unit_image
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
 
 
 def test_resolve_unit_image_returns_route_when_definition_id_webp_exists(tmp_path):
@@ -26,5 +26,21 @@ def test_resolve_unit_image_returns_none_when_definition_id_is_not_a_plain_file_
 
 
 def _stack_for_unit_id(unit_id: str) -> UnitStack:
-    definition = UnitDefinition(id=unit_id, name="Swordsman", speed=4, footprint=UnitFootprint.single_hex())
+    definition = UnitDefinition(
+        id=unit_id,
+        name="Swordsman",
+        speed=4,
+        footprint=UnitFootprint.single_hex(),
+        combat=_combat_stats(),
+    )
     return UnitStack(id="player-stack", definition=definition, side=CombatSide.PLAYER, count=10)
+
+
+def _combat_stats() -> UnitCombatStats:
+    return UnitCombatStats(
+        health=12,
+        attack=4,
+        defense=4,
+        damage=DamageRange(minimum=2, maximum=3),
+        attack_category=AttackCategory.MELEE,
+    )

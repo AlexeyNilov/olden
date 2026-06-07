@@ -8,7 +8,7 @@ from olden.combat.movement_simulation import (
 )
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
 
 
 def test_movement_simulation_moves_player_first_and_alternates_until_units_are_adjacent():
@@ -115,5 +115,17 @@ def _battle(player_anchor: HexCoord, enemy_anchor: HexCoord) -> Battle:
 
 
 def _stack(stack_id: str, side: CombatSide) -> UnitStack:
-    definition = UnitDefinition(id="esquire", name="Swordsman", speed=4, footprint=UnitFootprint.single_hex())
+    definition = UnitDefinition(
+        id="esquire",
+        name="Swordsman",
+        speed=4,
+        footprint=UnitFootprint.single_hex(),
+        combat=UnitCombatStats(
+            health=12,
+            attack=4,
+            defense=4,
+            damage=DamageRange(minimum=2, maximum=3),
+            attack_category=AttackCategory.MELEE,
+        ),
+    )
     return UnitStack(id=stack_id, definition=definition, side=side, count=10)

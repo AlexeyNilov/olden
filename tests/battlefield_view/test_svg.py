@@ -4,7 +4,7 @@ from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
 
 
 def test_svg_renderer_outputs_one_polygon_per_renderable_hex_and_unit_label():
@@ -87,7 +87,13 @@ def test_svg_renderer_falls_back_to_unit_name_and_count_when_definition_image_is
 def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
     stack = UnitStack(
         id="enemy-esquire",
-        definition=UnitDefinition(id="esquire", name="Swordsman", speed=4, footprint=UnitFootprint.single_hex()),
+        definition=UnitDefinition(
+            id="esquire",
+            name="Swordsman",
+            speed=4,
+            footprint=UnitFootprint.single_hex(),
+            combat=_combat_stats(),
+        ),
         side=CombatSide.ENEMY,
         count=20,
     )
@@ -110,8 +116,24 @@ def test_register_unit_image_static_files_uses_local_image_directory(tmp_path):
 
 
 def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitStack:
-    definition = UnitDefinition(id=unit_id, name=name, speed=4, footprint=UnitFootprint.single_hex())
+    definition = UnitDefinition(
+        id=unit_id,
+        name=name,
+        speed=4,
+        footprint=UnitFootprint.single_hex(),
+        combat=_combat_stats(),
+    )
     return UnitStack(id=stack_id, definition=definition, side=CombatSide.PLAYER, count=count)
+
+
+def _combat_stats() -> UnitCombatStats:
+    return UnitCombatStats(
+        health=12,
+        attack=4,
+        defense=4,
+        damage=DamageRange(minimum=2, maximum=3),
+        attack_category=AttackCategory.MELEE,
+    )
 
 
 class FakeApp:

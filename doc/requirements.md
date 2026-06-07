@@ -53,10 +53,12 @@ This helps ensure requirements are:
 
 ### Unit model
 
-* **When** a unit definition is represented, **the system shall** expose stable identity, display name, speed, and footprint data.
+* **When** a unit definition is represented, **the system shall** expose stable identity, display name, speed, footprint, health, attack, defense, damage range, and attack category data.
 * **When** a unit definition has negative speed, **the system shall** reject it as invalid.
-* **When** a unit stack is represented, **the system shall** expose stack identity, combat side, unit definition, and creature count.
+* **When** a unit definition has non-positive health, negative attack, negative defense, or an inverted damage range, **the system shall** reject it as invalid.
+* **When** a unit stack is represented, **the system shall** expose stack identity, combat side, unit definition, creature count, and current wound damage.
 * **When** a unit stack count is zero or negative, **the system shall** reject it as invalid.
+* **When** a unit stack's wound damage is negative or greater than or equal to the unit definition's health, **the system shall** reject it as invalid.
 * **When** a single-hex unit footprint is anchored at a coordinate, **the system shall** occupy only the anchor coordinate.
 * **When** a multi-hex unit footprint is anchored at a coordinate, **the system shall** derive occupied coordinates from the anchor and footprint offsets.
 * **When** a unit footprint is empty or omits the anchor offset, **the system shall** reject it as invalid.
@@ -69,7 +71,8 @@ This helps ensure requirements are:
 * **When** unit catalog data is loaded, **the system shall** reject malformed required fields before exposing records to callers.
 * **When** unit catalog data represents morale or luck, **the system shall** preserve the modifier range as explicit minimum and maximum values.
 * **When** unit catalog data contains a modifier range whose maximum is lower than its minimum, **the system shall** reject the catalog.
-* **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition from only stable identity, display name, speed, and single-hex footprint data.
+* **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition with stable identity, display name, speed, single-hex footprint, health, attack, defense, damage range, and attack category data.
+* **When** a unit record is converted for current combat simulation with an unsupported attack category, **the system shall** reject the conversion.
 * **When** bundled unit catalog data is derived from a CC BY-SA source, **the system shall** keep source attribution and catalog license metadata with the packaged data.
 
 ### Occupancy
@@ -119,6 +122,20 @@ This helps ensure requirements are:
 
 * **When** a battle moves a unit stack, **the system shall** validate the movement against the stack's current anchor, unit speed, obstacles, and occupancy before mutating occupancy.
 * **When** a battle moves a unit stack, **the system shall** return a movement result containing the stack ID, start coordinate, destination coordinate, and movement path.
+
+### Melee attack
+
+* **When** a melee attack is resolved, **the system shall** require the attacker and defender to be opposing unit stacks.
+* **When** a melee attack is resolved, **the system shall** require the defender to occupy a hex adjacent to the attacker.
+* **When** a melee attack is resolved, **the system shall** require the attacker to have the melee attack category.
+* **When** attack damage is resolved, **the system shall** calculate base damage as attacker count multiplied by the selected damage value from the attacker's damage range.
+* **When** attack damage is resolved, **the system shall** apply the attack/defense modifier `(20 + attacker attack) / (20 + defender defense)`.
+* **When** attack damage produces a fractional result, **the system shall** round the result down to the nearest integer.
+* **When** attack damage is resolved, **the system shall** deal at least `1` final damage.
+* **When** attack damage is applied to a unit stack, **the system shall** carry partial damage forward as wound damage on the current surviving creature.
+* **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
+* **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
+* **While** morale, luck, hero stats, damage tags, abilities, range penalties, initiative, and once-per-round counterattack limits are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Movement-only simulation
 
@@ -173,8 +190,8 @@ This helps ensure requirements are:
 
 * **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
 * **While** turn-order simulation is deferred, **the system shall** avoid exposing initiative tie-breaker behavior.
-* **While** combat action simulation is deferred, **the system shall** avoid exposing damage, morale, luck, attack-resolution, ability, cost, growth, or upgrade behavior as part of the Unit model.
-* **While** combat actions are deferred, **the system shall** avoid applying attack, defense, damage, morale, luck, initiative, economy, upgrade, or ability behavior from unit catalog records.
+* **While** non-melee combat action simulation is deferred, **the system shall** avoid exposing morale, luck, ability, cost, growth, upgrade, long-reach attack, ranged attack, or other deferred behavior as part of the Unit model.
+* **While** combat mechanics beyond committed melee attack behavior are deferred, **the system shall** avoid applying morale, luck, initiative, economy, upgrade, ability, long-reach attack, ranged attack, or other deferred behavior from unit catalog records.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
 * **While** multi-hex movement is deferred, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior as part of single-hex movement simulation.
 * **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.

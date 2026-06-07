@@ -3,7 +3,7 @@ from typing import Any
 
 import yaml
 
-from olden.combat.units import UnitDefinition, UnitFootprint
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint
 
 
 class UnitCatalogError(ValueError):
@@ -66,7 +66,24 @@ class UnitRecord:
     source: UnitSourceRecord
 
     def to_unit_definition(self) -> UnitDefinition:
-        return UnitDefinition(id=self.id, name=self.name, speed=self.combat.speed, footprint=UnitFootprint.single_hex())
+        try:
+            attack_category = AttackCategory(self.combat.attack_category)
+        except ValueError as exc:
+            msg = f"Unsupported attack_category for unit record: {self.id}"
+            raise UnitCatalogValidationError(msg) from exc
+        return UnitDefinition(
+            id=self.id,
+            name=self.name,
+            speed=self.combat.speed,
+            footprint=UnitFootprint.single_hex(),
+            combat=UnitCombatStats(
+                health=self.combat.health,
+                attack=self.combat.attack,
+                defense=self.combat.defense,
+                damage=DamageRange(minimum=self.combat.damage.minimum, maximum=self.combat.damage.maximum),
+                attack_category=attack_category,
+            ),
+        )
 
 
 @dataclass(frozen=True, slots=True)

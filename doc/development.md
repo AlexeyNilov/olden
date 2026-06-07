@@ -89,6 +89,7 @@ src/olden/
 
     combat/
         __init__.py
+        attack.py
         battle.py
         battle_setup.py
         battlefield.py
@@ -147,6 +148,7 @@ tests/
 * Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
 * Put battle-level state orchestration in `battle.py`.
+* Put melee attack targeting and damage resolution in `attack.py`.
 * Put battle initial-state YAML loading and saving in `battle_setup.py`.
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put combat-log replay frame generation in `combat_replay.py`.

@@ -5,7 +5,7 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 VALID_INITIAL_STATE_YAML = """
@@ -44,7 +44,13 @@ def test_battlefield_view_exposes_blocked_state_for_obstacle_coordinates():
 def test_battlefield_view_exposes_occupying_unit_identity_and_optional_stack_metadata():
     swordsman = UnitStack(
         id="unit-1",
-        definition=UnitDefinition(id="swordsman", name="Swordsman", speed=4, footprint=UnitFootprint.single_hex()),
+        definition=UnitDefinition(
+            id="swordsman",
+            name="Swordsman",
+            speed=4,
+            footprint=UnitFootprint.single_hex(),
+            combat=_combat_stats(),
+        ),
         side=CombatSide.PLAYER,
         count=12,
     )
@@ -75,3 +81,13 @@ def test_battlefield_view_can_render_loaded_battle_state():
     renderable_hex = view.hex_at(HexCoord(0, 5))
     assert renderable_hex.occupant_id == "player-esquire"
     assert renderable_hex.unit_stack == battle.unit_stacks["player-esquire"]
+
+
+def _combat_stats() -> UnitCombatStats:
+    return UnitCombatStats(
+        health=12,
+        attack=4,
+        defense=4,
+        damage=DamageRange(minimum=2, maximum=3),
+        attack_category=AttackCategory.MELEE,
+    )

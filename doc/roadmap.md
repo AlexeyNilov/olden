@@ -98,7 +98,7 @@
 
 ## Milestone 11: Combat actions: Melee attack
 
-**Status:** Next
+**Status:** Done
 
 * Review `doc/combat_system_reference.md`
 * Attack targeting
@@ -107,7 +107,7 @@
 
 ## Milestone 12: Combat simulation
 
-**Status:** Later
+**Status:** Next
 
 * Rename `sample/demo_movement_simulation.py` to `sample/demo_simulation.py`
 * Add the melee combat simulation to `sample/demo_simulation.py` 

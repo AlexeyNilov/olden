@@ -7,7 +7,7 @@
 * **Battlefield hex:** One addressable hex on the battlefield, including its coordinate and static field metadata.
 * **Battlefield topology:** The battlefield's shape, valid coordinates, and neighbor relationships.
 * **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
-* **Attack category:** Future unit attack classification, such as melee, long-reach, or ranged.
+* **Attack category:** Unit attack classification. Current combat simulation supports melee; long-reach and ranged attacks are deferred.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The player-controlled side starts on the left; the enemy side starts on the right.
 * **Combat log:** Ordered combat-event history that can be replayed from a battle initial state.
@@ -42,3 +42,4 @@
 * **Unit image:** A battlefield-view visual asset for a unit definition, resolved by stable unit ID.
 * **Unit record:** A catalog entry for one unit type, including source metadata and stats that may not yet affect combat simulation.
 * **Unit stack:** A battle-state instance of a unit definition with a side and creature count.
+* **Wound damage:** Damage already applied to the current surviving creature in a unit stack, carried forward between attacks until that creature dies.
