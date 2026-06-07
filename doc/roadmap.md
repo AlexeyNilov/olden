@@ -142,12 +142,16 @@
 * Added fitness scoring that prioritizes player survivors, remaining player health, enemy kills, and faster completion.
 * Added `sample/genetic_strategy_discovery.py`, which writes the best discovered battle to `data/genetic_best_battle.yaml` and its replayable combat log to `data/genetic_best_combat_log.yaml`.
 
+## Milestone 16: Move and attack
+
+**Status:** Next
+
+* Move and attack in the same turn if target is in reach
+* Decide whether movement-only simulation should remain separate
+  or be consolidated with the full combat simulation once both paths stabilize
 
 ## Future plans
 
-* Move and attack if target is in reach
-* Later concern: decide whether movement-only simulation should remain separate
-  or be consolidated with the full combat simulation once both paths stabilize
 * Later concern: decide whether exact initiative and speed ties should alternate
   between attacker and defender by odd/even round, as observed in Olden Era
   reference notes, instead of using stable configured order.
