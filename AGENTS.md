@@ -53,6 +53,11 @@ Keep only high-risk combat constraints here; read owner docs for full behavior.
 - Use `HexCoord(column, row)` at public boundaries and in behavior tests. Keep axial/cube coordinates internal unless a public API need is documented.
 - Do not implement deferred combat mechanics from reference notes until committed behavior exists in `doc/requirements.md`.
 
+## Python Environment
+
+- Use the project virtualenv for every direct Python invocation: `.venv/bin/python` on Unix, `.venv/Scripts/python.exe` on Windows (same paths as the Makefile `PYTHON` variable).
+- Do not probe `python`, `python3`, or system Python first; the package is installed editable in `.venv` only.
+
 ## Verification
 
 For code changes, run `make test`, `make format`, `make lint`, and `make mypy` before completion. For documentation-only changes, do not run tests unless executable examples changed. Report failures with the smallest useful excerpt.
