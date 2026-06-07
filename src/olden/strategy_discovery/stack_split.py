@@ -22,7 +22,7 @@ class StackSplitScenario:
     max_slots: int
     deployment_slots: tuple[HexCoord, ...]
     generated_player_stack_id_prefix: str
-    max_turns: int = 200
+    max_turns: int = 100
 
     def __post_init__(self) -> None:
         if self.unit_pool_size < 1:

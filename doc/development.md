@@ -59,6 +59,7 @@ doc/
     ideas.md
     requirements.md
     roadmap.md
+    simulation_setup.md
 
 image/
     field.png

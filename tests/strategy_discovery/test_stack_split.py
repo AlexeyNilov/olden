@@ -60,6 +60,27 @@ def test_validate_stack_split_rejects_genomes_outside_the_configured_unit_pool(g
         validate_stack_split(genome, unit_pool_size=10, max_slots=7)
 
 
+def test_stack_split_scenario_defaults_to_one_hundred_max_turns():
+    scenario = StackSplitScenario(
+        base_battle=_base_battle(),
+        player_pool_stack_id="player-esquire",
+        unit_pool_size=10,
+        max_slots=7,
+        deployment_slots=(
+            HexCoord(0, 9),
+            HexCoord(0, 8),
+            HexCoord(0, 7),
+            HexCoord(0, 6),
+            HexCoord(0, 5),
+            HexCoord(0, 4),
+            HexCoord(0, 3),
+        ),
+        generated_player_stack_id_prefix="genetic-player",
+    )
+
+    assert scenario.max_turns == 100
+
+
 def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
     scenario = _scenario()
 
@@ -173,7 +194,7 @@ def _scenario() -> StackSplitScenario:
             HexCoord(0, 3),
         ),
         generated_player_stack_id_prefix="genetic-player",
-        max_turns=200,
+        max_turns=100,
     )
 
 
