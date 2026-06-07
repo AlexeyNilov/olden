@@ -77,9 +77,9 @@ def run_genetic_strategy_discovery(
         mutation_rate=resolved_mutation_rate,
         worker_count=resolved_worker_count,
     )
-    best_genome = discovery_result.best_individual.genome
-    best_battle = materialize_stack_split_battle(scenario, best_genome)
-    combat_result = simulate_stack_split(scenario, best_genome)
+    best_strategy = discovery_result.best_individual.strategy
+    best_battle = materialize_stack_split_battle(scenario, best_strategy)
+    combat_result = simulate_stack_split(scenario, best_strategy)
     save_battle_initial_state_file(best_battle_path, best_battle)
     save_combat_log_file(best_combat_log_path, combat_result.combat_log)
     return GeneticStrategyDiscoverySampleResult(discovery_result=discovery_result, combat_result=combat_result)
@@ -89,7 +89,8 @@ def main() -> None:
     result = run_genetic_strategy_discovery()
     best = result.discovery_result.best_individual
     fitness = best.evaluation.fitness
-    print(f"Best genome: {best.genome}")
+    print(f"Best stack counts: {best.strategy.stack_counts}")
+    print(f"Best wait policy: {best.strategy.wait_policy.value}")
     print(f"Fitness: {fitness.score}")
     print(f"Attacker survivors: {fitness.attacker_surviving_units}")
     print(f"Defender units killed: {fitness.defender_units_killed}")

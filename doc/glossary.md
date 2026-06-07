@@ -35,6 +35,7 @@
 * **Renderable hex:** Battlefield-view data for one valid hex coordinate, including display position and visual state.
 * **Round:** A future combat cycle in which unit stacks normally act once. Current combat logs store round numbers as replay metadata only.
 * **Skip:** A combat action that ends a unit stack's current action opportunity without movement or attack.
+* **Stack-split strategy:** A strategy-discovery candidate containing attacker stack counts for fixed deployment slots and an attacker wait policy.
 * **Stay out of melee reach:** A combat action that moves a unit stack toward an opponent while keeping the destination outside that opponent's next melee engagement reach.
 * **Unreachable path:** A movement request where no passable path exists from the start coordinate to the destination coordinate.
 * **Turn:** A future unit-stack action opportunity within a round. Current combat logs store turn numbers as replay metadata only.
@@ -48,4 +49,5 @@
 * **Unit-skipped event:** A combat-log event recording that a unit stack skipped its action opportunity.
 * **Unit-waited event:** A combat-log event recording that a unit stack delayed its action to the end of the current round.
 * **Wait:** A combat action that delays a unit stack's action until the end of the current round without consuming that stack's completed action opportunity.
+* **Wait policy:** Strategy-discovery data that controls whether attacker unit stacks should wait instead of using the default combat action order.
 * **Wound damage:** Damage already applied to the current surviving creature in a unit stack, carried forward between attacks until that creature dies.

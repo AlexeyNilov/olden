@@ -3,11 +3,13 @@ from pathlib import Path
 from olden.combat.combat_simulation import CombatSimulationStopReason
 from olden.combat.targeting import TargetingPolicy
 from olden.strategy_discovery.stack_split import (
+    AttackerWaitPolicy,
     StackSplitDiscoveryResult,
     StackSplitEvaluation,
     StackSplitFitness,
     StackSplitIndividual,
     StackSplitScenario,
+    StackSplitStrategy,
 )
 from sample import genetic_strategy_discovery
 from sample.genetic_strategy_discovery import run_genetic_strategy_discovery
@@ -84,9 +86,12 @@ def test_genetic_strategy_discovery_passes_configured_mutation_rate(monkeypatch,
         **kwargs: object,
     ) -> StackSplitDiscoveryResult:
         captured["mutation_rate"] = mutation_rate
-        genome = (scenario.unit_pool_size, 0, 0, 0, 0, 0, 0)
+        strategy = StackSplitStrategy(
+            stack_counts=(scenario.unit_pool_size, 0, 0, 0, 0, 0, 0),
+            wait_policy=AttackerWaitPolicy.NEVER,
+        )
         individual = StackSplitIndividual(
-            genome=genome,
+            strategy=strategy,
             evaluation=StackSplitEvaluation(
                 fitness=StackSplitFitness(
                     score=0,
@@ -132,9 +137,12 @@ def test_genetic_strategy_discovery_passes_configured_targeting_policy(monkeypat
         **kwargs: object,
     ) -> StackSplitDiscoveryResult:
         captured["targeting_policy"] = scenario.targeting_policy
-        genome = (scenario.unit_pool_size, 0, 0, 0, 0, 0, 0)
+        strategy = StackSplitStrategy(
+            stack_counts=(scenario.unit_pool_size, 0, 0, 0, 0, 0, 0),
+            wait_policy=AttackerWaitPolicy.NEVER,
+        )
         individual = StackSplitIndividual(
-            genome=genome,
+            strategy=strategy,
             evaluation=StackSplitEvaluation(
                 fitness=StackSplitFitness(
                     score=0,

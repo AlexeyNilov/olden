@@ -1,10 +1,9 @@
 import random
-from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 
 from olden.combat.action_opportunities import CombatRoundState
-from olden.combat.action_selection import CombatAction, CombatActionSelectionError
+from olden.combat.action_selection import ActionChooser, CombatAction, CombatActionContext, CombatActionSelectionError
 from olden.combat.attack import DamageChooser
 from olden.combat.battle import Battle
 from olden.combat.combat_actions import apply_melee_attack_action, apply_movement_action, apply_skip_action, apply_wait_action
@@ -23,7 +22,6 @@ from olden.combat.targeting import TargetingPolicy, is_defeated, one_side_defeat
 from olden.combat.turn_order import order_stacks_for_round, order_stacks_for_wait_phase
 from olden.combat.units import DamageRange
 
-ActionChooser = Callable[[tuple[CombatAction, ...]], CombatAction]
 DEFAULT_SIMULATION_ACTIONS = (CombatAction.MELEE_ENGAGE,)
 
 
@@ -149,14 +147,14 @@ def simulate_combat(
     return _result(battle, combat_log, CombatSimulationStopReason.MAX_TURNS_REACHED, max_turns)
 
 
-def default_action_chooser(actions: tuple[CombatAction, ...]) -> CombatAction:
+def default_action_chooser(context: CombatActionContext) -> CombatAction:
     for action in (
         CombatAction.MELEE_ENGAGE,
         CombatAction.STAY_OUT_OF_MELEE_REACH,
         CombatAction.SKIP,
         CombatAction.WAIT,
     ):
-        if action in actions:
+        if action in context.applicable_actions:
             return action
     msg = "No combat actions are available"
     raise CombatActionSelectionError(msg)
@@ -222,7 +220,16 @@ def _act_with_stack(
     if not applicable_actions:
         msg = f"No configured combat action is applicable for unit stack: {actor_id}"
         raise CombatActionSelectionError(msg)
-    selected_action = action_chooser(applicable_actions)
+    selected_action = action_chooser(
+        CombatActionContext(
+            battle=battle,
+            round_state=round_state,
+            turn=turn,
+            actor_id=actor_id,
+            opponent_id=opponent_id,
+            applicable_actions=applicable_actions,
+        )
+    )
     if selected_action not in applicable_actions:
         msg = f"Action chooser returned an unavailable combat action for unit stack: {actor_id}"
         raise CombatActionSelectionError(msg)

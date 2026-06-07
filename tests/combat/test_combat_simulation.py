@@ -285,7 +285,9 @@ def test_combat_simulation_wait_reschedules_without_counting_as_completed_turn()
         stack_ids=("attacker-esquire", "defender-esquire"),
         attacker_actions=(CombatAction.WAIT, CombatAction.SKIP),
         defender_actions=(CombatAction.SKIP,),
-        action_chooser=lambda actions: CombatAction.WAIT if CombatAction.WAIT in actions else CombatAction.SKIP,
+        action_chooser=lambda context: (
+            CombatAction.WAIT if CombatAction.WAIT in context.applicable_actions else CombatAction.SKIP
+        ),
         max_turns=1,
     )
 
@@ -314,7 +316,9 @@ def test_combat_simulation_wait_phase_uses_flipped_initiative_order_and_allows_o
         stack_ids=("attacker-high", "attacker-low", "defender-esquire"),
         attacker_actions=(CombatAction.WAIT, CombatAction.SKIP),
         defender_actions=(CombatAction.SKIP,),
-        action_chooser=lambda actions: CombatAction.WAIT if CombatAction.WAIT in actions else CombatAction.SKIP,
+        action_chooser=lambda context: (
+            CombatAction.WAIT if CombatAction.WAIT in context.applicable_actions else CombatAction.SKIP
+        ),
         max_turns=3,
     )
 
@@ -356,8 +360,10 @@ def test_combat_simulation_can_move_to_stay_out_of_melee_reach_when_selected():
         second_stack_id="defender-esquire",
         attacker_actions=(CombatAction.STAY_OUT_OF_MELEE_REACH, CombatAction.MELEE_ENGAGE),
         defender_actions=(CombatAction.SKIP,),
-        action_chooser=lambda actions: (
-            CombatAction.STAY_OUT_OF_MELEE_REACH if CombatAction.STAY_OUT_OF_MELEE_REACH in actions else actions[0]
+        action_chooser=lambda context: (
+            CombatAction.STAY_OUT_OF_MELEE_REACH
+            if CombatAction.STAY_OUT_OF_MELEE_REACH in context.applicable_actions
+            else context.applicable_actions[0]
         ),
         path_chooser=lambda paths: paths[0],
         max_turns=1,

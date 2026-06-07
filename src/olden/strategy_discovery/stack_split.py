@@ -1,19 +1,32 @@
 import random
 from concurrent.futures import Executor, ProcessPoolExecutor
 from dataclasses import dataclass
+from enum import Enum
 from typing import TypeAlias
 
-from olden.combat.action_selection import CombatAction
+from olden.combat.action_selection import ActionChooser, CombatAction, CombatActionContext
 from olden.combat.battle import Battle
 from olden.combat.combat_simulation import CombatSimulationResult, MovementPath, simulate_combat
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
+from olden.combat.range import distance_between
 from olden.combat.sides import CombatSide
 from olden.combat.targeting import TargetingPolicy
 from olden.combat.units import DamageRange, UnitStack
 
 StackSplitGenome: TypeAlias = tuple[int, ...]
-StackSplitEvaluationCache: TypeAlias = dict[StackSplitGenome, "StackSplitEvaluation"]
+StackSplitEvaluationCache: TypeAlias = dict["StackSplitStrategy", "StackSplitEvaluation"]
+
+
+class AttackerWaitPolicy(Enum):
+    NEVER = "never"
+    FIRST_ACTION_IF_SAFE = "first_action_if_safe"
+
+
+@dataclass(frozen=True, slots=True)
+class StackSplitStrategy:
+    stack_counts: StackSplitGenome
+    wait_policy: AttackerWaitPolicy = AttackerWaitPolicy.NEVER
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,7 +86,7 @@ class StackSplitEvaluation:
 
 @dataclass(frozen=True, slots=True)
 class StackSplitIndividual:
-    genome: StackSplitGenome
+    strategy: StackSplitStrategy
     evaluation: StackSplitEvaluation
 
 
@@ -98,9 +111,9 @@ def validate_stack_split(genome: StackSplitGenome, unit_pool_size: int, max_slot
         raise ValueError(msg)
 
 
-def materialize_stack_split_battle(scenario: StackSplitScenario, genome: StackSplitGenome) -> Battle:
-    validate_stack_split(genome, unit_pool_size=scenario.unit_pool_size, max_slots=scenario.max_slots)
-    normalized_genome = _normalize_genome(genome, scenario.max_slots)
+def materialize_stack_split_battle(scenario: StackSplitScenario, strategy: StackSplitStrategy) -> Battle:
+    validate_stack_split(strategy.stack_counts, unit_pool_size=scenario.unit_pool_size, max_slots=scenario.max_slots)
+    normalized_genome = _normalize_genome(strategy.stack_counts, scenario.max_slots)
     attacker_pool_stack = scenario.base_battle.stack(scenario.attacker_pool_stack_id)
     occupancy = Occupancy(blocked_coordinates=scenario.base_battle.battlefield.blocked_coordinates)
     unit_stacks: dict[str, UnitStack] = {}
@@ -135,8 +148,8 @@ def materialize_stack_split_battle(scenario: StackSplitScenario, genome: StackSp
     )
 
 
-def evaluate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome) -> StackSplitEvaluation:
-    battle = materialize_stack_split_battle(scenario, genome)
+def evaluate_stack_split(scenario: StackSplitScenario, strategy: StackSplitStrategy) -> StackSplitEvaluation:
+    battle = materialize_stack_split_battle(scenario, strategy)
     stack_ids = tuple(battle.unit_stacks)
     result = simulate_combat(
         battle,
@@ -147,6 +160,7 @@ def evaluate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         targeting_policy=scenario.targeting_policy,
         attacker_actions=scenario.attacker_actions,
         defender_actions=scenario.defender_actions,
+        action_chooser=_action_chooser_for_strategy(strategy),
     )
     return StackSplitEvaluation(
         fitness=_fitness_for_result(scenario, result),
@@ -154,8 +168,8 @@ def evaluate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
     )
 
 
-def simulate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome) -> CombatSimulationResult:
-    battle = materialize_stack_split_battle(scenario, genome)
+def simulate_stack_split(scenario: StackSplitScenario, strategy: StackSplitStrategy) -> CombatSimulationResult:
+    battle = materialize_stack_split_battle(scenario, strategy)
     return simulate_combat(
         battle,
         stack_ids=tuple(battle.unit_stacks),
@@ -165,6 +179,7 @@ def simulate_stack_split(scenario: StackSplitScenario, genome: StackSplitGenome)
         targeting_policy=scenario.targeting_policy,
         attacker_actions=scenario.attacker_actions,
         defender_actions=scenario.defender_actions,
+        action_chooser=_action_chooser_for_strategy(strategy),
     )
 
 
@@ -196,26 +211,26 @@ def discover_stack_split_strategy(
     executor = ProcessPoolExecutor(max_workers=worker_count) if worker_count > 1 else None
     try:
         evaluation_cache: StackSplitEvaluationCache = {}
-        genomes = _initial_population_genomes(scenario, population_size, random_source)
-        population = _evaluate_population(scenario, genomes, evaluation_cache, executor)
+        strategies = _initial_population_strategies(scenario, population_size, random_source)
+        population = _evaluate_population(scenario, strategies, evaluation_cache, executor)
         best_individual = _best_individual(population)
 
         for _ in range(generations):
-            next_genomes = [best_individual.genome]
-            while len(next_genomes) < population_size:
+            next_strategies = [best_individual.strategy]
+            while len(next_strategies) < population_size:
                 first_parent = _select_parent(population, random_source, tournament_size)
                 second_parent = _select_parent(population, random_source, tournament_size)
                 child = _crossover_stack_split(
-                    first_parent.genome,
-                    second_parent.genome,
+                    first_parent.strategy,
+                    second_parent.strategy,
                     scenario.unit_pool_size,
                     scenario.max_slots,
                     random_source,
                 )
                 if random_source.random() < mutation_rate:
                     child = mutate_stack_split(child, random_source)
-                next_genomes.append(child)
-            population = _evaluate_population(scenario, tuple(next_genomes), evaluation_cache, executor)
+                next_strategies.append(child)
+            population = _evaluate_population(scenario, tuple(next_strategies), evaluation_cache, executor)
             best_individual = max((best_individual, _best_individual(population)), key=_individual_sort_key)
     finally:
         if executor is not None:
@@ -224,18 +239,30 @@ def discover_stack_split_strategy(
     return StackSplitDiscoveryResult(best_individual=best_individual, population=population)
 
 
-def mutate_stack_split(genome: StackSplitGenome, random_source: random.Random) -> StackSplitGenome:
-    mutable_genome = list(genome)
+def mutate_stack_split(
+    strategy: StackSplitStrategy,
+    random_source: random.Random,
+    mutate_wait_policy: bool | None = None,
+) -> StackSplitStrategy:
+    if mutate_wait_policy is None:
+        mutate_wait_policy = random_source.randrange(2) == 0
+    if mutate_wait_policy:
+        return StackSplitStrategy(
+            stack_counts=strategy.stack_counts,
+            wait_policy=_mutate_wait_policy(strategy.wait_policy, random_source),
+        )
+
+    mutable_genome = list(strategy.stack_counts)
     donor_indexes = [index for index, count in enumerate(mutable_genome) if count > 0]
     if not donor_indexes:
-        return genome
+        return strategy
     donor_index = random_source.choice(donor_indexes)
     receiver_index = random_source.randrange(len(mutable_genome))
     if receiver_index == donor_index and len(mutable_genome) > 1:
         receiver_index = (receiver_index + 1) % len(mutable_genome)
     mutable_genome[donor_index] -= 1
     mutable_genome[receiver_index] += 1
-    return tuple(mutable_genome)
+    return StackSplitStrategy(stack_counts=tuple(mutable_genome), wait_policy=strategy.wait_policy)
 
 
 def average_damage(damage: DamageRange) -> int:
@@ -294,46 +321,54 @@ def _random_stack_split(unit_pool_size: int, max_slots: int, random_source: rand
     return tuple(slots)
 
 
-def _initial_population_genomes(
+def _initial_population_strategies(
     scenario: StackSplitScenario,
     population_size: int,
     random_source: random.Random,
-) -> tuple[StackSplitGenome, ...]:
-    baseline = (scenario.unit_pool_size,) + (0,) * (scenario.max_slots - 1)
-    random_genomes = tuple(
-        _random_stack_split(scenario.unit_pool_size, scenario.max_slots, random_source) for _ in range(population_size - 1)
+) -> tuple[StackSplitStrategy, ...]:
+    baseline = StackSplitStrategy(
+        stack_counts=(scenario.unit_pool_size,) + (0,) * (scenario.max_slots - 1),
+        wait_policy=AttackerWaitPolicy.NEVER,
     )
-    return (baseline, *random_genomes)
+    random_strategies = tuple(
+        StackSplitStrategy(
+            stack_counts=_random_stack_split(scenario.unit_pool_size, scenario.max_slots, random_source),
+            wait_policy=random_source.choice(tuple(AttackerWaitPolicy)),
+        )
+        for _ in range(population_size - 1)
+    )
+    return (baseline, *random_strategies)
 
 
 def _evaluate_population(
     scenario: StackSplitScenario,
-    genomes: tuple[StackSplitGenome, ...],
+    strategies: tuple[StackSplitStrategy, ...],
     evaluation_cache: StackSplitEvaluationCache,
     executor: Executor | None,
 ) -> tuple[StackSplitIndividual, ...]:
-    missing_genomes = tuple(dict.fromkeys(genome for genome in genomes if genome not in evaluation_cache))
-    if executor is None or len(missing_genomes) < 2:
-        for genome in missing_genomes:
-            evaluation_cache[genome] = evaluate_stack_split(scenario, genome)
+    missing_strategies = tuple(dict.fromkeys(strategy for strategy in strategies if strategy not in evaluation_cache))
+    if executor is None or len(missing_strategies) < 2:
+        for strategy in missing_strategies:
+            evaluation_cache[strategy] = evaluate_stack_split(scenario, strategy)
     else:
-        evaluations = executor.map(_evaluate_stack_split_worker, ((scenario, genome) for genome in missing_genomes))
-        evaluation_cache.update(zip(missing_genomes, evaluations, strict=True))
+        evaluations = executor.map(_evaluate_stack_split_worker, ((scenario, strategy) for strategy in missing_strategies))
+        evaluation_cache.update(zip(missing_strategies, evaluations, strict=True))
 
-    return tuple(StackSplitIndividual(genome=genome, evaluation=evaluation_cache[genome]) for genome in genomes)
+    return tuple(StackSplitIndividual(strategy=strategy, evaluation=evaluation_cache[strategy]) for strategy in strategies)
 
 
-def _evaluate_stack_split_worker(work_item: tuple[StackSplitScenario, StackSplitGenome]) -> StackSplitEvaluation:
-    scenario, genome = work_item
-    return evaluate_stack_split(scenario, genome)
+def _evaluate_stack_split_worker(work_item: tuple[StackSplitScenario, StackSplitStrategy]) -> StackSplitEvaluation:
+    scenario, strategy = work_item
+    return evaluate_stack_split(scenario, strategy)
 
 
 def _best_individual(population: tuple[StackSplitIndividual, ...]) -> StackSplitIndividual:
     return max(population, key=_individual_sort_key)
 
 
-def _individual_sort_key(individual: StackSplitIndividual) -> tuple[int, StackSplitGenome]:
-    return (individual.evaluation.fitness.score, individual.genome)
+def _individual_sort_key(individual: StackSplitIndividual) -> tuple[int, StackSplitGenome, str]:
+    strategy = individual.strategy
+    return (individual.evaluation.fitness.score, strategy.stack_counts, strategy.wait_policy.value)
 
 
 def _select_parent(
@@ -346,17 +381,18 @@ def _select_parent(
 
 
 def _crossover_stack_split(
-    first_parent: StackSplitGenome,
-    second_parent: StackSplitGenome,
+    first_parent: StackSplitStrategy,
+    second_parent: StackSplitStrategy,
     unit_pool_size: int,
     max_slots: int,
     random_source: random.Random,
-) -> StackSplitGenome:
-    first = _normalize_genome(first_parent, max_slots)
-    second = _normalize_genome(second_parent, max_slots)
+) -> StackSplitStrategy:
+    first = _normalize_genome(first_parent.stack_counts, max_slots)
+    second = _normalize_genome(second_parent.stack_counts, max_slots)
     child = [first[index] if random_source.randrange(2) == 0 else second[index] for index in range(max_slots)]
     _repair_stack_split(child, unit_pool_size, random_source)
-    return tuple(child)
+    wait_policy = first_parent.wait_policy if random_source.randrange(2) == 0 else second_parent.wait_policy
+    return StackSplitStrategy(stack_counts=tuple(child), wait_policy=wait_policy)
 
 
 def _repair_stack_split(genome: list[int], unit_pool_size: int, random_source: random.Random) -> None:
@@ -365,3 +401,50 @@ def _repair_stack_split(genome: list[int], unit_pool_size: int, random_source: r
         genome[random_source.choice(donor_indexes)] -= 1
     while sum(genome) < unit_pool_size:
         genome[random_source.randrange(len(genome))] += 1
+
+
+def _mutate_wait_policy(policy: AttackerWaitPolicy, random_source: random.Random) -> AttackerWaitPolicy:
+    candidates = tuple(candidate for candidate in AttackerWaitPolicy if candidate is not policy)
+    return random_source.choice(candidates)
+
+
+def _action_chooser_for_strategy(strategy: StackSplitStrategy) -> ActionChooser:
+    def choose_action(context: CombatActionContext) -> CombatAction:
+        if _should_wait_with_attacker(strategy.wait_policy, context):
+            return CombatAction.WAIT
+        for action in (
+            CombatAction.MELEE_ENGAGE,
+            CombatAction.STAY_OUT_OF_MELEE_REACH,
+            CombatAction.SKIP,
+            CombatAction.WAIT,
+        ):
+            if action in context.applicable_actions:
+                return action
+        msg = "No combat action is available for stack-split strategy"
+        raise ValueError(msg)
+
+    return choose_action
+
+
+def _should_wait_with_attacker(policy: AttackerWaitPolicy, context: CombatActionContext) -> bool:
+    if policy is AttackerWaitPolicy.NEVER:
+        return False
+    if CombatAction.WAIT not in context.applicable_actions:
+        return False
+    actor = context.battle.stack(context.actor_id)
+    if actor.side is not CombatSide.ATTACKER:
+        return False
+    if context.turn.round_number != 1:
+        return False
+    if policy is AttackerWaitPolicy.FIRST_ACTION_IF_SAFE:
+        return _is_outside_opponent_melee_engagement_reach(context)
+    return False
+
+
+def _is_outside_opponent_melee_engagement_reach(context: CombatActionContext) -> bool:
+    actor_coord = context.battle.occupancy.coordinate_for(context.actor_id)
+    opponent_coord = context.battle.occupancy.coordinate_for(context.opponent_id)
+    if actor_coord is None or opponent_coord is None:
+        return False
+    opponent_speed = context.battle.stack(context.opponent_id).definition.speed
+    return distance_between(context.battle.battlefield, actor_coord, opponent_coord) > opponent_speed + 1

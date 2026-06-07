@@ -2,22 +2,27 @@ import random
 
 import pytest
 
+from olden.combat.action_selection import CombatAction
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
+from olden.combat.combat_log import UnitWaitedEvent
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.units import DamageRange, UnitStack
 from olden.strategy_discovery import stack_split
 from olden.strategy_discovery.stack_split import (
+    AttackerWaitPolicy,
     StackSplitEvaluation,
     StackSplitFitness,
     StackSplitScenario,
+    StackSplitStrategy,
     average_damage,
     discover_stack_split_strategy,
     evaluate_stack_split,
     materialize_stack_split_battle,
     mutate_stack_split,
+    simulate_stack_split,
     validate_stack_split,
 )
 from olden.unit_data.packaged import load_packaged_unit_catalog
@@ -26,7 +31,10 @@ from olden.unit_data.packaged import load_packaged_unit_catalog
 def test_materialize_stack_split_battle_maps_non_empty_genome_slots_to_fixed_deployment_slots():
     scenario = _scenario()
 
-    battle = materialize_stack_split_battle(scenario, (4, 0, 3, 1, 0, 2, 0))
+    battle = materialize_stack_split_battle(
+        scenario,
+        StackSplitStrategy(stack_counts=(4, 0, 3, 1, 0, 2, 0), wait_policy=AttackerWaitPolicy.NEVER),
+    )
 
     assert tuple(battle.unit_stacks) == (
         "genetic-attacker-1",
@@ -83,9 +91,10 @@ def test_stack_split_scenario_defaults_to_one_hundred_max_turns():
 
 def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
     scenario = _scenario()
+    strategy = StackSplitStrategy(stack_counts=(10, 0, 0, 0, 0, 0, 0), wait_policy=AttackerWaitPolicy.NEVER)
 
-    first = evaluate_stack_split(scenario, (10, 0, 0, 0, 0, 0, 0))
-    second = evaluate_stack_split(scenario, (10, 0, 0, 0, 0, 0, 0))
+    first = evaluate_stack_split(scenario, strategy)
+    second = evaluate_stack_split(scenario, strategy)
 
     assert first == second
     assert first.fitness.defender_units_killed == 2
@@ -96,8 +105,14 @@ def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
 def test_evaluate_stack_split_prioritizes_defender_casualties_over_attacker_survival():
     scenario = _scenario(attacker_count=20)
 
-    survival_first = evaluate_stack_split(scenario, (3, 9, 1, 4, 1, 1, 1))
-    victory_progress_first = evaluate_stack_split(scenario, (1, 1, 0, 18, 0, 0, 0))
+    survival_first = evaluate_stack_split(
+        scenario,
+        StackSplitStrategy(stack_counts=(3, 9, 1, 4, 1, 1, 1), wait_policy=AttackerWaitPolicy.NEVER),
+    )
+    victory_progress_first = evaluate_stack_split(
+        scenario,
+        StackSplitStrategy(stack_counts=(1, 1, 0, 18, 0, 0, 0), wait_policy=AttackerWaitPolicy.NEVER),
+    )
 
     assert survival_first.fitness.attacker_surviving_units > victory_progress_first.fitness.attacker_surviving_units
     assert survival_first.fitness.defender_units_killed < victory_progress_first.fitness.defender_units_killed
@@ -106,12 +121,38 @@ def test_evaluate_stack_split_prioritizes_defender_casualties_over_attacker_surv
 
 def test_mutate_stack_split_preserves_pool_size_and_slot_count():
     random_source = random.Random(7)
+    strategy = StackSplitStrategy(stack_counts=(10, 0, 0, 0, 0, 0, 0), wait_policy=AttackerWaitPolicy.NEVER)
 
-    mutated = mutate_stack_split((10, 0, 0, 0, 0, 0, 0), random_source)
+    mutated = mutate_stack_split(strategy, random_source)
 
-    assert len(mutated) == 7
-    assert sum(mutated) == 10
-    assert mutated != (10, 0, 0, 0, 0, 0, 0)
+    assert len(mutated.stack_counts) == 7
+    assert sum(mutated.stack_counts) == 10
+    assert mutated != strategy
+
+
+def test_mutate_stack_split_can_change_wait_policy():
+    random_source = random.Random(7)
+    strategy = StackSplitStrategy(stack_counts=(10,), wait_policy=AttackerWaitPolicy.NEVER)
+
+    mutated = mutate_stack_split(strategy, random_source, mutate_wait_policy=True)
+
+    assert mutated.stack_counts == strategy.stack_counts
+    assert mutated.wait_policy is AttackerWaitPolicy.FIRST_ACTION_IF_SAFE
+
+
+def test_simulate_stack_split_first_action_if_safe_policy_records_attacker_wait():
+    scenario = _scenario(max_turns=1)
+    strategy = StackSplitStrategy(
+        stack_counts=(10, 0, 0, 0, 0, 0, 0),
+        wait_policy=AttackerWaitPolicy.FIRST_ACTION_IF_SAFE,
+    )
+
+    result = simulate_stack_split(scenario, strategy)
+
+    wait_events = [event for event in result.combat_log.events if isinstance(event, UnitWaitedEvent)]
+    assert len(wait_events) == 1
+    assert wait_events[0].stack_id == "genetic-attacker-1"
+    assert result.turns_taken == 1
 
 
 def test_discover_stack_split_strategy_returns_the_best_evaluated_individual():
@@ -125,20 +166,22 @@ def test_discover_stack_split_strategy_returns_the_best_evaluated_individual():
     )
 
     assert result.best_individual in result.population
-    assert result.best_individual.evaluation == evaluate_stack_split(scenario, result.best_individual.genome)
-    assert all(sum(individual.genome) == 10 for individual in result.population)
+    assert result.best_individual.evaluation == evaluate_stack_split(scenario, result.best_individual.strategy)
+    assert all(sum(individual.strategy.stack_counts) == 10 for individual in result.population)
 
 
 def test_discover_stack_split_strategy_reuses_repeated_genome_evaluations(monkeypatch):
     scenario = _scenario()
-    genome = (10, 0, 0, 0, 0, 0, 0)
-    evaluated_genomes: list[tuple[int, ...]] = []
+    strategy = StackSplitStrategy(stack_counts=(10, 0, 0, 0, 0, 0, 0), wait_policy=AttackerWaitPolicy.NEVER)
+    evaluated_strategies: list[StackSplitStrategy] = []
 
-    def evaluate_repeated_genome(_scenario: StackSplitScenario, evaluated_genome: tuple[int, ...]) -> StackSplitEvaluation:
-        evaluated_genomes.append(evaluated_genome)
+    def evaluate_repeated_strategy(
+        _scenario: StackSplitScenario, evaluated_strategy: StackSplitStrategy
+    ) -> StackSplitEvaluation:
+        evaluated_strategies.append(evaluated_strategy)
         return StackSplitEvaluation(
             fitness=StackSplitFitness(
-                score=sum(evaluated_genome),
+                score=sum(evaluated_strategy.stack_counts),
                 attacker_surviving_units=0,
                 attacker_surviving_health=0,
                 defender_units_killed=0,
@@ -147,9 +190,9 @@ def test_discover_stack_split_strategy_reuses_repeated_genome_evaluations(monkey
             stop_reason="test",
         )
 
-    monkeypatch.setattr(stack_split, "evaluate_stack_split", evaluate_repeated_genome)
-    monkeypatch.setattr(stack_split, "_initial_population_genomes", lambda *_args: (genome, genome, genome, genome))
-    monkeypatch.setattr(stack_split, "_crossover_stack_split", lambda *_args: genome)
+    monkeypatch.setattr(stack_split, "evaluate_stack_split", evaluate_repeated_strategy)
+    monkeypatch.setattr(stack_split, "_initial_population_strategies", lambda *_args: (strategy, strategy, strategy, strategy))
+    monkeypatch.setattr(stack_split, "_crossover_stack_split", lambda *_args: strategy)
 
     result = discover_stack_split_strategy(
         scenario,
@@ -159,7 +202,7 @@ def test_discover_stack_split_strategy_reuses_repeated_genome_evaluations(monkey
         mutation_rate=0,
     )
 
-    assert evaluated_genomes == [genome]
+    assert evaluated_strategies == [strategy]
     assert all(individual.evaluation == result.best_individual.evaluation for individual in result.population)
 
 
@@ -189,7 +232,7 @@ def test_average_damage_chooses_middle_value():
     assert average_damage(DamageRange(minimum=1, maximum=5)) == 3
 
 
-def _scenario(attacker_count: int = 10, defender_count: int = 20) -> StackSplitScenario:
+def _scenario(attacker_count: int = 10, defender_count: int = 20, max_turns: int = 100) -> StackSplitScenario:
     return StackSplitScenario(
         base_battle=_base_battle(attacker_count=attacker_count, defender_count=defender_count),
         attacker_pool_stack_id="attacker-esquire",
@@ -205,7 +248,8 @@ def _scenario(attacker_count: int = 10, defender_count: int = 20) -> StackSplitS
             HexCoord(0, 3),
         ),
         generated_attacker_stack_id_prefix="genetic-attacker",
-        max_turns=100,
+        max_turns=max_turns,
+        attacker_actions=(CombatAction.MELEE_ENGAGE, CombatAction.WAIT),
     )
 
 

@@ -171,6 +171,8 @@ This helps ensure requirements are:
 
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed attacker deployment coordinate and create one attacker unit stack for each non-empty slot.
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured attacker unit pool size.
+* **When** stack-split strategy discovery evaluates a strategy, **the system shall** use the strategy's wait policy to choose whether attacker unit stacks wait instead of using the default combat action order.
+* **When** a stack-split strategy uses the first-action-if-safe wait policy, **the system shall** wait with an attacker unit stack on its first round action only while the stack is outside the selected opponent's next melee engagement reach.
 * **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
 * **When** stack-split strategy discovery encounters the same genome more than once in one discovery run, **the system shall** reuse its deterministic evaluation.
 * **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
