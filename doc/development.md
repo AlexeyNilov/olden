@@ -1,10 +1,33 @@
 # Development guide
 
-## Project structure
+## Architecture overview
 
 The project uses a lightweight domain-first structure. It borrows the useful
 parts of Domain-Driven Design without adding service, repository, application,
 or infrastructure layers before the code needs them.
+
+Olden is a Python combat simulator organized around a pure combat domain and
+separate modules for data loading, visualization, and developer workflow.
+Clean information architecture is part of the system design: each long-lived
+fact should have one owner, current-state docs should stay separate from
+decision history, and module names should reflect domain concepts instead of
+generic layers. Shared domain vocabulary lives in `doc/glossary.md`; keep code,
+tests, and docs aligned with those terms.
+
+* `src/olden/combat/` contains combat simulation rules and should not depend on
+  browser UI, local server management, or packaged data loading.
+* `src/olden/unit_data/` loads and validates packaged unit catalog data, then
+  converts catalog records into narrower combat-domain unit definitions.
+* `src/olden/battlefield_view/` maps combat state into read-only render data and
+  owns the local replay browser view.
+* `data/` stores local demo battle setup and combat-log YAML files.
+* `scripts/` contains developer workflow helpers, not domain logic.
+* `sample/` contains runnable examples.
+
+Decision rationale and superseded choices live in `doc/decisions.md`; do not use
+the ADR log as the current architecture specification.
+
+## Project structure
 
 Current layout:
 

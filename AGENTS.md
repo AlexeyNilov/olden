@@ -11,10 +11,9 @@ Before changing code or docs, route to the owner document:
 - Combat behavior: relevant section of `doc/requirements.md`; add or update it before tests when behavior is missing or ambiguous.
 - Combat-action planning: `doc/combat_system_reference.md`, then promote only committed behavior into `doc/requirements.md`.
 - Combat terminology: `doc/glossary.md` only when introducing or renaming shared terms.
-- Project structure and workflow: `doc/development.md`.
-- Architecture, public API, dependencies, or data flow: `doc/decisions.md`.
+- Current architecture, project structure, and workflow: `doc/development.md`.
+- Decision history: `doc/decisions.md`.
 - Future or deferred scope: `doc/roadmap.md`.
-- Coordinate, range, or pathfinding math: `doc/hex_math.md`.
 
 ## Collaboration
 
@@ -29,7 +28,8 @@ For code changes, write or update a failing behavior test before implementation 
 ## Project Rules
 
 - Use existing project patterns.
-- Do not duplicate long-lived facts across docs; update the canonical owner first and reference it elsewhere when needed.
+- Follow the documentation workflow in `doc/development.md`: do not duplicate long-lived facts across docs; update the canonical owner first and reference it elsewhere when needed.
+- Use glossary terms consistently in code, tests, and docs; when a recurring domain term is introduced or renamed, update `doc/glossary.md`.
 - `TODO.md` owns active implementation tasks only; do not use it as a planning archive.
 - `.env` is local-only and may contain user-specific credentials; never commit it.
 - Bump the version in `pyproject.toml` for user-visible behavior, public API changes, or substantial domain implementation.
@@ -44,16 +44,14 @@ For code changes, write or update a failing behavior test before implementation 
 - Avoid new dependencies unless justified.
 - Do not introduce generic `models`, `services`, `repositories`, `application`, or `infrastructure` layers unless the need is concrete and documented. Prefer modules named after domain concepts.
 
-## Combat Domain
+## Combat Invariants
 
-- Treat `src/olden/combat/` as the bounded context for combat simulation.
-- Keep `Battlefield` distinct from `Battle`.
-- `Battlefield` is static topology and field configuration.
-- `Battle state` is dynamic state such as occupancy.
-- Use `HexCoord(column, row)` as the public coordinate model.
-- Keep axial and cube coordinates as internal helpers for hex math unless a public API need is documented.
-- Obstacles are whole-hex blockers.
-- Deployment zones are side-based: player-controlled side on the left, enemy side on the right.
+Keep only high-risk combat constraints here; read owner docs for full behavior.
+
+- `src/olden/combat/` owns combat simulation rules; visualization and catalog loading stay outside that bounded context.
+- Keep `Battlefield` distinct from `Battle`: battlefield is static topology/configuration; battle state is dynamic combat state.
+- Use `HexCoord(column, row)` at public boundaries and in behavior tests. Keep axial/cube coordinates internal unless a public API need is documented.
+- Do not implement deferred combat mechanics from reference notes until committed behavior exists in `doc/requirements.md`.
 
 ## Verification
 
