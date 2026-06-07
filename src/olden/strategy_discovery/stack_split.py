@@ -235,12 +235,11 @@ def _fitness_for_result(scenario: StackSplitScenario, result: CombatSimulationRe
     attacker_surviving_units = _side_unit_count(result.battle, side=attacker_side)
     attacker_surviving_health = _side_remaining_health(result.battle, attacker_side)
     defender_units_killed = initial_defender_count - _side_unit_count(result.battle, side_to_exclude=attacker_side)
+    max_attacker_health = _side_remaining_health(scenario.base_battle, attacker_side)
     score = (
-        attacker_surviving_units * 1_000_000
-        + attacker_surviving_health * 1_000
-        + defender_units_killed * 100
-        - result.turns_taken
-    )
+        (defender_units_killed * (scenario.unit_pool_size + 1) + attacker_surviving_units) * (max_attacker_health + 1)
+        + attacker_surviving_health
+    ) * (scenario.max_turns + 1) + (scenario.max_turns - result.turns_taken)
     return StackSplitFitness(
         score=score,
         attacker_surviving_units=attacker_surviving_units,

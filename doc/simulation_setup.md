@@ -61,41 +61,42 @@ The current stack-split fitness score is:
 
 ```text
 score =
-    attacker_surviving_units * 1_000_000
-  + attacker_surviving_health * 1_000
-  + defender_units_killed * 100
-  - turns_taken
+    (((defender_units_killed * (attacker_unit_pool_size + 1)
+       + attacker_surviving_units)
+       * (maximum_attacker_health + 1)
+       + attacker_surviving_health)
+       * (max_turns + 1))
+       + (max_turns - turns_taken)
 ```
 
 Where:
 
+* `defender_units_killed` is the initial defender creature count minus the final defender
+  creature count.
 * `attacker_surviving_units` is the total count of living attacker creatures after
   simulation.
 * `attacker_surviving_health` is the total remaining attacker health, including
   current wound damage on surviving stacks.
-* `defender_units_killed` is the initial defender creature count minus the final defender
-  creature count.
 * `turns_taken` is the number of simulated action opportunities consumed before
   the simulation stops.
 
-The weights make the score lexicographic for the expected scale of current
-sample battles:
+The packed score is lexicographic within a scenario:
 
-* Surviving attacker creatures dominate all other goals. A strategy that keeps
-  units alive should beat one that trades them away for more kills.
-* Remaining attacker health breaks ties among strategies with the same survivor
-  count. This favors less damaged wins without needing a separate comparison
-  object.
-* Defender units killed matters after attacker survival and remaining health. This
-  still gives losing strategies a useful gradient, which helps search compare
-  partial progress.
+* Defender units killed dominates all other goals. A strategy that eliminates
+  more defenders should beat one that preserves more attackers while making less
+  progress toward winning the battle.
+* Surviving attacker creatures break ties among strategies with the same defender
+  casualties.
+* Remaining attacker health breaks ties after survivor count. This favors less
+  damaged wins without needing a separate comparison object.
 * Faster completion is the final tie-breaker. It is intentionally weak so the
-  search does not prefer a quick loss over a slower result with more survival or
-  defender casualties.
+  search does not prefer a quick loss over a slower result with more defender
+  casualties.
 
-This fitness function is therefore defensive first, then attritional, then fast.
-That matches the current use case: discover robust initial formations, not
-suicidal trades or speedrun tactics.
+This fitness function is therefore victory-progress first, then defensive, then
+fast. That matches the current use case: discover initial formations that win the
+battle by killing all defenders, while still preferring stronger wins among
+formations with the same defender casualties.
 
 ## Search process
 

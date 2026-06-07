@@ -163,7 +163,7 @@ This helps ensure requirements are:
 * **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
 * **When** stack-split strategy discovery encounters the same genome more than once in one discovery run, **the system shall** reuse its deterministic evaluation.
 * **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
-* **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving attacker units, then remaining attacker health, then defender units killed, and then faster completion.
+* **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize defender units killed, then surviving attacker units, then remaining attacker health, and then faster completion.
 * **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 action opportunities.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS` to override the stack-split scenario turn cap.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE` from `0` through `1` to override the stack-split mutation rate.

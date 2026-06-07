@@ -21,6 +21,7 @@ from olden.strategy_discovery.stack_split import (
     validate_stack_split,
 )
 from olden.unit_data.packaged import load_packaged_unit_catalog
+from sample.genetic_strategy_discovery import ATTACKER_POOL_STACK_ID, DEFAULT_ATTACKER_DEPLOYMENT_SLOTS
 
 
 def test_materialize_stack_split_battle_maps_non_empty_genome_slots_to_fixed_deployment_slots():
@@ -90,7 +91,18 @@ def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
     assert first == second
     assert first.fitness.defender_units_killed == 2
     assert first.fitness.attacker_surviving_units == 0
-    assert first.fitness.score == 193
+    assert first.fitness.score == 268955
+
+
+def test_evaluate_stack_split_prioritizes_defender_casualties_over_attacker_survival():
+    scenario = _genetic_sample_scenario()
+
+    survival_first = evaluate_stack_split(scenario, (3, 9, 1, 4, 1, 1, 1))
+    victory_progress_first = evaluate_stack_split(scenario, (1, 1, 0, 18, 0, 0, 0))
+
+    assert survival_first.fitness.attacker_surviving_units > victory_progress_first.fitness.attacker_surviving_units
+    assert survival_first.fitness.defender_units_killed < victory_progress_first.fitness.defender_units_killed
+    assert survival_first.fitness.score < victory_progress_first.fitness.score
 
 
 def test_mutate_stack_split_preserves_pool_size_and_slot_count():
@@ -210,4 +222,20 @@ def _base_battle() -> Battle:
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={attacker.id: attacker, defender.id: defender},
+    )
+
+
+def _genetic_sample_scenario() -> StackSplitScenario:
+    from olden.combat.battle_setup import load_battle_initial_state_file
+    from sample.genetic_strategy_discovery import DEFAULT_BATTLE_INITIAL_STATE_PATH
+
+    battle = load_battle_initial_state_file(DEFAULT_BATTLE_INITIAL_STATE_PATH, load_packaged_unit_catalog())
+    return StackSplitScenario(
+        base_battle=battle,
+        attacker_pool_stack_id=ATTACKER_POOL_STACK_ID,
+        unit_pool_size=battle.stack(ATTACKER_POOL_STACK_ID).count,
+        max_slots=len(DEFAULT_ATTACKER_DEPLOYMENT_SLOTS),
+        deployment_slots=DEFAULT_ATTACKER_DEPLOYMENT_SLOTS,
+        generated_attacker_stack_id_prefix="genetic-attacker",
+        max_turns=100,
     )
