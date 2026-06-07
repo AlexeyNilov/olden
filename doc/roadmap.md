@@ -121,6 +121,15 @@
 * Add combat log window to the right side of the view
 * The combat log window must be scrollable
 
+## Milestone 14: Implement initiative
+
+**Status:** Next
+
+* Add griffin to the `units.yaml` from https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Griffin
+* Add stack of 5 grifins to the player in `data/demo_battle.yaml`
+* Review `doc/combat_system_reference.md`
+* How do we integrate the initiative into the current combat logic?
+* Update `sample/demo_simulation.py` with the new logic and grffin
 
 ## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
 
