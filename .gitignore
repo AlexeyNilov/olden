@@ -15,3 +15,4 @@ build/
 image/*
 .codex/
 .agents/
+data/genetic_best*
