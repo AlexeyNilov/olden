@@ -6,9 +6,43 @@ The project uses a lightweight domain-first structure. It borrows the useful
 parts of Domain-Driven Design without adding service, repository, application,
 or infrastructure layers before the code needs them.
 
-Combat-domain layout:
+Current layout:
 
 ```text
+AGENTS.md
+README.md
+Makefile
+TODO.md
+LICENSE
+.env.example
+.gitignore
+pyproject.toml
+
+data/
+    demo_battle.yaml
+    demo_movement_log.yaml
+
+doc/
+    combat_system_reference.md
+    decisions.md
+    development.md
+    glossary.md
+    hex_math.md
+    ideas.md
+    requirements.md
+    roadmap.md
+
+image/
+    field.png
+
+sample/
+    __init__.py
+    demo_movement_simulation.py
+
+scripts/
+    __init__.py
+    view_server.py
+
 src/olden/
     __init__.py
     config.py
@@ -27,9 +61,8 @@ src/olden/
         catalog.py
         packaged.py
         units.yaml
-
-scripts/
-    view_server.py
+        LICENSE-CC-BY-SA-4.0.md
+        NOTICE.md
 
     combat/
         __init__.py
@@ -51,24 +84,36 @@ scripts/
 tests/
     test_config.py
 
-    sample/
-        test_demo_movement_simulation.py
+    battlefield_view/
+        test_layout.py
+        test_model.py
+        test_replay_app.py
+        test_svg.py
+        test_unit_images.py
+
+    scripts/
+        test_view_server.py
 
     combat/
         test_battle_setup.py
         test_battlefield.py
         test_combat_log.py
+        test_combat_replay.py
         test_movement.py
+        test_movement_simulation.py
         test_occupancy.py
         test_range.py
         test_units.py
+
+    unit_data/
+        test_catalog.py
 ```
 
 ## Structure principles
 
-* `combat/` is the combat simulation bounded context.
+* `src/olden/combat/` is the combat simulation bounded context.
 * Modules are named after domain concepts, not generic layers.
-* Keep the first implementation as pure domain logic where possible.
+* Keep combat-domain behavior as pure domain logic where possible.
 * Put coordinate value objects and future hex-math helpers in `coordinates.py`.
 * Put battlefield topology, row validation, and neighbor lookup in `battlefield.py`.
 * Put dynamic unit placement rules in `occupancy.py`.
@@ -83,11 +128,12 @@ tests/
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put combat-log replay frame generation in `combat_replay.py`.
 * Put unit definitions, stacks, and footprint value objects in `units.py`.
-* Put read-only battlefield visualization layout and render-state mapping in `battlefield_view/`.
-* Put the separate local combat replay browser view in `battlefield_view/replay_app.py`.
-* Put shared SVG battlefield rendering in `battlefield_view/svg.py`.
-* Put local packaged unit catalog loading, validation, and source-attributed data in `unit_data/`.
+* Put read-only battlefield visualization layout and render-state mapping in `src/olden/battlefield_view/`.
+* Put the separate local combat replay browser view in `src/olden/battlefield_view/replay_app.py`.
+* Put shared SVG battlefield rendering in `src/olden/battlefield_view/svg.py`.
+* Put local packaged unit catalog loading, validation, and source-attributed data in `src/olden/unit_data/`.
 * Put local battle setup examples in `data/`.
+* Put source/reference images in `image/`.
 * Put runnable local examples in `sample/`.
 * Put local developer workflow scripts in `scripts/`.
 * Add service modules only when behavior does not naturally belong to one domain object.
