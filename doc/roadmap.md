@@ -123,7 +123,7 @@
 
 ## Milestone 14: Implement initiative
 
-**Status:** Next
+**Status:** Done
 
 * Add griffin to the `units.yaml` from https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Griffin
 * Add stack of 5 grifins to the player in `data/demo_battle.yaml`
@@ -131,11 +131,16 @@
 * How do we integrate the initiative into the current combat logic?
 * Update `sample/demo_simulation.py` with the new logic and grffin
 
-## Milestone ?: Use genetic algorithm for combat strategy optimization/discovery
+## Milestone 15: Use genetic algorithm for combat strategy optimization/discovery
 
-**Status:** Later
+**Status:** Next
 
-* NPC combat strategy
+* Discuss genetic algorithms idea and how to integrate it into the project structure
+* Add new data/genetic_battle.yaml with a stack of 10 player owned swordsmen and a stack of 20 enemy owned swordsmen
+* Fitness function: player units count after the battle finished
+* Variable: player can form multiple stacks (no more then 7) using the given pool of units (10 swordsmen in our case), for example 1 stack with 1 swrodsman, and 1 stack with 9 swordsman
+* The enemy stack stays the same: 1 stack with 20 swordsmen
+
 
 ## Future plans
 
@@ -154,3 +159,4 @@
   counterattacks per round.
 * Later concern: decide how Guardian Griffin's Loyal Protector passive should
   interact with counterattack capacity, adjacency, and target selection.
+* NPC combat strategy
