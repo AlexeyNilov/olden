@@ -21,6 +21,7 @@ tests, and docs aligned with those terms.
 * `src/olden/battlefield_view/` maps combat state into read-only render data and
   owns the local replay browser view.
 * `data/` stores local demo battle setup and combat-log YAML files.
+* `findings/` stores exploratory notes from local experiments and analysis.
 * `scripts/` contains developer workflow helpers, not domain logic.
 * `sample/` contains runnable examples.
 
@@ -45,6 +46,9 @@ data/
     demo_battle.yaml
     demo_combat_log.yaml
     demo_movement_log.yaml
+
+findings/
+    stack_split_tactic.md
 
 doc/
     combat_system_reference.md
@@ -162,6 +166,7 @@ tests/
 * Put shared SVG battlefield rendering in `src/olden/battlefield_view/svg.py`.
 * Put local packaged unit catalog loading, validation, and source-attributed data in `src/olden/unit_data/`.
 * Put local battle setup examples in `data/`.
+* Put exploratory findings from local experiments and analysis in `findings/`.
 * Put source/reference images in `image/`.
 * Put runnable local examples in `sample/`.
 * Put local developer workflow scripts in `scripts/`.
@@ -173,6 +178,9 @@ tests/
 * Update `doc/glossary.md` when a shared term is introduced or renamed.
 * Update `doc/requirements.md` when behavior is committed enough to test.
 * Update `doc/roadmap.md` when sequencing, future scope, or milestone status changes.
+* Add or update files in `findings/` for exploratory observations, experiment
+  summaries, and analysis that should be preserved but should not yet become
+  requirements, roadmap items, or decisions.
 * Update `TODO.md` only for active implementation tasks.
 * Add a new ADR in `doc/decisions.md` when a choice affects architecture, data flow, public APIs, dependencies, or long-term maintenance.
 * Do not edit old ADRs just to mirror current requirements; supersede them when the decision changes.

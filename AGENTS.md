@@ -13,6 +13,7 @@ Before changing code or docs, route to the owner document:
 - Combat terminology: `doc/glossary.md` only when introducing or renaming shared terms.
 - Current architecture, project structure, and workflow: `doc/development.md`.
 - Decision history: `doc/decisions.md`.
+- Exploratory findings from local experiments or analysis: `findings/`.
 - Future or deferred scope: `doc/roadmap.md`.
 
 ## Collaboration
