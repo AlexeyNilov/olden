@@ -43,10 +43,16 @@ class Battle:
         self.occupancy.move(stack_id, destination)
         return MovementResult(stack_id=stack_id, start=start, destination=destination, path=path)
 
-    def attack_stack(self, attacker_id: str, defender_id: str, damage_chooser: "DamageChooser") -> "MeleeAttackResult":
+    def attack_stack(
+        self,
+        attacker_id: str,
+        defender_id: str,
+        damage_chooser: "DamageChooser",
+        allow_counterattack: bool = True,
+    ) -> "MeleeAttackResult":
         from olden.combat.attack import resolve_melee_attack
 
-        return resolve_melee_attack(self, attacker_id, defender_id, damage_chooser)
+        return resolve_melee_attack(self, attacker_id, defender_id, damage_chooser, allow_counterattack)
 
     def stack(self, stack_id: str) -> UnitStack:
         try:

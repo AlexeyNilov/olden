@@ -89,6 +89,36 @@ def test_combat_simulation_targets_nearest_living_enemy_with_configured_order_ti
     assert attack_events[0].defender_id == "enemy-first"
 
 
+def test_combat_simulation_allows_each_stack_to_counterattack_once_per_round():
+    player_griffin = _stack("player-griffin", CombatSide.PLAYER, count=5, initiative=9, speed=5)
+    player_esquire = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=5, speed=4)
+    enemy_esquire = _stack("enemy-esquire", CombatSide.ENEMY, count=20, initiative=1, speed=4)
+    initial_battle = _battle_with_stacks(
+        placements=(
+            (player_griffin, HexCoord(4, 5)),
+            (player_esquire, HexCoord(5, 4)),
+            (enemy_esquire, HexCoord(5, 5)),
+        )
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("player-griffin", "player-esquire", "enemy-esquire"),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=2,
+    )
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert len(attack_events) == 2
+    assert attack_events[0].attacker_id == "player-griffin"
+    assert attack_events[0].defender_id == "enemy-esquire"
+    assert attack_events[0].counterattack is not None
+    assert attack_events[1].attacker_id == "player-esquire"
+    assert attack_events[1].defender_id == "enemy-esquire"
+    assert attack_events[1].counterattack is None
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
 def test_combat_simulation_stops_after_first_attack_when_defender_is_defeated():
     initial_battle = _battle(
         player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),

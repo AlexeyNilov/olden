@@ -135,13 +135,14 @@ def dump_combat_log_yaml(combat_log: CombatLog) -> str:
 
 def replay_combat_log(initial_battle: Battle, combat_log: CombatLog) -> Battle:
     battle = initial_battle.copy()
+    counterattacked_stack_ids_by_round: set[tuple[int, str]] = set()
     for event in combat_log.events:
         if isinstance(event, BattleStartedEvent):
             continue
         if isinstance(event, UnitMovedEvent):
             _replay_unit_moved(battle, event)
         else:
-            _replay_unit_attacked(battle, event)
+            _replay_unit_attacked(battle, event, counterattacked_stack_ids_by_round)
     return battle
 
 
@@ -152,7 +153,11 @@ def _replay_unit_moved(battle: Battle, event: UnitMovedEvent) -> None:
         raise CombatLogValidationError(msg)
 
 
-def _replay_unit_attacked(battle: Battle, event: UnitAttackedEvent) -> None:
+def _replay_unit_attacked(
+    battle: Battle,
+    event: UnitAttackedEvent,
+    counterattacked_stack_ids_by_round: set[tuple[int, str]],
+) -> None:
     selected_damages = [event.primary_damage.selected_damage]
     if event.counterattack is not None:
         selected_damages.append(event.counterattack.selected_damage)
@@ -167,7 +172,13 @@ def _replay_unit_attacked(battle: Battle, event: UnitAttackedEvent) -> None:
         selected_damage_index += 1
         return selected_damage
 
-    attack = battle.attack_stack(event.attacker_id, event.defender_id, choose_logged_damage)
+    counterattack_key = (event.turn.round_number, event.defender_id)
+    attack = battle.attack_stack(
+        event.attacker_id,
+        event.defender_id,
+        choose_logged_damage,
+        allow_counterattack=counterattack_key not in counterattacked_stack_ids_by_round,
+    )
     if _snapshot_damage(attack.primary_damage) != event.primary_damage:
         msg = f"Combat log attack does not match replayed primary damage for unit stack: {event.attacker_id}"
         raise CombatLogValidationError(msg)
@@ -175,6 +186,8 @@ def _replay_unit_attacked(battle: Battle, event: UnitAttackedEvent) -> None:
     if replayed_counterattack != event.counterattack:
         msg = f"Combat log attack does not match replayed counterattack damage for unit stack: {event.attacker_id}"
         raise CombatLogValidationError(msg)
+    if attack.counterattack is not None:
+        counterattacked_stack_ids_by_round.add(counterattack_key)
 
 
 def _parse_event(value: object, index: int) -> CombatLogEvent:

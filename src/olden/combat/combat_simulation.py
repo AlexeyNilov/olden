@@ -56,6 +56,7 @@ def simulate_combat(
             return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
         round_order = order_stacks_for_round(battle, configured_stack_ids)
+        counterattacked_stack_ids: set[str] = set()
         for turn_number, actor_id in enumerate(round_order, start=1):
             if turns_taken >= max_turns:
                 return _result(battle, combat_log, CombatSimulationStopReason.MAX_TURNS_REACHED, turns_taken)
@@ -70,7 +71,14 @@ def simulate_combat(
 
             turn = TurnMarker(round_number=round_number, turn_number=turn_number)
             if _are_adjacent(battle, actor_id, opponent_id):
-                attack = battle.attack_stack(actor_id, opponent_id, resolved_damage_chooser)
+                attack = battle.attack_stack(
+                    actor_id,
+                    opponent_id,
+                    resolved_damage_chooser,
+                    allow_counterattack=opponent_id not in counterattacked_stack_ids,
+                )
+                if attack.counterattack is not None:
+                    counterattacked_stack_ids.add(opponent_id)
                 combat_log.record_unit_attacked(turn, attack)
                 turns_taken += 1
                 if _one_side_defeated(battle):

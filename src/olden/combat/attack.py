@@ -36,6 +36,7 @@ def resolve_melee_attack(
     attacker_id: str,
     defender_id: str,
     damage_chooser: DamageChooser,
+    allow_counterattack: bool = True,
 ) -> MeleeAttackResult:
     attacker = battle.stack(attacker_id)
     defender = battle.stack(defender_id)
@@ -43,7 +44,7 @@ def resolve_melee_attack(
 
     primary_damage = _resolve_attack_damage(battle, attacker_id, defender_id, damage_chooser)
     counterattack = None
-    if not primary_damage.defender_defeated and _can_counterattack(battle.stack(defender_id)):
+    if allow_counterattack and not primary_damage.defender_defeated and _can_counterattack(battle.stack(defender_id)):
         counterattack = _resolve_attack_damage(battle, defender_id, attacker_id, damage_chooser)
 
     return MeleeAttackResult(primary_damage=primary_damage, counterattack=counterattack)

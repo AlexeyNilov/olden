@@ -135,7 +135,8 @@ This helps ensure requirements are:
 * **When** attack damage is applied to a unit stack, **the system shall** carry partial damage forward as wound damage on the current surviving creature.
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
-* **While** morale, luck, hero stats, damage tags, abilities, range penalties, initiative, and once-per-round counterattack limits are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
+* **While** morale, luck, hero stats, damage tags, abilities, range penalties, and initiative are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Movement-only simulation
 
@@ -161,6 +162,7 @@ This helps ensure requirements are:
 * **When** multiple living enemy stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
+* **When** combat simulation resolves counterattacks, **the system shall** allow each defending unit stack to counterattack at most once per round.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
 * **When** one side has no living unit stacks, **the system shall** stop combat simulation.
 * **While** morale, luck, waiting, advanced target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.

@@ -230,14 +230,6 @@ events:
     defender_count_after: 12
     defender_wound_damage_after: 0
     defender_defeated: false
-  counterattack:
-    selected_damage: 3
-    final_damage: 36
-    creatures_killed: 3
-    defender_count_before: 6
-    defender_count_after: 3
-    defender_wound_damage_after: 0
-    defender_defeated: false
 - sequence: 13
   type: unit_attacked
   round: 4
@@ -248,10 +240,18 @@ events:
     selected_damage: 3
     final_damage: 36
     creatures_killed: 3
-    defender_count_before: 3
-    defender_count_after: 0
+    defender_count_before: 6
+    defender_count_after: 3
     defender_wound_damage_after: 0
-    defender_defeated: true
+    defender_defeated: false
+  counterattack:
+    selected_damage: 3
+    final_damage: 9
+    creatures_killed: 0
+    defender_count_before: 12
+    defender_count_after: 12
+    defender_wound_damage_after: 9
+    defender_defeated: false
 - sequence: 14
   type: unit_attacked
   round: 5
@@ -261,16 +261,74 @@ events:
   primary_damage:
     selected_damage: 6
     final_damage: 6
-    creatures_killed: 0
+    creatures_killed: 1
     defender_count_before: 12
-    defender_count_after: 12
-    defender_wound_damage_after: 6
+    defender_count_after: 11
+    defender_wound_damage_after: 3
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 22
+    final_damage: 20
     creatures_killed: 1
     defender_count_before: 1
+    defender_count_after: 0
+    defender_wound_damage_after: 0
+    defender_defeated: true
+- sequence: 15
+  type: unit_attacked
+  round: 5
+  turn: 2
+  attacker_id: player-esquire
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 3
+    final_damage: 9
+    creatures_killed: 1
+    defender_count_before: 11
+    defender_count_after: 10
+    defender_wound_damage_after: 0
+    defender_defeated: false
+- sequence: 16
+  type: unit_attacked
+  round: 5
+  turn: 3
+  attacker_id: enemy-esquire
+  defender_id: player-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 20
+    creatures_killed: 1
+    defender_count_before: 3
+    defender_count_after: 2
+    defender_wound_damage_after: 8
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 4
+    creatures_killed: 0
+    defender_count_before: 10
+    defender_count_after: 10
+    defender_wound_damage_after: 4
+    defender_defeated: false
+- sequence: 17
+  type: unit_attacked
+  round: 6
+  turn: 1
+  attacker_id: player-esquire
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 4
+    creatures_killed: 0
+    defender_count_before: 10
+    defender_count_after: 10
+    defender_wound_damage_after: 8
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 20
+    creatures_killed: 2
+    defender_count_before: 2
     defender_count_after: 0
     defender_wound_damage_after: 0
     defender_defeated: true
