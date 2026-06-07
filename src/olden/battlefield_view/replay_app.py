@@ -288,7 +288,7 @@ def _frame_status(frame: CombatReplayFrame) -> str:
             f"({frame.event.destination.column}, {frame.event.destination.row})"
         )
     if isinstance(frame.event, UnitAttackedEvent):
-        return f"{prefix} - {_attack_text(frame.event)}"
+        return f"{prefix} - {_attack_text(frame.event)}{_counterattack_status(frame.event.counterattack)}"
     return f"{prefix} - event {frame.event.sequence}"
 
 
@@ -330,7 +330,6 @@ def _attack_text(event: UnitAttackedEvent) -> str:
         f"{event.primary_damage.final_damage} damage, "
         f"{event.primary_damage.creatures_killed} killed, "
         f"{escape(event.defender_id)} {event.primary_damage.defender_count_after} left"
-        f"{_counterattack_status(event.counterattack)}"
     )
 
 

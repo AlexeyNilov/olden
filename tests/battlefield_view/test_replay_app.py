@@ -70,6 +70,7 @@ def test_replay_controller_formats_attack_events_in_status_and_combat_log():
     assert "counterattack" in status_label.text
     assert "player-esquire attacked enemy-esquire" in log_container.html_updates[-1]
     assert "Counterattack:" in log_container.html_updates[-1]
+    assert "; counterattack:" not in log_container.html_updates[-1]
 
 
 def test_replay_controller_delay_change_updates_timer_interval():
