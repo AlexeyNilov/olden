@@ -2,13 +2,6 @@ schema_version: 1
 battlefield:
   obstacles: []
 unit_stacks:
-- id: genetic-player-1
-  unit_id: esquire
-  side: player
-  count: 1
-  anchor:
-    column: 0
-    row: 9
 - id: genetic-player-2
   unit_id: esquire
   side: player
@@ -26,10 +19,17 @@ unit_stacks:
 - id: genetic-player-5
   unit_id: esquire
   side: player
-  count: 12
+  count: 3
   anchor:
     column: 0
     row: 5
+- id: genetic-player-6
+  unit_id: esquire
+  side: player
+  count: 10
+  anchor:
+    column: 0
+    row: 4
 - id: enemy-esquire
   unit_id: esquire
   side: enemy

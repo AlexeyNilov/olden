@@ -6,6 +6,7 @@ import pytest
 from olden.config import (
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS,
     DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE,
+    DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS,
     DEMO_BATTLE_INITIAL_STATE_PATH,
     DEMO_COMBAT_LOG_PATH,
     load_config,
@@ -86,8 +87,11 @@ def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_GENERATIONS", raising=False)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_WORKERS", raising=False)
     tmp_path.joinpath(".env").write_text(
-        "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=12\nGENETIC_STRATEGY_DISCOVERY_GENERATIONS=5\n",
+        "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=12\n"
+        "GENETIC_STRATEGY_DISCOVERY_GENERATIONS=5\n"
+        "GENETIC_STRATEGY_DISCOVERY_WORKERS=3\n",
         encoding="utf-8",
     )
 
@@ -95,6 +99,7 @@ def test_load_config_reads_genetic_strategy_discovery_settings_from_dotenv_file(
 
     assert config.genetic_strategy_discovery_population_size == 12
     assert config.genetic_strategy_discovery_generations == 5
+    assert config.genetic_strategy_discovery_workers == 3
 
 
 def test_load_config_rejects_non_positive_genetic_strategy_discovery_settings(monkeypatch, tmp_path):
@@ -106,12 +111,23 @@ def test_load_config_rejects_non_positive_genetic_strategy_discovery_settings(mo
         load_config()
 
 
+def test_load_config_rejects_non_positive_genetic_strategy_discovery_worker_count(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_WORKERS", raising=False)
+    tmp_path.joinpath(".env").write_text("GENETIC_STRATEGY_DISCOVERY_WORKERS=0\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="GENETIC_STRATEGY_DISCOVERY_WORKERS"):
+        load_config()
+
+
 def test_load_config_falls_back_to_genetic_strategy_discovery_defaults(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_GENERATIONS", raising=False)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_WORKERS", raising=False)
 
     config = load_config()
 
     assert config.genetic_strategy_discovery_population_size == DEFAULT_GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE
     assert config.genetic_strategy_discovery_generations == DEFAULT_GENETIC_STRATEGY_DISCOVERY_GENERATIONS
+    assert config.genetic_strategy_discovery_workers == DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS

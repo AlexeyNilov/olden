@@ -6,7 +6,9 @@ def test_genetic_strategy_discovery_uses_configured_default_population_size(monk
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE", raising=False)
     monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_GENERATIONS", raising=False)
     tmp_path.joinpath(".env").write_text(
-        "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=5\nGENETIC_STRATEGY_DISCOVERY_GENERATIONS=1\n",
+        "GENETIC_STRATEGY_DISCOVERY_POPULATION_SIZE=5\n"
+        "GENETIC_STRATEGY_DISCOVERY_GENERATIONS=1\n"
+        "GENETIC_STRATEGY_DISCOVERY_WORKERS=1\n",
         encoding="utf-8",
     )
 

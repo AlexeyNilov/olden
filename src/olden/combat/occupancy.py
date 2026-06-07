@@ -27,6 +27,12 @@ class Occupancy:
             return False
         return True
 
+    def can_place_coordinate(self, coord: HexCoord, moving_unit_id: str | None = None) -> bool:
+        if coord in self._blocked_coordinates:
+            return False
+        occupant_id = self._unit_by_coord.get(coord)
+        return occupant_id is None or occupant_id == moving_unit_id
+
     def remove(self, unit_id: str) -> None:
         for coord in self.coordinates_for(unit_id):
             del self._unit_by_coord[coord]

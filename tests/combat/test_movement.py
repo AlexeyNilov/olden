@@ -2,7 +2,7 @@ import pytest
 
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
-from olden.combat.movement import UnreachablePathError, find_path, validate_movement
+from olden.combat.movement import UnreachablePathError, find_path, find_shortest_paths_to_any, validate_movement
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 
@@ -58,6 +58,25 @@ def test_find_path_routes_around_occupied_coordinates():
     assert path[-1] == HexCoord(6, 4)
     assert HexCoord(5, 4) not in path
     assert len(path) == 4
+
+
+def test_find_shortest_paths_to_any_returns_shortest_reachable_destinations_in_destination_order():
+    battlefield = Battlefield.default()
+    occupancy = Occupancy()
+    occupancy.place("golem", HexCoord(5, 4))
+
+    paths = find_shortest_paths_to_any(
+        battlefield=battlefield,
+        occupancy=occupancy,
+        start=HexCoord(4, 4),
+        destinations=(HexCoord(4, 5), HexCoord(5, 3), HexCoord(6, 4)),
+        moving_unit_id="swordsman",
+    )
+
+    assert paths == (
+        (HexCoord(4, 4), HexCoord(4, 5)),
+        (HexCoord(4, 4), HexCoord(5, 3)),
+    )
 
 
 def test_find_path_raises_dedicated_exception_for_unreachable_destinations():

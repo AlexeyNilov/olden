@@ -24,6 +24,10 @@ class Battlefield:
         self._deployment_zones = deployment_zones or DeploymentZones.default(row_lengths)
         self._obstacles = obstacles
         self._obstacle_map = ObstacleMap(obstacles)
+        self._neighbor_cache = {
+            coord: tuple(candidate for candidate in self._neighbor_candidates(coord) if self.contains(candidate))
+            for coord in self.coordinates()
+        }
 
     @classmethod
     def default(cls, obstacles: tuple[Obstacle, ...] = ()) -> "Battlefield":
@@ -46,7 +50,7 @@ class Battlefield:
 
     def neighbors(self, coord: HexCoord) -> tuple[HexCoord, ...]:
         self.require_valid(coord)
-        return tuple(candidate for candidate in self._neighbor_candidates(coord) if self.contains(candidate))
+        return self._neighbor_cache[coord]
 
     def hex_at(self, coord: HexCoord) -> BattlefieldHex:
         self.require_valid(coord)

@@ -1,4 +1,5 @@
 import random
+from concurrent.futures import Executor, ProcessPoolExecutor
 from dataclasses import dataclass
 from typing import TypeAlias
 
@@ -10,6 +11,7 @@ from olden.combat.sides import CombatSide
 from olden.combat.units import DamageRange, UnitStack
 
 StackSplitGenome: TypeAlias = tuple[int, ...]
+StackSplitEvaluationCache: TypeAlias = dict[StackSplitGenome, "StackSplitEvaluation"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -153,6 +155,7 @@ def discover_stack_split_strategy(
     generations: int = 20,
     mutation_rate: float = 0.25,
     tournament_size: int = 3,
+    worker_count: int = 1,
 ) -> StackSplitDiscoveryResult:
     if population_size < 2:
         msg = "Population size must be at least 2"
@@ -166,28 +169,37 @@ def discover_stack_split_strategy(
     if tournament_size < 1:
         msg = "Tournament size must be positive"
         raise ValueError(msg)
+    if worker_count < 1:
+        msg = "Worker count must be positive"
+        raise ValueError(msg)
 
-    genomes = _initial_population_genomes(scenario, population_size, random_source)
-    population = _evaluate_population(scenario, genomes)
-    best_individual = _best_individual(population)
+    executor = ProcessPoolExecutor(max_workers=worker_count) if worker_count > 1 else None
+    try:
+        evaluation_cache: StackSplitEvaluationCache = {}
+        genomes = _initial_population_genomes(scenario, population_size, random_source)
+        population = _evaluate_population(scenario, genomes, evaluation_cache, executor)
+        best_individual = _best_individual(population)
 
-    for _ in range(generations):
-        next_genomes = [best_individual.genome]
-        while len(next_genomes) < population_size:
-            first_parent = _select_parent(population, random_source, tournament_size)
-            second_parent = _select_parent(population, random_source, tournament_size)
-            child = _crossover_stack_split(
-                first_parent.genome,
-                second_parent.genome,
-                scenario.unit_pool_size,
-                scenario.max_slots,
-                random_source,
-            )
-            if random_source.random() < mutation_rate:
-                child = mutate_stack_split(child, random_source)
-            next_genomes.append(child)
-        population = _evaluate_population(scenario, tuple(next_genomes))
-        best_individual = max((best_individual, _best_individual(population)), key=_individual_sort_key)
+        for _ in range(generations):
+            next_genomes = [best_individual.genome]
+            while len(next_genomes) < population_size:
+                first_parent = _select_parent(population, random_source, tournament_size)
+                second_parent = _select_parent(population, random_source, tournament_size)
+                child = _crossover_stack_split(
+                    first_parent.genome,
+                    second_parent.genome,
+                    scenario.unit_pool_size,
+                    scenario.max_slots,
+                    random_source,
+                )
+                if random_source.random() < mutation_rate:
+                    child = mutate_stack_split(child, random_source)
+                next_genomes.append(child)
+            population = _evaluate_population(scenario, tuple(next_genomes), evaluation_cache, executor)
+            best_individual = max((best_individual, _best_individual(population)), key=_individual_sort_key)
+    finally:
+        if executor is not None:
+            executor.shutdown()
 
     return StackSplitDiscoveryResult(best_individual=best_individual, population=population)
 
@@ -273,8 +285,23 @@ def _initial_population_genomes(
 def _evaluate_population(
     scenario: StackSplitScenario,
     genomes: tuple[StackSplitGenome, ...],
+    evaluation_cache: StackSplitEvaluationCache,
+    executor: Executor | None,
 ) -> tuple[StackSplitIndividual, ...]:
-    return tuple(StackSplitIndividual(genome=genome, evaluation=evaluate_stack_split(scenario, genome)) for genome in genomes)
+    missing_genomes = tuple(dict.fromkeys(genome for genome in genomes if genome not in evaluation_cache))
+    if executor is None or len(missing_genomes) < 2:
+        for genome in missing_genomes:
+            evaluation_cache[genome] = evaluate_stack_split(scenario, genome)
+    else:
+        evaluations = executor.map(_evaluate_stack_split_worker, ((scenario, genome) for genome in missing_genomes))
+        evaluation_cache.update(zip(missing_genomes, evaluations, strict=True))
+
+    return tuple(StackSplitIndividual(genome=genome, evaluation=evaluation_cache[genome]) for genome in genomes)
+
+
+def _evaluate_stack_split_worker(work_item: tuple[StackSplitScenario, StackSplitGenome]) -> StackSplitEvaluation:
+    scenario, genome = work_item
+    return evaluate_stack_split(scenario, genome)
 
 
 def _best_individual(population: tuple[StackSplitIndividual, ...]) -> StackSplitIndividual:

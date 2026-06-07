@@ -7,7 +7,7 @@ from olden.combat.attack import DamageChooser
 from olden.combat.battle import Battle
 from olden.combat.combat_log import CombatLog, TurnMarker
 from olden.combat.coordinates import HexCoord
-from olden.combat.movement import UnreachablePathError, find_path
+from olden.combat.movement import find_shortest_paths_to_any
 from olden.combat.range import distance_between
 from olden.combat.turn_order import order_stacks_for_round
 from olden.combat.units import DamageRange
@@ -188,23 +188,18 @@ def _shortest_engagement_paths(battle: Battle, actor_id: str, opponent_id: str) 
 def _reachable_engagement_paths(battle: Battle, actor_id: str, opponent_id: str) -> tuple[MovementPath, ...]:
     actor_coord = _single_occupied_coordinate(battle, actor_id)
     opponent_coord = _single_occupied_coordinate(battle, opponent_id)
-    paths: list[MovementPath] = []
-    for candidate in battle.battlefield.neighbors(opponent_coord):
-        if not battle.occupancy.can_place(frozenset({candidate}), moving_unit_id=actor_id):
-            continue
-        try:
-            paths.append(
-                find_path(
-                    battlefield=battle.battlefield,
-                    occupancy=battle.occupancy,
-                    start=actor_coord,
-                    destination=candidate,
-                    moving_unit_id=actor_id,
-                )
-            )
-        except UnreachablePathError:
-            continue
-    return tuple(paths)
+    candidates = tuple(
+        candidate
+        for candidate in battle.battlefield.neighbors(opponent_coord)
+        if battle.occupancy.can_place_coordinate(candidate, moving_unit_id=actor_id)
+    )
+    return find_shortest_paths_to_any(
+        battlefield=battle.battlefield,
+        occupancy=battle.occupancy,
+        start=actor_coord,
+        destinations=candidates,
+        moving_unit_id=actor_id,
+    )
 
 
 def _destination_for_speed(path: MovementPath, speed: int) -> HexCoord:

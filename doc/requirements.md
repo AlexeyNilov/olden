@@ -165,6 +165,8 @@ This helps ensure requirements are:
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed player deployment coordinate and create one player unit stack for each non-empty slot.
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured player unit pool size.
 * **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
+* **When** stack-split strategy discovery encounters the same genome more than once in one discovery run, **the system shall** reuse its deterministic evaluation.
+* **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
 * **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving player units, then remaining player health, then enemy units killed, and then faster completion.
 * **When** the genetic strategy discovery sample completes, **the system shall** save the best discovered initial battle and a replayable combat log for that battle.
 * **While** turn-level combat strategy is deferred, **the system shall** keep stack-split strategy discovery limited to initial army formation and fixed deployment slots.

@@ -6,28 +6,6 @@ events:
   type: unit_moved
   round: 1
   turn: 1
-  stack_id: genetic-player-1
-  start:
-    column: 0
-    row: 9
-  destination:
-    column: 4
-    row: 9
-  path:
-  - column: 0
-    row: 9
-  - column: 1
-    row: 9
-  - column: 2
-    row: 9
-  - column: 3
-    row: 9
-  - column: 4
-    row: 9
-- sequence: 3
-  type: unit_moved
-  round: 1
-  turn: 2
   stack_id: genetic-player-2
   start:
     column: 0
@@ -46,10 +24,10 @@ events:
     row: 8
   - column: 4
     row: 8
-- sequence: 4
+- sequence: 3
   type: unit_moved
   round: 1
-  turn: 3
+  turn: 2
   stack_id: genetic-player-3
   start:
     column: 0
@@ -68,10 +46,10 @@ events:
     row: 7
   - column: 4
     row: 7
-- sequence: 5
+- sequence: 4
   type: unit_moved
   round: 1
-  turn: 4
+  turn: 3
   stack_id: genetic-player-5
   start:
     column: 0
@@ -90,6 +68,28 @@ events:
     row: 5
   - column: 4
     row: 5
+- sequence: 5
+  type: unit_moved
+  round: 1
+  turn: 4
+  stack_id: genetic-player-6
+  start:
+    column: 0
+    row: 4
+  destination:
+    column: 4
+    row: 4
+  path:
+  - column: 0
+    row: 4
+  - column: 1
+    row: 4
+  - column: 2
+    row: 4
+  - column: 3
+    row: 4
+  - column: 4
+    row: 4
 - sequence: 6
   type: unit_moved
   round: 1
@@ -116,28 +116,6 @@ events:
   type: unit_moved
   round: 2
   turn: 1
-  stack_id: genetic-player-1
-  start:
-    column: 4
-    row: 9
-  destination:
-    column: 6
-    row: 6
-  path:
-  - column: 4
-    row: 9
-  - column: 5
-    row: 9
-  - column: 5
-    row: 8
-  - column: 6
-    row: 7
-  - column: 6
-    row: 6
-- sequence: 8
-  type: unit_moved
-  round: 2
-  turn: 2
   stack_id: genetic-player-2
   start:
     column: 4
@@ -149,17 +127,17 @@ events:
   - column: 4
     row: 8
   - column: 5
-    row: 7
-  - column: 5
-    row: 6
+    row: 8
   - column: 6
-    row: 5
+    row: 7
+  - column: 6
+    row: 6
   - column: 7
     row: 5
-- sequence: 9
+- sequence: 8
   type: unit_attacked
   round: 2
-  turn: 2
+  turn: 1
   attacker_id: genetic-player-2
   defender_id: enemy-esquire
   primary_damage:
@@ -178,10 +156,10 @@ events:
     defender_count_after: 0
     defender_wound_damage_after: 0
     defender_defeated: true
-- sequence: 10
+- sequence: 9
   type: unit_moved
   round: 2
-  turn: 3
+  turn: 2
   stack_id: genetic-player-3
   start:
     column: 4
@@ -194,16 +172,16 @@ events:
     row: 7
   - column: 5
     row: 7
-  - column: 5
-    row: 6
   - column: 6
-    row: 5
+    row: 7
+  - column: 6
+    row: 6
   - column: 7
     row: 5
-- sequence: 11
+- sequence: 10
   type: unit_attacked
   round: 2
-  turn: 3
+  turn: 2
   attacker_id: genetic-player-3
   defender_id: enemy-esquire
   primary_damage:
@@ -214,10 +192,10 @@ events:
     defender_count_after: 20
     defender_wound_damage_after: 4
     defender_defeated: false
-- sequence: 12
+- sequence: 11
   type: unit_moved
   round: 2
-  turn: 4
+  turn: 3
   stack_id: genetic-player-5
   start:
     column: 4
@@ -236,21 +214,57 @@ events:
     row: 4
   - column: 7
     row: 4
-- sequence: 13
+- sequence: 12
   type: unit_attacked
   round: 2
-  turn: 4
+  turn: 3
   attacker_id: genetic-player-5
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
-    final_damage: 24
+    final_damage: 6
+    creatures_killed: 0
+    defender_count_before: 20
+    defender_count_after: 20
+    defender_wound_damage_after: 10
+    defender_defeated: false
+- sequence: 13
+  type: unit_moved
+  round: 2
+  turn: 4
+  stack_id: genetic-player-6
+  start:
+    column: 4
+    row: 4
+  destination:
+    column: 7
+    row: 6
+  path:
+  - column: 4
+    row: 4
+  - column: 5
+    row: 4
+  - column: 6
+    row: 5
+  - column: 6
+    row: 6
+  - column: 7
+    row: 6
+- sequence: 14
+  type: unit_attacked
+  round: 2
+  turn: 4
+  attacker_id: genetic-player-6
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 20
     creatures_killed: 2
     defender_count_before: 20
     defender_count_after: 18
-    defender_wound_damage_after: 4
+    defender_wound_damage_after: 6
     defender_defeated: false
-- sequence: 14
+- sequence: 15
   type: unit_attacked
   round: 2
   turn: 5
@@ -264,57 +278,41 @@ events:
     defender_count_after: 0
     defender_wound_damage_after: 0
     defender_defeated: true
-- sequence: 15
-  type: unit_moved
-  round: 3
-  turn: 1
-  stack_id: genetic-player-1
-  start:
-    column: 6
-    row: 6
-  destination:
-    column: 7
-    row: 5
-  path:
-  - column: 6
-    row: 6
-  - column: 7
-    row: 5
 - sequence: 16
   type: unit_attacked
   round: 3
   turn: 1
-  attacker_id: genetic-player-1
-  defender_id: enemy-esquire
-  primary_damage:
-    selected_damage: 2
-    final_damage: 2
-    creatures_killed: 0
-    defender_count_before: 18
-    defender_count_after: 18
-    defender_wound_damage_after: 6
-    defender_defeated: false
-  counterattack:
-    selected_damage: 2
-    final_damage: 36
-    creatures_killed: 1
-    defender_count_before: 1
-    defender_count_after: 0
-    defender_wound_damage_after: 0
-    defender_defeated: true
-- sequence: 17
-  type: unit_attacked
-  round: 3
-  turn: 2
   attacker_id: genetic-player-5
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
-    final_damage: 24
-    creatures_killed: 2
+    final_damage: 6
+    creatures_killed: 1
     defender_count_before: 18
+    defender_count_after: 17
+    defender_wound_damage_after: 0
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 34
+    creatures_killed: 2
+    defender_count_before: 3
+    defender_count_after: 1
+    defender_wound_damage_after: 10
+    defender_defeated: false
+- sequence: 17
+  type: unit_attacked
+  round: 3
+  turn: 2
+  attacker_id: genetic-player-6
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 20
+    creatures_killed: 1
+    defender_count_before: 17
     defender_count_after: 16
-    defender_wound_damage_after: 6
+    defender_wound_damage_after: 8
     defender_defeated: false
 - sequence: 18
   type: unit_attacked
@@ -325,94 +323,86 @@ events:
   primary_damage:
     selected_damage: 2
     final_damage: 32
-    creatures_killed: 2
-    defender_count_before: 12
-    defender_count_after: 10
-    defender_wound_damage_after: 8
-    defender_defeated: false
-  counterattack:
+    creatures_killed: 1
+    defender_count_before: 1
+    defender_count_after: 0
+    defender_wound_damage_after: 0
+    defender_defeated: true
+- sequence: 19
+  type: unit_attacked
+  round: 4
+  turn: 1
+  attacker_id: genetic-player-6
+  defender_id: enemy-esquire
+  primary_damage:
     selected_damage: 2
     final_damage: 20
     creatures_killed: 2
     defender_count_before: 16
     defender_count_after: 14
-    defender_wound_damage_after: 2
-    defender_defeated: false
-- sequence: 19
-  type: unit_attacked
-  round: 4
-  turn: 1
-  attacker_id: genetic-player-5
-  defender_id: enemy-esquire
-  primary_damage:
-    selected_damage: 2
-    final_damage: 20
-    creatures_killed: 1
-    defender_count_before: 14
-    defender_count_after: 13
-    defender_wound_damage_after: 10
+    defender_wound_damage_after: 4
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 26
+    final_damage: 28
     creatures_killed: 2
     defender_count_before: 10
     defender_count_after: 8
-    defender_wound_damage_after: 10
+    defender_wound_damage_after: 4
     defender_defeated: false
 - sequence: 20
   type: unit_attacked
   round: 4
   turn: 2
   attacker_id: enemy-esquire
-  defender_id: genetic-player-5
+  defender_id: genetic-player-6
   primary_damage:
     selected_damage: 2
-    final_damage: 26
-    creatures_killed: 3
+    final_damage: 28
+    creatures_killed: 2
     defender_count_before: 8
-    defender_count_after: 5
-    defender_wound_damage_after: 0
+    defender_count_after: 6
+    defender_wound_damage_after: 8
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 10
+    final_damage: 12
     creatures_killed: 1
-    defender_count_before: 13
-    defender_count_after: 12
-    defender_wound_damage_after: 8
+    defender_count_before: 14
+    defender_count_after: 13
+    defender_wound_damage_after: 4
     defender_defeated: false
 - sequence: 21
   type: unit_attacked
   round: 5
   turn: 1
-  attacker_id: genetic-player-5
+  attacker_id: genetic-player-6
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
-    final_damage: 10
+    final_damage: 12
     creatures_killed: 1
-    defender_count_before: 12
-    defender_count_after: 11
-    defender_wound_damage_after: 6
+    defender_count_before: 13
+    defender_count_after: 12
+    defender_wound_damage_after: 4
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 22
-    creatures_killed: 1
-    defender_count_before: 5
+    final_damage: 24
+    creatures_killed: 2
+    defender_count_before: 6
     defender_count_after: 4
-    defender_wound_damage_after: 10
+    defender_wound_damage_after: 8
     defender_defeated: false
 - sequence: 22
   type: unit_attacked
   round: 5
   turn: 2
   attacker_id: enemy-esquire
-  defender_id: genetic-player-5
+  defender_id: genetic-player-6
   primary_damage:
     selected_damage: 2
-    final_damage: 22
+    final_damage: 24
     creatures_killed: 2
     defender_count_before: 4
     defender_count_after: 2
@@ -422,27 +412,27 @@ events:
     selected_damage: 2
     final_damage: 4
     creatures_killed: 0
-    defender_count_before: 11
-    defender_count_after: 11
-    defender_wound_damage_after: 10
+    defender_count_before: 12
+    defender_count_after: 12
+    defender_wound_damage_after: 8
     defender_defeated: false
 - sequence: 23
   type: unit_attacked
   round: 6
   turn: 1
-  attacker_id: genetic-player-5
+  attacker_id: genetic-player-6
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
     final_damage: 4
     creatures_killed: 1
-    defender_count_before: 11
-    defender_count_after: 10
-    defender_wound_damage_after: 2
+    defender_count_before: 12
+    defender_count_after: 11
+    defender_wound_damage_after: 0
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 20
+    final_damage: 22
     creatures_killed: 2
     defender_count_before: 2
     defender_count_after: 0

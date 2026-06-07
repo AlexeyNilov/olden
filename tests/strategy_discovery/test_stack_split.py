@@ -8,7 +8,10 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.units import DamageRange, UnitStack
+from olden.strategy_discovery import stack_split
 from olden.strategy_discovery.stack_split import (
+    StackSplitEvaluation,
+    StackSplitFitness,
     StackSplitScenario,
     average_damage,
     discover_stack_split_strategy,
@@ -92,6 +95,61 @@ def test_discover_stack_split_strategy_returns_the_best_evaluated_individual():
     assert result.best_individual in result.population
     assert result.best_individual.evaluation == evaluate_stack_split(scenario, result.best_individual.genome)
     assert all(sum(individual.genome) == 10 for individual in result.population)
+
+
+def test_discover_stack_split_strategy_reuses_repeated_genome_evaluations(monkeypatch):
+    scenario = _scenario()
+    genome = (10, 0, 0, 0, 0, 0, 0)
+    evaluated_genomes: list[tuple[int, ...]] = []
+
+    def evaluate_repeated_genome(_scenario: StackSplitScenario, evaluated_genome: tuple[int, ...]) -> StackSplitEvaluation:
+        evaluated_genomes.append(evaluated_genome)
+        return StackSplitEvaluation(
+            fitness=StackSplitFitness(
+                score=sum(evaluated_genome),
+                player_surviving_units=0,
+                player_surviving_health=0,
+                enemy_units_killed=0,
+                turns_taken=0,
+            ),
+            stop_reason="test",
+        )
+
+    monkeypatch.setattr(stack_split, "evaluate_stack_split", evaluate_repeated_genome)
+    monkeypatch.setattr(stack_split, "_initial_population_genomes", lambda *_args: (genome, genome, genome, genome))
+    monkeypatch.setattr(stack_split, "_crossover_stack_split", lambda *_args: genome)
+
+    result = discover_stack_split_strategy(
+        scenario,
+        random_source=random.Random(4),
+        population_size=4,
+        generations=2,
+        mutation_rate=0,
+    )
+
+    assert evaluated_genomes == [genome]
+    assert all(individual.evaluation == result.best_individual.evaluation for individual in result.population)
+
+
+def test_discover_stack_split_strategy_parallel_evaluation_matches_serial_evaluation():
+    scenario = _scenario()
+
+    serial_result = discover_stack_split_strategy(
+        scenario,
+        random_source=random.Random(4),
+        population_size=8,
+        generations=2,
+        worker_count=1,
+    )
+    parallel_result = discover_stack_split_strategy(
+        scenario,
+        random_source=random.Random(4),
+        population_size=8,
+        generations=2,
+        worker_count=2,
+    )
+
+    assert parallel_result == serial_result
 
 
 def test_average_damage_chooses_middle_value():
