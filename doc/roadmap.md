@@ -148,3 +148,9 @@
   player and enemy sides in manual simulations.
 * Later concern: replace nearest-enemy target selection with explicit combat
   strategy once multi-stack NPC planning is implemented.
+* Later concern: model counterattack capacity as unit combat data, with normal
+  melee units defaulting to one counterattack per round, Alert I units allowing
+  two counterattacks per round, and Alert II units allowing unlimited
+  counterattacks per round.
+* Later concern: decide how Guardian Griffin's Loyal Protector passive should
+  interact with counterattack capacity, adjacency, and target selection.

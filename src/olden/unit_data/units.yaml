@@ -55,3 +55,55 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-07"
       modified: false
+  - id: griffin_upg
+    name: Temple Griffin
+    faction: temple
+    tier: 3
+    combat:
+      health: 25
+      attack: 8
+      defense: 6
+      damage:
+        min: 5
+        max: 9
+      morale:
+        min: -3
+        max: 3
+      luck:
+        min: -5
+        max: 5
+      initiative: 12
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Temple_Griffin
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-07"
+      modified: false
+  - id: griffin_upg_alt
+    name: Guardian Griffin
+    faction: temple
+    tier: 3
+    combat:
+      health: 25
+      attack: 9
+      defense: 10
+      damage:
+        min: 7
+        max: 7
+      morale:
+        min: -3
+        max: 3
+      luck:
+        min: -5
+        max: 5
+      initiative: 10
+      speed: 6
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Guardian_Griffin
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-07"
+      modified: false
