@@ -1,23 +1,22 @@
 from pathlib import Path
 
 from olden.battlefield_view.replay_app import (
-    DEFAULT_BATTLE_INITIAL_STATE_PATH,
-    DEFAULT_COMBAT_LOG_PATH,
     DEFAULT_REPLAY_PORT,
     ReplayController,
     _build_page,
-    load_default_replay_frames,
+    load_demo_replay_frames,
 )
 from olden.combat.combat_log import UnitAttackedEvent
+from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH
 
 
-def test_load_default_replay_frames_uses_demo_battle_and_demo_combat_log():
-    frames = load_default_replay_frames()
+def test_load_demo_replay_frames_uses_packaged_demo_files():
+    frames = load_demo_replay_frames()
 
     assert frames[0].battle.occupancy.unit_at(DEFAULT_PLAYER_START) == "player-esquire"
     assert any(isinstance(frame.event, UnitAttackedEvent) for frame in frames)
-    assert DEFAULT_BATTLE_INITIAL_STATE_PATH.name == "demo_battle.yaml"
-    assert DEFAULT_COMBAT_LOG_PATH.name == "demo_combat_log.yaml"
+    assert DEMO_BATTLE_INITIAL_STATE_PATH.name == "demo_battle.yaml"
+    assert DEMO_COMBAT_LOG_PATH.name == "demo_combat_log.yaml"
     assert DEFAULT_REPLAY_PORT == 8081
 
 
@@ -27,7 +26,7 @@ def test_replay_controller_advances_frames_and_updates_svg():
     status_label = FakeLabel()
     timer = FakeTimer()
     controller = ReplayController(
-        frames=load_default_replay_frames(),
+        frames=load_demo_replay_frames(),
         svg_container=svg_container,
         log_container=log_container,
         status_label=status_label,
@@ -47,7 +46,7 @@ def test_replay_controller_advances_frames_and_updates_svg():
 
 
 def test_replay_controller_formats_attack_events_in_status_and_combat_log():
-    frames = load_default_replay_frames()
+    frames = load_demo_replay_frames()
     first_attack_index = next(index for index, frame in enumerate(frames) if isinstance(frame.event, UnitAttackedEvent))
     svg_container = FakeContainer()
     log_container = FakeContainer()
@@ -75,7 +74,7 @@ def test_replay_controller_formats_attack_events_in_status_and_combat_log():
 
 def test_replay_controller_delay_change_updates_timer_interval():
     controller = ReplayController(
-        frames=load_default_replay_frames(),
+        frames=load_demo_replay_frames(),
         svg_container=FakeContainer(),
         log_container=FakeContainer(),
         status_label=FakeLabel(),
@@ -92,7 +91,7 @@ def test_replay_controller_delay_change_updates_timer_interval():
 def test_build_page_sets_initial_delay_and_registers_controls():
     ui = FakeUi()
 
-    _build_page(ui, load_default_replay_frames(), delay_seconds=2.0, unit_image_directory=Path("missing-images"))
+    _build_page(ui, load_demo_replay_frames(), delay_seconds=2.0, unit_image_directory=Path("missing-images"))
 
     assert ui.timer_obj.interval == 2.0
     assert ui.timer_obj.active is False
@@ -104,7 +103,7 @@ def test_build_page_sets_initial_delay_and_registers_controls():
 def test_build_page_applies_high_contrast_delay_input_and_scrollable_log_styles():
     ui = FakeUi()
 
-    _build_page(ui, load_default_replay_frames(), delay_seconds=2.0, unit_image_directory=Path("missing-images"))
+    _build_page(ui, load_demo_replay_frames(), delay_seconds=2.0, unit_image_directory=Path("missing-images"))
 
     assert ".replay-delay-input .q-field__label" in ui.css
     assert ".replay-delay-input .q-field__native" in ui.css
@@ -118,7 +117,7 @@ def test_build_page_applies_high_contrast_delay_input_and_scrollable_log_styles(
     assert "combat-log-panel" in ui.html_elements[-1].class_values
 
 
-DEFAULT_PLAYER_START = next(iter(load_default_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
+DEFAULT_PLAYER_START = next(iter(load_demo_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
 
 
 class FakeTimer:

@@ -13,11 +13,9 @@ from olden.battlefield_view.svg import (
 from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.combat_log import AttackDamageEventData, UnitAttackedEvent, UnitMovedEvent, load_combat_log_file
 from olden.combat.combat_replay import CombatReplayFrame, build_combat_replay_frames
+from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH, load_config
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
-DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 DEFAULT_REPLAY_DELAY_SECONDS = 1.0
 DEFAULT_REPLAY_PORT = 8081
 REPLAY_PAGE_CSS = """
@@ -198,15 +196,23 @@ class ReplayController:
 
 
 def main() -> None:
-    run_combat_replay_view()
+    config = load_config()
+    run_combat_replay_view(
+        initial_state_path=config.replay_battle_initial_state_path,
+        combat_log_path=config.replay_combat_log_path,
+    )
 
 
 def run_combat_replay_view(
-    initial_state_path: Path = DEFAULT_BATTLE_INITIAL_STATE_PATH,
-    combat_log_path: Path = DEFAULT_COMBAT_LOG_PATH,
+    initial_state_path: Path | None = None,
+    combat_log_path: Path | None = None,
     delay_seconds: float = DEFAULT_REPLAY_DELAY_SECONDS,
     port: int = DEFAULT_REPLAY_PORT,
 ) -> None:
+    if initial_state_path is None or combat_log_path is None:
+        config = load_config()
+        initial_state_path = initial_state_path or config.replay_battle_initial_state_path
+        combat_log_path = combat_log_path or config.replay_combat_log_path
     nicegui = _load_nicegui()
     ui = getattr(nicegui, "ui")
     frames = load_replay_frames(initial_state_path, combat_log_path)
@@ -215,8 +221,8 @@ def run_combat_replay_view(
     ui.run(title="Olden Combat Replay", reload=False, show=False, port=port)
 
 
-def load_default_replay_frames() -> tuple[CombatReplayFrame, ...]:
-    return load_replay_frames(DEFAULT_BATTLE_INITIAL_STATE_PATH, DEFAULT_COMBAT_LOG_PATH)
+def load_demo_replay_frames() -> tuple[CombatReplayFrame, ...]:
+    return load_replay_frames(DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH)
 
 
 def load_replay_frames(initial_state_path: Path, combat_log_path: Path) -> tuple[CombatReplayFrame, ...]:

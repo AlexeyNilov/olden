@@ -2,10 +2,15 @@
 
 import logging
 import os
+from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
 from olden.exceptions import ConfigError
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEMO_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
+DEMO_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 
 SUPPORTED_LOG_LEVELS = {
     "DEBUG": logging.DEBUG,
@@ -40,6 +45,14 @@ class Config:
         """Read settings from the current process environment."""
 
         self.log_level = self.get_log_level("LOG_LEVEL", default=logging.ERROR)
+        self.replay_battle_initial_state_path = self.get_path_env(
+            "REPLAY_BATTLE_INITIAL_STATE_PATH",
+            default=DEMO_BATTLE_INITIAL_STATE_PATH,
+        )
+        self.replay_combat_log_path = self.get_path_env(
+            "REPLAY_COMBAT_LOG_PATH",
+            default=DEMO_COMBAT_LOG_PATH,
+        )
 
     def get_required_env(self, key: str) -> str:
         value = os.getenv(key)
@@ -58,6 +71,12 @@ class Config:
             raise ConfigError(f"Unsupported {key} {value!r}; expected one of: {supported}")
 
         return SUPPORTED_LOG_LEVELS[normalized]
+
+    def get_path_env(self, key: str, *, default: Path) -> Path:
+        value = os.getenv(key)
+        if not value or not value.strip():
+            return default
+        return Path(value.strip()).expanduser()
 
 
 def load_config() -> Config:
