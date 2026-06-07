@@ -6,19 +6,6 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 17: Combat simulation responsibility split
-
-**Status:** Later
-
-* Review `src/olden/combat/combat_simulation.py` responsibilities before adding more combat mechanics.
-* Keep combat simulation responsible for advancing the simulation, not for owning every policy and rule detail.
-* Separate round and action-opportunity state from the simulation loop.
-* Move target selection, engagement-path choice, and action selection behind explicit strategy or policy boundaries.
-* Keep movement and attack application in focused combat-action code that can be called by simulation, replay, and future manual control.
-* Centralize combat-log event recording around applied battle actions so simulation does not hand-build every event.
-* Preserve existing observable behavior for initiative ordering, nearest-opponent targeting, movement, melee attacks, counterattack limits, and replay.
-* Add behavior tests that prove the refactor preserves simulation output and replayability.
-
 ## Milestone 20: Better targeting
 
 **Status:** Later

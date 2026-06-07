@@ -157,7 +157,11 @@ tests/
 * Put shared combat side vocabulary in `sides.py`.
 * Put battle-level state orchestration in `battle.py`.
 * Put melee attack targeting and damage resolution in `attack.py`.
-* Put full two-stack combat simulation rules in `combat_simulation.py`.
+* Put combat simulation loop orchestration and stop reasons in `combat_simulation.py`.
+* Put round and action-opportunity state in `action_opportunities.py`.
+* Put combat target selection policy in `targeting.py`.
+* Put engagement movement planning in `engagement.py`.
+* Put applied movement and attack actions with combat-log recording in `combat_actions.py`.
 * Put battle initial-state YAML loading and saving in `battle_setup.py`.
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put combat-log replay frame generation in `combat_replay.py`.

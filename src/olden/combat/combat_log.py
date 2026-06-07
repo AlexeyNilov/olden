@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from olden.combat.attack import AttackDamageResult, DamageRange, MeleeAttackResult
+from olden.combat.attack import AttackDamageResult, MeleeAttackResult
 from olden.combat.battle import Battle, MovementResult
 from olden.combat.coordinates import HexCoord
 
@@ -103,8 +103,8 @@ class CombatLog:
             turn=turn,
             attacker_id=attack.primary_damage.attacker_id,
             defender_id=attack.primary_damage.defender_id,
-            primary_damage=_snapshot_damage(attack.primary_damage),
-            counterattack=_snapshot_damage(attack.counterattack) if attack.counterattack is not None else None,
+            primary_damage=snapshot_attack_damage(attack.primary_damage),
+            counterattack=snapshot_attack_damage(attack.counterattack) if attack.counterattack is not None else None,
         )
         self._events.append(event)
         return event
@@ -158,10 +158,9 @@ def apply_combat_log_event(battle: Battle, event: CombatLogEvent, replay_state: 
 
 
 def _apply_unit_moved_event(battle: Battle, event: UnitMovedEvent) -> None:
-    movement = battle.move_stack(event.stack_id, event.destination)
-    if movement.start != event.start or movement.path != event.path:
-        msg = f"Combat log movement does not match replayed movement for unit stack: {event.stack_id}"
-        raise CombatLogValidationError(msg)
+    from olden.combat.combat_actions import apply_logged_movement_action
+
+    apply_logged_movement_action(battle, event)
 
 
 def _apply_unit_attacked_event(
@@ -169,36 +168,9 @@ def _apply_unit_attacked_event(
     event: UnitAttackedEvent,
     replay_state: CombatLogReplayState,
 ) -> None:
-    selected_damages = [event.primary_damage.selected_damage]
-    if event.counterattack is not None:
-        selected_damages.append(event.counterattack.selected_damage)
-    selected_damage_index = 0
+    from olden.combat.combat_actions import apply_logged_melee_attack_action
 
-    def choose_logged_damage(_: DamageRange) -> int:
-        nonlocal selected_damage_index
-        if selected_damage_index >= len(selected_damages):
-            msg = f"Combat log attack is missing replayed damage for unit stack: {event.attacker_id}"
-            raise CombatLogValidationError(msg)
-        selected_damage = selected_damages[selected_damage_index]
-        selected_damage_index += 1
-        return selected_damage
-
-    counterattack_key = (event.turn.round_number, event.defender_id)
-    attack = battle.attack_stack(
-        event.attacker_id,
-        event.defender_id,
-        choose_logged_damage,
-        allow_counterattack=counterattack_key not in replay_state.counterattacked_stack_ids_by_round,
-    )
-    if _snapshot_damage(attack.primary_damage) != event.primary_damage:
-        msg = f"Combat log attack does not match replayed primary damage for unit stack: {event.attacker_id}"
-        raise CombatLogValidationError(msg)
-    replayed_counterattack = _snapshot_damage(attack.counterattack) if attack.counterattack is not None else None
-    if replayed_counterattack != event.counterattack:
-        msg = f"Combat log attack does not match replayed counterattack damage for unit stack: {event.attacker_id}"
-        raise CombatLogValidationError(msg)
-    if attack.counterattack is not None:
-        replay_state.counterattacked_stack_ids_by_round.add(counterattack_key)
+    apply_logged_melee_attack_action(battle, event, replay_state)
 
 
 def _parse_event(value: object, index: int) -> CombatLogEvent:
@@ -273,7 +245,7 @@ def _dump_event(event: CombatLogEvent) -> dict[str, object]:
     return data
 
 
-def _snapshot_damage(damage: AttackDamageResult) -> AttackDamageEventData:
+def snapshot_attack_damage(damage: AttackDamageResult) -> AttackDamageEventData:
     return AttackDamageEventData(
         selected_damage=damage.selected_damage,
         final_damage=damage.final_damage,
