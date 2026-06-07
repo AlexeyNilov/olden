@@ -8,13 +8,6 @@
 
 ## Actual tasks
 
-* [ ] Fix test
-__________________________________________________________________ ERROR collecting tests/battlefield_view/test_replay_app.py ___________________________________________________________________
-tests/battlefield_view/test_replay_app.py:121: in <module>
-    DEFAULT_PLAYER_START = next(iter(load_default_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-E   StopIteration
-
 * [ ] Improve agents rules to avoid the following error in every new chat
 
 The environment doesn’t expose python, so I’ll rerun that check with the project’s available Python command.
