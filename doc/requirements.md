@@ -179,8 +179,14 @@ This helps ensure requirements are:
 * **When** combat replay frames are built, **the system shall** include one frame for each replayed unit-moved or unit-attacked event.
 * **When** combat replay frames are built, **the system shall** preserve the combat-log event associated with each non-initial frame.
 * **When** combat replay frames are built, **the system shall** reject movement events that do not replay from the current frame state.
-* **When** the combat replay view is launched, **the system shall** load `data/demo_battle.yaml` and `data/demo_movement_log.yaml` by default.
+* **When** the combat replay view is launched, **the system shall** load `data/demo_battle.yaml` and `data/demo_combat_log.yaml` by default.
 * **When** the combat replay view is shown, **the system shall** render one battlefield state per replay frame.
+* **When** the combat replay view is shown, **the system shall** show a combat-log panel to the right of the battlefield on desktop layouts.
+* **When** the combat replay view shows combat-log entries, **the system shall** list the initial state, movement events, and attack events in replay order.
+* **When** the combat replay view shows the combat-log panel, **the system shall** make the panel scrollable.
+* **When** the combat replay view shows the current replay frame, **the system shall** visually mark the matching combat-log entry.
+* **When** the combat replay view describes a movement event, **the system shall** include the moving stack, start coordinate, and destination coordinate.
+* **When** the combat replay view describes an attack event, **the system shall** include the attacker, defender, final damage, killed creatures, defender count after damage, and counterattack details when present.
 * **When** the combat replay view advances playback, **the system shall** wait for the configured delay before showing the next frame.
 * **When** the combat replay view delay is changed, **the system shall** apply the new delay to subsequent automatic frame advances.
 * **When** the combat replay view reaches the final frame, **the system shall** stop automatic playback.

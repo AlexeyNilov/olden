@@ -115,7 +115,7 @@
 
 ## Milestone 13: Combat simulation view
 
-**Status:** Next
+**Status:** Done
 
 * How do we show attacks using `src/olden/battlefield_view/replay_app.py`
 * Add combat log window to the right side of the view

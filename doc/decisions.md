@@ -34,6 +34,31 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-07: Show combat logs beside battlefield replay
+
+**Status:** Accepted
+
+**Context:** Combat simulation logs now contain both movement and attack events.
+The replay view can reconstruct attack state, but a battlefield-only frame does
+not explain why stack counts changed or where counterattack damage came from.
+
+**Decision:** Keep event-level battlefield replay and add a scrollable combat-log
+panel beside the battlefield. The replay app now loads `data/demo_combat_log.yaml`
+by default, formats movement and attack events as readable log rows, and marks
+the current replay frame's log entry.
+
+**Alternatives considered:** Animating attack overlays on the battlefield was
+deferred because the immediate inspection need is understanding event order and
+damage results. Opening a separate log file viewer was rejected because it would
+split the replay workflow across browser and editor. Replacing the battlefield
+with a text-first report was rejected because spatial state remains the primary
+debugging view.
+
+**Consequences:** The replay app can inspect full combat simulations without
+adding animation complexity. The right-side panel is a new UI surface that future
+milestones can enrich with filters, event selection, or detailed damage
+breakdowns.
+
 ### 2026-06-07: Extend combat logs with replayable attack events
 
 **Status:** Accepted
