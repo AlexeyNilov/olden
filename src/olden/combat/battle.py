@@ -1,10 +1,14 @@
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.movement import validate_movement
 from olden.combat.occupancy import Occupancy
 from olden.combat.units import UnitStack
+
+if TYPE_CHECKING:
+    from olden.combat.attack import DamageChooser, MeleeAttackResult
 
 
 class UnknownUnitStackError(ValueError):
@@ -38,6 +42,11 @@ class Battle:
         )
         self.occupancy.move(stack_id, destination)
         return MovementResult(stack_id=stack_id, start=start, destination=destination, path=path)
+
+    def attack_stack(self, attacker_id: str, defender_id: str, damage_chooser: "DamageChooser") -> "MeleeAttackResult":
+        from olden.combat.attack import resolve_melee_attack
+
+        return resolve_melee_attack(self, attacker_id, defender_id, damage_chooser)
 
     def stack(self, stack_id: str) -> UnitStack:
         try:

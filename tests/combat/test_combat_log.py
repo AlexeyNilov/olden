@@ -5,6 +5,7 @@ from olden.combat.combat_log import (
     CombatLog,
     CombatLogValidationError,
     TurnMarker,
+    UnitAttackedEvent,
     UnitMovedEvent,
     dump_combat_log_yaml,
     load_combat_log_file,
@@ -36,6 +37,27 @@ unit_stacks:
       row: 5
 """
 
+ADJACENT_INITIAL_STATE_YAML = """
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: player-esquire
+    unit_id: esquire
+    side: player
+    count: 10
+    anchor:
+      column: 0
+      row: 5
+  - id: enemy-esquire
+    unit_id: esquire
+    side: enemy
+    count: 20
+    anchor:
+      column: 1
+      row: 5
+"""
+
 
 def test_combat_log_records_unit_movement_with_replayable_path():
     catalog = load_packaged_unit_catalog()
@@ -60,6 +82,40 @@ def test_combat_log_yaml_round_trips_movement_events():
     combat_log = CombatLog()
     combat_log.record_battle_started()
     combat_log.record_unit_moved(TurnMarker(round_number=1, turn_number=1), battle.move_stack("player-esquire", HexCoord(2, 5)))
+
+    loaded_log = load_combat_log_yaml(dump_combat_log_yaml(combat_log))
+
+    assert loaded_log.events == combat_log.events
+
+
+def test_combat_log_records_unit_attack_with_replayable_damage():
+    catalog = load_packaged_unit_catalog()
+    battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+
+    attack = battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum)
+    combat_log.record_unit_attacked(TurnMarker(round_number=1, turn_number=1), attack)
+
+    event = combat_log.events[0]
+    assert isinstance(event, UnitAttackedEvent)
+    assert event.sequence == 1
+    assert event.attacker_id == "player-esquire"
+    assert event.defender_id == "enemy-esquire"
+    assert event.primary_damage.selected_damage == 2
+    assert event.primary_damage.final_damage == 20
+    assert event.counterattack is not None
+    assert event.counterattack.final_damage == 38
+
+
+def test_combat_log_yaml_round_trips_attack_events():
+    catalog = load_packaged_unit_catalog()
+    battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+    combat_log.record_battle_started()
+    combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
 
     loaded_log = load_combat_log_yaml(dump_combat_log_yaml(combat_log))
 
@@ -106,6 +162,24 @@ def test_replay_combat_log_reconstructs_final_occupancy():
     assert replayed.occupancy.unit_at(HexCoord(12, 5)) == "enemy-esquire"
 
 
+def test_replay_combat_log_reconstructs_attack_damage_state():
+    catalog = load_packaged_unit_catalog()
+    initial_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    executed_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+    combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
+
+    replayed = replay_combat_log(initial_battle, combat_log)
+
+    assert replayed.stack("enemy-esquire").count == executed_battle.stack("enemy-esquire").count
+    assert replayed.stack("enemy-esquire").wound_damage == executed_battle.stack("enemy-esquire").wound_damage
+    assert replayed.stack("player-esquire").count == executed_battle.stack("player-esquire").count
+    assert replayed.stack("player-esquire").wound_damage == executed_battle.stack("player-esquire").wound_damage
+
+
 def test_replay_combat_log_rejects_movement_that_does_not_match_logged_path():
     catalog = load_packaged_unit_catalog()
     initial_battle = load_battle_initial_state_yaml(VALID_INITIAL_STATE_YAML, catalog)
@@ -123,4 +197,30 @@ def test_replay_combat_log_rejects_movement_that_does_not_match_logged_path():
     )
 
     with pytest.raises(CombatLogValidationError, match="movement"):
+        replay_combat_log(initial_battle, combat_log)
+
+
+def test_replay_combat_log_rejects_attack_that_does_not_match_logged_damage():
+    catalog = load_packaged_unit_catalog()
+    initial_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    executed_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, catalog)
+    combat_log = CombatLog()
+    event = combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
+    combat_log = CombatLog(
+        events=(
+            UnitAttackedEvent(
+                sequence=event.sequence,
+                turn=event.turn,
+                attacker_id=event.attacker_id,
+                defender_id=event.defender_id,
+                primary_damage=event.primary_damage,
+                counterattack=None,
+            ),
+        )
+    )
+
+    with pytest.raises(CombatLogValidationError, match="attack"):
         replay_combat_log(initial_battle, combat_log)

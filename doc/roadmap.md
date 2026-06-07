@@ -107,7 +107,7 @@
 
 ## Milestone 12: Combat simulation
 
-**Status:** Next
+**Status:** Done
 
 * Rename `sample/demo_movement_simulation.py` to `sample/demo_simulation.py`
 * Add the melee combat simulation to `sample/demo_simulation.py` 
@@ -115,7 +115,7 @@
 
 ## Milestone 13: Combat simulation view
 
-**Status:** Later
+**Status:** Next
 
 * How do we show attacks using `src/olden/battlefield_view/replay_app.py`
 * Add combat log window to the right side of the view
@@ -127,3 +127,8 @@
 **Status:** Later
 
 * NPC combat strategy
+
+## Future plans
+
+* Later concern: decide whether movement-only simulation should remain separate
+  or be consolidated with the full combat simulation once both paths stabilize

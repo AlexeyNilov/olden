@@ -14,6 +14,7 @@
 * **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
 * **Combat replay frame:** One renderable battle state in a combat-log replay, optionally associated with the event that produced it.
 * **Combat replay view:** A local browser view that steps through combat replay frames with configurable playback delay.
+* **Combat simulation:** A limited battle simulation that alternates turns between two unit stacks, moving until engagement and then resolving melee attacks until one configured stack is defeated or simulation stops.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that a movement-only simulation can move toward before combat actions exist.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
@@ -42,4 +43,5 @@
 * **Unit image:** A battlefield-view visual asset for a unit definition, resolved by stable unit ID.
 * **Unit record:** A catalog entry for one unit type, including source metadata and stats that may not yet affect combat simulation.
 * **Unit stack:** A battle-state instance of a unit definition with a side and creature count.
+* **Unit-attacked event:** A combat-log event recording one melee attack action, including primary attack damage and optional counterattack damage.
 * **Wound damage:** Damage already applied to the current surviving creature in a unit stack, carried forward between attacks until that creature dies.

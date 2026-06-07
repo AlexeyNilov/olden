@@ -5,6 +5,7 @@ from olden.combat.combat_log import (
     CombatLog,
     CombatLogValidationError,
     TurnMarker,
+    UnitAttackedEvent,
     UnitMovedEvent,
     replay_combat_log,
 )
@@ -30,6 +31,27 @@ unit_stacks:
     count: 20
     anchor:
       column: 12
+      row: 5
+"""
+
+ADJACENT_INITIAL_STATE_YAML = """
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: player-esquire
+    unit_id: esquire
+    side: player
+    count: 10
+    anchor:
+      column: 0
+      row: 5
+  - id: enemy-esquire
+    unit_id: esquire
+    side: enemy
+    count: 20
+    anchor:
+      column: 1
       row: 5
 """
 
@@ -74,6 +96,24 @@ def test_combat_replay_final_frame_matches_full_combat_log_replay():
 
     assert frames[-1].battle.occupancy.unit_at(HexCoord(2, 5)) == replayed.occupancy.unit_at(HexCoord(2, 5))
     assert frames[-1].battle.occupancy.unit_at(HexCoord(10, 5)) == replayed.occupancy.unit_at(HexCoord(10, 5))
+
+
+def test_combat_replay_frames_include_attack_events_and_updated_stack_state():
+    initial_battle = load_battle_initial_state_yaml(ADJACENT_INITIAL_STATE_YAML, load_packaged_unit_catalog())
+    executed_battle = initial_battle.copy()
+    combat_log = CombatLog()
+    combat_log.record_battle_started()
+    combat_log.record_unit_attacked(
+        TurnMarker(round_number=1, turn_number=1),
+        executed_battle.attack_stack("player-esquire", "enemy-esquire", damage_chooser=lambda damage: damage.minimum),
+    )
+
+    frames = build_combat_replay_frames(initial_battle, combat_log)
+
+    assert len(frames) == 2
+    assert isinstance(frames[1].event, UnitAttackedEvent)
+    assert frames[1].battle.stack("enemy-esquire").count == executed_battle.stack("enemy-esquire").count
+    assert frames[1].battle.stack("player-esquire").wound_damage == executed_battle.stack("player-esquire").wound_damage
 
 
 def test_combat_replay_frames_reject_movement_events_that_do_not_replay():

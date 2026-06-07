@@ -34,6 +34,35 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-07: Extend combat logs with replayable attack events
+
+**Status:** Accepted
+
+**Context:** Milestone 12 adds melee combat simulation after committed melee
+attack behavior exists. The combat log must now preserve attacks strongly enough
+to replay and validate final battle state, including wound damage and defeated
+stacks.
+
+**Decision:** Add `unit_attacked` combat-log events alongside existing movement
+events. Attack events record turn metadata, attacker and defender IDs, selected
+damage, final damage, killed creatures, before/after defender count, wound
+damage, defeated state, and optional counterattack damage. Combat-log replay and
+replay-frame generation re-run attack resolution using the recorded selected
+damage and reject events whose replayed result differs.
+
+**Alternatives considered:** Recording only attacker and defender IDs was
+rejected because replay would depend on random damage selection and could not
+validate logged outcomes. Recording post-attack stack counts only was rejected
+because it would hide selected damage and counterattack detail needed by future
+combat-log display. Bumping the YAML schema version was deferred because the
+current loader already rejects unsupported event types and the local schema has
+not introduced incompatible field interpretation.
+
+**Consequences:** Combat logs can reconstruct movement and melee damage state
+from a battle initial state. Log files become more verbose, but future replay UI
+work has enough event detail to display attack outcomes without recomputing
+presentation data.
+
 ### 2026-06-06: Keep only the combat replay browser app
 
 **Status:** Accepted

@@ -43,6 +43,7 @@ pyproject.toml
 
 data/
     demo_battle.yaml
+    demo_combat_log.yaml
     demo_movement_log.yaml
 
 doc/
@@ -60,7 +61,7 @@ image/
 
 sample/
     __init__.py
-    demo_movement_simulation.py
+    demo_simulation.py
 
 scripts/
     __init__.py
@@ -93,6 +94,7 @@ src/olden/
         battle.py
         battle_setup.py
         battlefield.py
+        combat_simulation.py
         combat_log.py
         combat_replay.py
         coordinates.py
@@ -118,10 +120,14 @@ tests/
     scripts/
         test_view_server.py
 
+    sample/
+        test_demo_simulation.py
+
     combat/
         test_battle_setup.py
         test_battlefield.py
         test_combat_log.py
+        test_combat_simulation.py
         test_combat_replay.py
         test_movement.py
         test_movement_simulation.py
@@ -149,6 +155,7 @@ tests/
 * Put shared combat side vocabulary in `sides.py`.
 * Put battle-level state orchestration in `battle.py`.
 * Put melee attack targeting and damage resolution in `attack.py`.
+* Put full two-stack combat simulation rules in `combat_simulation.py`.
 * Put battle initial-state YAML loading and saving in `battle_setup.py`.
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put combat-log replay frame generation in `combat_replay.py`.

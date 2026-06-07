@@ -148,21 +148,35 @@ This helps ensure requirements are:
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** simulated unit stacks are adjacent, **the system shall** stop before adding combat actions.
 * **When** movement-only simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
-* **When** the demo movement simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the movement combat log in the `data` folder.
+
+### Combat simulation
+
+* **When** combat simulation starts, **the system shall** copy the initial battle before moving or attacking with unit stacks.
+* **When** combat simulation starts, **the system shall** record a battle-start event in the combat log.
+* **When** combat simulation runs without initiative, **the system shall** act with the configured first stack before the configured second stack.
+* **When** combat simulation advances turns, **the system shall** alternate between the two configured unit stacks.
+* **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
+* **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
+* **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
+* **When** either configured stack is defeated, **the system shall** stop combat simulation.
+* **While** initiative, morale, luck, waiting, target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
+* **When** the demo combat simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the combat log in the `data` folder.
 
 ### Combat log
 
 * **When** a battle-start event is recorded, **the system shall** assign it the next contiguous combat-log sequence number.
 * **When** a unit-moved event is recorded, **the system shall** include the next contiguous sequence number, turn marker, stack ID, start coordinate, destination coordinate, and movement path.
+* **When** a unit-attacked event is recorded, **the system shall** include the next contiguous sequence number, turn marker, attacker ID, defender ID, primary attack damage result, and optional counterattack damage result.
 * **When** a combat log is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent combat log.
 * **When** a combat log is loaded from YAML, **the system shall** reject event sequences that are not contiguous from `1`.
-* **When** a combat log is replayed from a battle initial state, **the system shall** apply recorded unit movement events in sequence to reconstruct final occupancy.
+* **When** a combat log is replayed from a battle initial state, **the system shall** apply recorded unit movement and attack events in sequence to reconstruct final battle state.
 * **When** a combat log movement event does not match movement that can be replayed from current battle state, **the system shall** reject replay.
+* **When** a combat log attack event does not match attack damage that can be replayed from current battle state, **the system shall** reject replay.
 
 ### Combat replay
 
 * **When** combat replay frames are built, **the system shall** include an initial-state frame before movement events are applied.
-* **When** combat replay frames are built, **the system shall** include one frame for each replayed unit-moved event.
+* **When** combat replay frames are built, **the system shall** include one frame for each replayed unit-moved or unit-attacked event.
 * **When** combat replay frames are built, **the system shall** preserve the combat-log event associated with each non-initial frame.
 * **When** combat replay frames are built, **the system shall** reject movement events that do not replay from the current frame state.
 * **When** the combat replay view is launched, **the system shall** load `data/demo_battle.yaml` and `data/demo_movement_log.yaml` by default.

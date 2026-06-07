@@ -4,43 +4,51 @@ from pathlib import Path
 
 from olden.combat.battle_setup import load_battle_initial_state_file
 from olden.combat.combat_log import save_combat_log_file
-from olden.combat.movement_simulation import MovementPath, MovementSimulationResult, simulate_movement_until_engaged
+from olden.combat.combat_simulation import CombatSimulationResult, MovementPath, simulate_combat
+from olden.combat.units import DamageRange
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
-DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_movement_log.yaml"
+DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 PLAYER_STACK_ID = "player-esquire"
 ENEMY_STACK_ID = "enemy-esquire"
 
 
-def run_demo_movement_simulation(
+def run_demo_simulation(
     initial_state_path: Path = DEFAULT_BATTLE_INITIAL_STATE_PATH,
     combat_log_path: Path = DEFAULT_COMBAT_LOG_PATH,
     seed: int | None = None,
-) -> MovementSimulationResult:
+) -> CombatSimulationResult:
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
-    result = simulate_movement_until_engaged(
+    random_source = random.Random(seed)
+    result = simulate_combat(
         initial_battle=battle,
         first_stack_id=PLAYER_STACK_ID,
         second_stack_id=ENEMY_STACK_ID,
-        path_chooser=_path_chooser(seed),
+        path_chooser=_path_chooser(random_source),
+        damage_chooser=_damage_chooser(random_source),
     )
     save_combat_log_file(combat_log_path, result.combat_log)
     return result
 
 
 def main() -> None:
-    run_demo_movement_simulation()
+    run_demo_simulation()
 
 
-def _path_chooser(seed: int | None) -> Callable[[tuple[MovementPath, ...]], MovementPath]:
-    random_source = random.Random(seed)
-
+def _path_chooser(random_source: random.Random) -> Callable[[tuple[MovementPath, ...]], MovementPath]:
     def choose_path(paths: tuple[MovementPath, ...]) -> MovementPath:
         return random_source.choice(paths)
 
     return choose_path
+
+
+def _damage_chooser(random_source: random.Random) -> Callable[[DamageRange], int]:
+    def choose_damage(damage: DamageRange) -> int:
+        return random_source.randint(damage.minimum, damage.maximum)
+
+    return choose_damage
 
 
 if __name__ == "__main__":
