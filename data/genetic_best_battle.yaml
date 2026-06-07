@@ -1,0 +1,18 @@
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+- id: genetic-player-1
+  unit_id: esquire
+  side: player
+  count: 10
+  anchor:
+    column: 0
+    row: 9
+- id: enemy-esquire
+  unit_id: esquire
+  side: enemy
+  count: 20
+  anchor:
+    column: 12
+    row: 5

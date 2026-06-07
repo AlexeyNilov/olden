@@ -168,6 +168,15 @@ This helps ensure requirements are:
 * **While** morale, luck, waiting, advanced target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
 * **When** the demo combat simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the combat log in the `data` folder.
 
+### Strategy discovery
+
+* **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed player deployment coordinate and create one player unit stack for each non-empty slot.
+* **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured player unit pool size.
+* **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
+* **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize surviving player units, then remaining player health, then enemy units killed, and then faster completion.
+* **When** the genetic strategy discovery sample completes, **the system shall** save the best discovered initial battle and a replayable combat log for that battle.
+* **While** turn-level combat strategy is deferred, **the system shall** keep stack-split strategy discovery limited to initial army formation and fixed deployment slots.
+
 ### Combat log
 
 * **When** a battle-start event is recorded, **the system shall** assign it the next contiguous combat-log sequence number.

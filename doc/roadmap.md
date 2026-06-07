@@ -133,13 +133,14 @@
 
 ## Milestone 15: Use genetic algorithm for combat strategy optimization/discovery
 
-**Status:** Next
+**Status:** Done
 
-* Discuss genetic algorithms idea and how to integrate it into the project structure
-* Add new data/genetic_battle.yaml with a stack of 10 player owned swordsmen and a stack of 20 enemy owned swordsmen
-* Fitness function: player units count after the battle finished
-* Variable: player can form multiple stacks (no more then 7) using the given pool of units (10 swordsmen in our case), for example 1 stack with 1 swrodsman, and 1 stack with 9 swordsman
-* The enemy stack stays the same: 1 stack with 20 swordsmen
+* Added stack-split strategy discovery as initial army formation optimization.
+* Added `data/genetic_battle.yaml` with a stack of 10 player-owned Swordsmen and a stack of 20 enemy-owned Swordsmen.
+* Added a genetic algorithm over a genome of up to 7 fixed player deployment slots.
+* Added deterministic average-damage evaluation.
+* Added fitness scoring that prioritizes player survivors, remaining player health, enemy kills, and faster completion.
+* Added `sample/genetic_strategy_discovery.py`, which writes the best discovered battle to `data/genetic_best_battle.yaml` and its replayable combat log to `data/genetic_best_combat_log.yaml`.
 
 
 ## Future plans
