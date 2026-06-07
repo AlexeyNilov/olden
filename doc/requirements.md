@@ -153,13 +153,17 @@ This helps ensure requirements are:
 
 * **When** combat simulation starts, **the system shall** copy the initial battle before moving or attacking with unit stacks.
 * **When** combat simulation starts, **the system shall** record a battle-start event in the combat log.
-* **When** combat simulation runs without initiative, **the system shall** act with the configured first stack before the configured second stack.
-* **When** combat simulation advances turns, **the system shall** alternate between the two configured unit stacks.
+* **When** combat simulation advances rounds, **the system shall** give each non-defeated unit stack one action opportunity per round.
+* **When** combat simulation orders unit stacks within a round, **the system shall** act with higher initiative stacks before lower initiative stacks.
+* **When** combat simulation orders unit stacks with equal initiative, **the system shall** use higher speed as the tie-breaker.
+* **When** combat simulation orders unit stacks with equal initiative and speed, **the system shall** preserve configured stack order.
+* **When** combat simulation selects a target for the acting unit stack, **the system shall** target the nearest living enemy stack.
+* **When** multiple living enemy stacks are equally near the acting unit stack, **the system shall** preserve configured stack order.
 * **When** the acting unit stack is not adjacent to its opponent, **the system shall** move toward a passable engagement hex adjacent to the opponent.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
-* **When** either configured stack is defeated, **the system shall** stop combat simulation.
-* **While** initiative, morale, luck, waiting, target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
+* **When** one side has no living unit stacks, **the system shall** stop combat simulation.
+* **While** morale, luck, waiting, advanced target selection, and multi-stack battle strategy are deferred, **the system shall** avoid applying those mechanics to combat simulation.
 * **When** the demo combat simulation sample runs, **the system shall** load battle initial state from `data/demo_battle.yaml` and save the combat log in the `data` folder.
 
 ### Combat log

@@ -6,6 +6,30 @@ events:
   type: unit_moved
   round: 1
   turn: 1
+  stack_id: player-griffin
+  start:
+    column: 0
+    row: 8
+  destination:
+    column: 5
+    row: 8
+  path:
+  - column: 0
+    row: 8
+  - column: 1
+    row: 8
+  - column: 2
+    row: 8
+  - column: 3
+    row: 8
+  - column: 4
+    row: 8
+  - column: 5
+    row: 8
+- sequence: 3
+  type: unit_moved
+  round: 1
+  turn: 2
   stack_id: player-esquire
   start:
     column: 0
@@ -24,10 +48,10 @@ events:
     row: 9
   - column: 4
     row: 9
-- sequence: 3
+- sequence: 4
   type: unit_moved
   round: 1
-  turn: 2
+  turn: 3
   stack_id: enemy-esquire
   start:
     column: 12
@@ -46,10 +70,30 @@ events:
     row: 5
   - column: 8
     row: 5
-- sequence: 4
+- sequence: 5
   type: unit_moved
   round: 2
   turn: 1
+  stack_id: player-griffin
+  start:
+    column: 5
+    row: 8
+  destination:
+    column: 7
+    row: 5
+  path:
+  - column: 5
+    row: 8
+  - column: 6
+    row: 7
+  - column: 6
+    row: 6
+  - column: 7
+    row: 5
+- sequence: 6
+  type: unit_moved
+  round: 2
+  turn: 2
   stack_id: player-esquire
   start:
     column: 4
@@ -68,85 +112,165 @@ events:
     row: 8
   - column: 7
     row: 7
-- sequence: 5
-  type: unit_moved
+- sequence: 7
+  type: unit_attacked
   round: 2
+  turn: 3
+  attacker_id: enemy-esquire
+  defender_id: player-griffin
+  primary_damage:
+    selected_damage: 3
+    final_damage: 55
+    creatures_killed: 2
+    defender_count_before: 5
+    defender_count_after: 3
+    defender_wound_damage_after: 5
+    defender_defeated: false
+  counterattack:
+    selected_damage: 8
+    final_damage: 27
+    creatures_killed: 2
+    defender_count_before: 20
+    defender_count_after: 18
+    defender_wound_damage_after: 3
+    defender_defeated: false
+- sequence: 8
+  type: unit_attacked
+  round: 3
+  turn: 1
+  attacker_id: player-griffin
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 8
+    final_damage: 27
+    creatures_killed: 2
+    defender_count_before: 18
+    defender_count_after: 16
+    defender_wound_damage_after: 6
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 29
+    creatures_killed: 1
+    defender_count_before: 3
+    defender_count_after: 2
+    defender_wound_damage_after: 9
+    defender_defeated: false
+- sequence: 9
+  type: unit_moved
+  round: 3
   turn: 2
-  stack_id: enemy-esquire
+  stack_id: player-esquire
   start:
-    column: 8
-    row: 5
+    column: 7
+    row: 7
   destination:
     column: 7
     row: 6
   path:
-  - column: 8
-    row: 5
+  - column: 7
+    row: 7
   - column: 7
     row: 6
-- sequence: 6
+- sequence: 10
   type: unit_attacked
   round: 3
-  turn: 1
-  attacker_id: player-esquire
-  defender_id: enemy-esquire
-  primary_damage:
-    selected_damage: 2
-    final_damage: 20
-    creatures_killed: 1
-    defender_count_before: 20
-    defender_count_after: 19
-    defender_wound_damage_after: 8
-    defender_defeated: false
-  counterattack:
-    selected_damage: 2
-    final_damage: 38
-    creatures_killed: 3
-    defender_count_before: 10
-    defender_count_after: 7
-    defender_wound_damage_after: 2
-    defender_defeated: false
-- sequence: 7
-  type: unit_attacked
-  round: 3
-  turn: 2
+  turn: 3
   attacker_id: enemy-esquire
   defender_id: player-esquire
   primary_damage:
-    selected_damage: 2
-    final_damage: 38
-    creatures_killed: 3
-    defender_count_before: 7
-    defender_count_after: 4
-    defender_wound_damage_after: 4
+    selected_damage: 3
+    final_damage: 48
+    creatures_killed: 4
+    defender_count_before: 10
+    defender_count_after: 6
+    defender_wound_damage_after: 0
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 8
+    final_damage: 12
     creatures_killed: 1
-    defender_count_before: 19
-    defender_count_after: 18
-    defender_wound_damage_after: 4
+    defender_count_before: 16
+    defender_count_after: 15
+    defender_wound_damage_after: 6
     defender_defeated: false
-- sequence: 8
+- sequence: 11
   type: unit_attacked
   round: 4
   turn: 1
-  attacker_id: player-esquire
+  attacker_id: player-griffin
   defender_id: enemy-esquire
   primary_damage:
-    selected_damage: 3
-    final_damage: 12
-    creatures_killed: 1
-    defender_count_before: 18
-    defender_count_after: 17
-    defender_wound_damage_after: 4
+    selected_damage: 8
+    final_damage: 18
+    creatures_killed: 2
+    defender_count_before: 15
+    defender_count_after: 13
+    defender_wound_damage_after: 0
     defender_defeated: false
   counterattack:
     selected_damage: 3
-    final_damage: 51
-    creatures_killed: 4
-    defender_count_before: 4
+    final_damage: 36
+    creatures_killed: 1
+    defender_count_before: 2
+    defender_count_after: 1
+    defender_wound_damage_after: 20
+    defender_defeated: false
+- sequence: 12
+  type: unit_attacked
+  round: 4
+  turn: 2
+  attacker_id: player-esquire
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 12
+    creatures_killed: 1
+    defender_count_before: 13
+    defender_count_after: 12
+    defender_wound_damage_after: 0
+    defender_defeated: false
+  counterattack:
+    selected_damage: 3
+    final_damage: 36
+    creatures_killed: 3
+    defender_count_before: 6
+    defender_count_after: 3
+    defender_wound_damage_after: 0
+    defender_defeated: false
+- sequence: 13
+  type: unit_attacked
+  round: 4
+  turn: 3
+  attacker_id: enemy-esquire
+  defender_id: player-esquire
+  primary_damage:
+    selected_damage: 3
+    final_damage: 36
+    creatures_killed: 3
+    defender_count_before: 3
+    defender_count_after: 0
+    defender_wound_damage_after: 0
+    defender_defeated: true
+- sequence: 14
+  type: unit_attacked
+  round: 5
+  turn: 1
+  attacker_id: player-griffin
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 6
+    final_damage: 6
+    creatures_killed: 0
+    defender_count_before: 12
+    defender_count_after: 12
+    defender_wound_damage_after: 6
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 22
+    creatures_killed: 1
+    defender_count_before: 1
     defender_count_after: 0
     defender_wound_damage_after: 0
     defender_defeated: true

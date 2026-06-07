@@ -35,6 +35,60 @@ def test_combat_simulation_moves_until_adjacent_then_logs_melee_attacks():
     assert "player-esquire" not in result.battle.unit_stacks or "enemy-esquire" not in result.battle.unit_stacks
 
 
+def test_combat_simulation_uses_initiative_order_with_multiple_stacks():
+    player_esquire = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=5, speed=4)
+    player_griffin = _stack("player-griffin", CombatSide.PLAYER, count=5, initiative=9, speed=5)
+    enemy_esquire = _stack("enemy-esquire", CombatSide.ENEMY, count=20, initiative=5, speed=4)
+    initial_battle = _battle_with_stacks(
+        placements=(
+            (player_esquire, HexCoord(0, 9)),
+            (player_griffin, HexCoord(11, 5)),
+            (enemy_esquire, HexCoord(12, 5)),
+        )
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("player-esquire", "player-griffin", "enemy-esquire"),
+        path_chooser=lambda paths: paths[0],
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert len(attack_events) == 1
+    assert attack_events[0].attacker_id == "player-griffin"
+    assert attack_events[0].defender_id == "enemy-esquire"
+    assert attack_events[0].turn.round_number == 1
+    assert attack_events[0].turn.turn_number == 1
+
+
+def test_combat_simulation_targets_nearest_living_enemy_with_configured_order_tie_break():
+    player = _stack("player-esquire", CombatSide.PLAYER, count=10, initiative=9, speed=4)
+    enemy_first = _stack("enemy-first", CombatSide.ENEMY, count=20, initiative=5, speed=4)
+    enemy_second = _stack("enemy-second", CombatSide.ENEMY, count=20, initiative=5, speed=4)
+    initial_battle = _battle_with_stacks(
+        placements=(
+            (player, HexCoord(4, 5)),
+            (enemy_first, HexCoord(5, 5)),
+            (enemy_second, HexCoord(4, 4)),
+        )
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        stack_ids=("player-esquire", "enemy-first", "enemy-second"),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert len(attack_events) == 1
+    assert attack_events[0].defender_id == "enemy-first"
+
+
 def test_combat_simulation_stops_after_first_attack_when_defender_is_defeated():
     initial_battle = _battle(
         player_stack=_stack("player-esquire", CombatSide.PLAYER, count=10),
@@ -128,13 +182,39 @@ def _battle(
     )
 
 
-def _stack(stack_id: str, side: CombatSide, count: int) -> UnitStack:
+def _battle_with_stacks(
+    placements: tuple[tuple[UnitStack, HexCoord], ...],
+    obstacles: tuple[HexCoord, ...] = (),
+) -> Battle:
+    battlefield = Battlefield.default(
+        obstacles=tuple(
+            Obstacle(name=f"obstacle-{index}", coordinates=frozenset({coord})) for index, coord in enumerate(obstacles)
+        )
+    )
+    occupancy = Occupancy(blocked_coordinates=battlefield.blocked_coordinates)
+    for stack, anchor in placements:
+        occupancy.place(stack.id, anchor)
+    return Battle(
+        battlefield=battlefield,
+        occupancy=occupancy,
+        unit_stacks={stack.id: stack for stack, _anchor in placements},
+    )
+
+
+def _stack(
+    stack_id: str,
+    side: CombatSide,
+    count: int,
+    initiative: int = 5,
+    speed: int = 4,
+) -> UnitStack:
     return UnitStack(
         id=stack_id,
         definition=UnitDefinition(
             id="esquire",
             name="Swordsman",
-            speed=4,
+            initiative=initiative,
+            speed=speed,
             footprint=UnitFootprint.single_hex(),
             combat=UnitCombatStats(
                 health=12,

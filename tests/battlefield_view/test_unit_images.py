@@ -29,6 +29,7 @@ def _stack_for_unit_id(unit_id: str) -> UnitStack:
     definition = UnitDefinition(
         id=unit_id,
         name="Swordsman",
+        initiative=5,
         speed=4,
         footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),

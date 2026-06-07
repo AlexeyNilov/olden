@@ -50,6 +50,7 @@ def test_unit_catalog_loads_records_by_stable_unit_id():
 
     assert record.id == "esquire"
     assert record.name == "Swordsman"
+    assert record.combat.initiative == 5
     assert record.combat.speed == 4
     assert record.combat.morale.minimum == -5
     assert record.combat.morale.maximum == 5
@@ -74,9 +75,12 @@ def test_unit_catalog_raises_dedicated_error_for_missing_unit_id():
 
 def test_unit_catalog_rejects_malformed_required_fields_before_exposing_records():
     malformed_catalog = VALID_CATALOG_YAML.replace("speed: 4", "speed: -1")
+    malformed_initiative_catalog = VALID_CATALOG_YAML.replace("initiative: 5", "initiative: -1")
 
     with pytest.raises(UnitCatalogValidationError, match="speed"):
         load_unit_catalog_yaml(malformed_catalog)
+    with pytest.raises(UnitCatalogValidationError, match="initiative"):
+        load_unit_catalog_yaml(malformed_initiative_catalog)
 
 
 def test_unit_catalog_rejects_inverted_morale_and_luck_ranges():
@@ -97,6 +101,7 @@ def test_unit_record_converts_to_current_combat_unit_definition():
     assert isinstance(definition, UnitDefinition)
     assert definition.id == "esquire"
     assert definition.name == "Swordsman"
+    assert definition.initiative == 5
     assert definition.speed == 4
     assert definition.combat.health == 12
     assert definition.combat.attack == 4

@@ -67,11 +67,15 @@ class UnitCombatStats:
 class UnitDefinition:
     id: str
     name: str
+    initiative: int
     speed: int
     footprint: UnitFootprint
     combat: UnitCombatStats
 
     def __post_init__(self) -> None:
+        if self.initiative < 0:
+            msg = "Unit definition initiative cannot be negative"
+            raise ValueError(msg)
         if self.speed < 0:
             msg = "Unit definition speed cannot be negative"
             raise ValueError(msg)

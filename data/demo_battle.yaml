@@ -17,6 +17,13 @@ unit_stacks:
     anchor:
       column: 0
       row: 9
+  - id: player-griffin
+    unit_id: griffin
+    side: player
+    count: 5
+    anchor:
+      column: 0
+      row: 8
   - id: enemy-esquire
     unit_id: esquire
     side: enemy

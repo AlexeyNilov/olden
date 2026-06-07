@@ -12,6 +12,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
 DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
 PLAYER_STACK_ID = "player-esquire"
+PLAYER_GRIFFIN_STACK_ID = "player-griffin"
 ENEMY_STACK_ID = "enemy-esquire"
 
 
@@ -24,8 +25,7 @@ def run_demo_simulation(
     random_source = random.Random(seed)
     result = simulate_combat(
         initial_battle=battle,
-        first_stack_id=PLAYER_STACK_ID,
-        second_stack_id=ENEMY_STACK_ID,
+        stack_ids=(PLAYER_STACK_ID, PLAYER_GRIFFIN_STACK_ID, ENEMY_STACK_ID),
         path_chooser=_path_chooser(random_source),
         damage_chooser=_damage_chooser(random_source),
     )

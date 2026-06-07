@@ -162,6 +162,7 @@ def _stack(
         definition=UnitDefinition(
             id="esquire",
             name="Swordsman",
+            initiative=5,
             speed=4,
             footprint=UnitFootprint.single_hex(),
             combat=stats

@@ -47,6 +47,7 @@ def test_battlefield_view_exposes_occupying_unit_identity_and_optional_stack_met
         definition=UnitDefinition(
             id="swordsman",
             name="Swordsman",
+            initiative=5,
             speed=4,
             footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),

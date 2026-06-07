@@ -74,6 +74,7 @@ class UnitRecord:
         return UnitDefinition(
             id=self.id,
             name=self.name,
+            initiative=self.combat.initiative,
             speed=self.combat.speed,
             footprint=UnitFootprint.single_hex(),
             combat=UnitCombatStats(

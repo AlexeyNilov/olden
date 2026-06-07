@@ -8,6 +8,8 @@ from olden.combat.battle import Battle
 from olden.combat.combat_log import CombatLog, TurnMarker
 from olden.combat.coordinates import HexCoord
 from olden.combat.movement import UnreachablePathError, find_path
+from olden.combat.range import distance_between
+from olden.combat.turn_order import order_stacks_for_round
 from olden.combat.units import DamageRange
 
 MovementPath = tuple[HexCoord, ...]
@@ -30,43 +32,60 @@ class CombatSimulationResult:
 
 def simulate_combat(
     initial_battle: Battle,
-    first_stack_id: str,
-    second_stack_id: str,
+    first_stack_id: str | None = None,
+    second_stack_id: str | None = None,
     path_chooser: PathChooser = random.choice,
     damage_chooser: DamageChooser | None = None,
     max_turns: int = 50,
+    stack_ids: tuple[str, ...] | None = None,
 ) -> CombatSimulationResult:
     if max_turns < 1:
         msg = "Maximum simulated turns must be positive"
         raise ValueError(msg)
+    configured_stack_ids = _configured_stack_ids(initial_battle, first_stack_id, second_stack_id, stack_ids)
 
     battle = initial_battle.copy()
     combat_log = CombatLog()
     combat_log.record_battle_started()
-    turn_order = (first_stack_id, second_stack_id)
     resolved_damage_chooser = damage_chooser or random_damage
+    turns_taken = 0
+    round_number = 1
 
-    for turn_index in range(1, max_turns + 1):
-        if _is_defeated(battle, first_stack_id) or _is_defeated(battle, second_stack_id):
-            return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turn_index - 1)
+    while turns_taken < max_turns:
+        if _one_side_defeated(battle):
+            return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
-        actor_id = turn_order[(turn_index - 1) % 2]
-        opponent_id = turn_order[turn_index % 2]
-        turn = _turn_marker(turn_index)
-        if _are_adjacent(battle, actor_id, opponent_id):
-            attack = battle.attack_stack(actor_id, opponent_id, resolved_damage_chooser)
-            combat_log.record_unit_attacked(turn, attack)
-            if _is_defeated(battle, first_stack_id) or _is_defeated(battle, second_stack_id):
-                return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turn_index)
-            continue
+        round_order = order_stacks_for_round(battle, configured_stack_ids)
+        for turn_number, actor_id in enumerate(round_order, start=1):
+            if turns_taken >= max_turns:
+                return _result(battle, combat_log, CombatSimulationStopReason.MAX_TURNS_REACHED, turns_taken)
+            if _is_defeated(battle, actor_id):
+                continue
+            if _one_side_defeated(battle):
+                return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
-        path = _choose_engagement_path(battle, actor_id, opponent_id, path_chooser)
-        if path is None:
-            return _result(battle, combat_log, CombatSimulationStopReason.NO_REACHABLE_ENGAGEMENT, turn_index - 1)
+            opponent_id = _nearest_living_enemy(battle, actor_id, configured_stack_ids)
+            if opponent_id is None:
+                return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
 
-        destination = _destination_for_speed(path, battle.stack(actor_id).definition.speed)
-        movement = battle.move_stack(actor_id, destination)
-        combat_log.record_unit_moved(turn, movement)
+            turn = TurnMarker(round_number=round_number, turn_number=turn_number)
+            if _are_adjacent(battle, actor_id, opponent_id):
+                attack = battle.attack_stack(actor_id, opponent_id, resolved_damage_chooser)
+                combat_log.record_unit_attacked(turn, attack)
+                turns_taken += 1
+                if _one_side_defeated(battle):
+                    return _result(battle, combat_log, CombatSimulationStopReason.STACK_DEFEATED, turns_taken)
+                continue
+
+            path = _choose_engagement_path(battle, actor_id, opponent_id, path_chooser)
+            if path is None:
+                return _result(battle, combat_log, CombatSimulationStopReason.NO_REACHABLE_ENGAGEMENT, turns_taken)
+
+            destination = _destination_for_speed(path, battle.stack(actor_id).definition.speed)
+            movement = battle.move_stack(actor_id, destination)
+            combat_log.record_unit_moved(turn, movement)
+            turns_taken += 1
+        round_number += 1
 
     return _result(battle, combat_log, CombatSimulationStopReason.MAX_TURNS_REACHED, max_turns)
 
@@ -87,6 +106,19 @@ def _result(
         stop_reason=stop_reason,
         turns_taken=turns_taken,
     )
+
+
+def _configured_stack_ids(
+    initial_battle: Battle,
+    first_stack_id: str | None,
+    second_stack_id: str | None,
+    stack_ids: tuple[str, ...] | None,
+) -> tuple[str, ...]:
+    if stack_ids is not None:
+        return stack_ids
+    if first_stack_id is not None and second_stack_id is not None:
+        return (first_stack_id, second_stack_id)
+    return tuple(initial_battle.unit_stacks)
 
 
 def _choose_engagement_path(
@@ -142,13 +174,6 @@ def _destination_for_speed(path: MovementPath, speed: int) -> HexCoord:
     return path[min(speed, len(path) - 1)]
 
 
-def _turn_marker(turn_index: int) -> TurnMarker:
-    return TurnMarker(
-        round_number=((turn_index - 1) // 2) + 1,
-        turn_number=((turn_index - 1) % 2) + 1,
-    )
-
-
 def _are_adjacent(battle: Battle, first_stack_id: str, second_stack_id: str) -> bool:
     first_coord = _single_occupied_coordinate(battle, first_stack_id)
     second_coord = _single_occupied_coordinate(battle, second_stack_id)
@@ -165,3 +190,28 @@ def _single_occupied_coordinate(battle: Battle, stack_id: str) -> HexCoord:
 
 def _is_defeated(battle: Battle, stack_id: str) -> bool:
     return stack_id not in battle.unit_stacks
+
+
+def _one_side_defeated(battle: Battle) -> bool:
+    living_sides = {stack.side for stack in battle.unit_stacks.values()}
+    return len(living_sides) < 2
+
+
+def _nearest_living_enemy(battle: Battle, actor_id: str, configured_stack_ids: tuple[str, ...]) -> str | None:
+    actor = battle.stack(actor_id)
+    actor_coord = _single_occupied_coordinate(battle, actor_id)
+    candidates = tuple(
+        stack_id
+        for stack_id in configured_stack_ids
+        if stack_id in battle.unit_stacks and battle.stack(stack_id).side is not actor.side
+    )
+    if not candidates:
+        return None
+    return min(
+        candidates,
+        key=lambda stack_id: distance_between(
+            battle.battlefield,
+            actor_coord,
+            _single_occupied_coordinate(battle, stack_id),
+        ),
+    )

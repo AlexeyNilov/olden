@@ -90,6 +90,7 @@ def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
         definition=UnitDefinition(
             id="esquire",
             name="Swordsman",
+            initiative=5,
             speed=4,
             footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),
@@ -119,6 +120,7 @@ def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitS
     definition = UnitDefinition(
         id=unit_id,
         name=name,
+        initiative=5,
         speed=4,
         footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),
