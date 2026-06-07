@@ -111,8 +111,11 @@ def materialize_stack_split_battle(scenario: StackSplitScenario, genome: StackSp
         if stack_id == scenario.player_pool_stack_id:
             continue
         unit_stacks[stack_id] = stack
-        for coord in scenario.base_battle.occupancy.coordinates_for(stack_id):
-            occupancy.place(stack_id, coord)
+        coord = scenario.base_battle.occupancy.coordinate_for(stack_id)
+        if coord is None:
+            msg = f"Base battle stack has no occupied coordinate: {stack_id}"
+            raise ValueError(msg)
+        occupancy.place(stack_id, coord)
 
     return Battle(
         battlefield=scenario.base_battle.battlefield,

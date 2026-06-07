@@ -161,7 +161,7 @@ tests/
 * Put battle initial-state YAML loading and saving in `battle_setup.py`.
 * Put replayable combat-event history and replay behavior in `combat_log.py`.
 * Put combat-log replay frame generation in `combat_replay.py`.
-* Put unit definitions, stacks, and footprint value objects in `units.py`.
+* Put unit definitions and stacks in `units.py`.
 * Put read-only battlefield visualization layout and render-state mapping in `src/olden/battlefield_view/`.
 * Put the separate local combat replay browser view in `src/olden/battlefield_view/replay_app.py`.
 * Put shared SVG battlefield rendering in `src/olden/battlefield_view/svg.py`.

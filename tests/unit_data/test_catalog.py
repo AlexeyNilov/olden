@@ -109,7 +109,6 @@ def test_unit_record_converts_to_current_combat_unit_definition():
     assert definition.combat.damage.minimum == 2
     assert definition.combat.damage.maximum == 3
     assert definition.combat.attack_category.value == "melee"
-    assert len(definition.footprint.offsets) == 1
 
 
 def test_unit_record_rejects_unsupported_attack_category_during_conversion():

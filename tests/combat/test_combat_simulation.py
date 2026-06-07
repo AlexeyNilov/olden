@@ -6,7 +6,7 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
 def test_combat_simulation_moves_until_adjacent_then_logs_melee_attacks():
@@ -276,7 +276,6 @@ def _stack(
             name="Swordsman",
             initiative=initiative,
             speed=speed,
-            footprint=UnitFootprint.single_hex(),
             combat=UnitCombatStats(
                 health=12,
                 attack=4,

@@ -6,7 +6,7 @@ from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
 def test_melee_attack_damages_adjacent_enemy_stack_and_records_wound_damage():
@@ -164,7 +164,6 @@ def _stack(
             name="Swordsman",
             initiative=5,
             speed=4,
-            footprint=UnitFootprint.single_hex(),
             combat=stats
             or UnitCombatStats(
                 health=12,

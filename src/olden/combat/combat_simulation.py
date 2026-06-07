@@ -216,11 +216,11 @@ def _are_adjacent(battle: Battle, first_stack_id: str, second_stack_id: str) -> 
 
 
 def _single_occupied_coordinate(battle: Battle, stack_id: str) -> HexCoord:
-    coordinates = battle.occupancy.coordinates_for(stack_id)
-    if len(coordinates) != 1:
+    coord = battle.occupancy.coordinate_for(stack_id)
+    if coord is None:
         msg = f"Expected one occupied coordinate for unit stack: {stack_id}"
         raise ValueError(msg)
-    return next(iter(coordinates))
+    return coord
 
 
 def _is_defeated(battle: Battle, stack_id: str) -> bool:

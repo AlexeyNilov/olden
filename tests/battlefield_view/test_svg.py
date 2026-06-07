@@ -4,7 +4,7 @@ from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
 def test_svg_renderer_outputs_one_polygon_per_renderable_hex_and_unit_label():
@@ -92,7 +92,6 @@ def test_svg_renderer_marks_enemy_unit_stacks_with_enemy_side_badge(tmp_path):
             name="Swordsman",
             initiative=5,
             speed=4,
-            footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),
         ),
         side=CombatSide.ENEMY,
@@ -122,7 +121,6 @@ def _stack_for_unit(stack_id: str, unit_id: str, name: str, count: int) -> UnitS
         name=name,
         initiative=5,
         speed=4,
-        footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),
     )
     return UnitStack(id=stack_id, definition=definition, side=CombatSide.PLAYER, count=count)

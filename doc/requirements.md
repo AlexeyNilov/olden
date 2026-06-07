@@ -53,15 +53,13 @@ This helps ensure requirements are:
 
 ### Unit model
 
-* **When** a unit definition is represented, **the system shall** expose stable identity, display name, speed, footprint, health, attack, defense, damage range, and attack category data.
+* **When** a unit definition is represented, **the system shall** expose stable identity, display name, speed, health, attack, defense, damage range, and attack category data.
 * **When** a unit definition has negative speed, **the system shall** reject it as invalid.
 * **When** a unit definition has non-positive health, negative attack, negative defense, or an inverted damage range, **the system shall** reject it as invalid.
 * **When** a unit stack is represented, **the system shall** expose stack identity, combat side, unit definition, creature count, and current wound damage.
 * **When** a unit stack count is zero or negative, **the system shall** reject it as invalid.
 * **When** a unit stack's wound damage is negative or greater than or equal to the unit definition's health, **the system shall** reject it as invalid.
-* **When** a single-hex unit footprint is anchored at a coordinate, **the system shall** occupy only the anchor coordinate.
-* **When** a multi-hex unit footprint is anchored at a coordinate, **the system shall** derive occupied coordinates from the anchor and footprint offsets.
-* **When** a unit footprint is empty or omits the anchor offset, **the system shall** reject it as invalid.
+* **When** a unit stack is placed on the battlefield, **the system shall** occupy exactly one coordinate.
 
 ### Unit catalog
 
@@ -71,7 +69,7 @@ This helps ensure requirements are:
 * **When** unit catalog data is loaded, **the system shall** reject malformed required fields before exposing records to callers.
 * **When** unit catalog data represents morale or luck, **the system shall** preserve the modifier range as explicit minimum and maximum values.
 * **When** unit catalog data contains a modifier range whose maximum is lower than its minimum, **the system shall** reject the catalog.
-* **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition with stable identity, display name, speed, single-hex footprint, health, attack, defense, damage range, and attack category data.
+* **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition with stable identity, display name, speed, health, attack, defense, damage range, and attack category data.
 * **When** a unit record is converted for current combat simulation with an unsupported attack category, **the system shall** reject the conversion.
 * **When** bundled unit catalog data is derived from a CC BY-SA source, **the system shall** keep source attribution and catalog license metadata with the packaged data.
 
@@ -79,11 +77,9 @@ This helps ensure requirements are:
 
 * **When** a unit occupies a coordinate, **the system shall** prevent another unit from occupying the same coordinate at the same time.
 * **When** a coordinate is covered by an obstacle, **the system shall** prevent unit occupancy on that coordinate.
-* **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is already occupied.
-* **When** a unit footprint covers multiple coordinates, **the system shall** prevent unit occupancy if any covered coordinate is blocked by an obstacle.
-* **When** occupancy is queried for a unit, **the system shall** return every coordinate occupied by that unit.
-* **When** a unit is removed from occupancy, **the system shall** clear every coordinate occupied by that unit.
-* **When** a single-hex unit is moved in occupancy, **the system shall** clear its previous coordinate and reserve its destination coordinate.
+* **When** occupancy is queried for a unit, **the system shall** return the coordinate occupied by that unit.
+* **When** a unit is removed from occupancy, **the system shall** clear the coordinate occupied by that unit.
+* **When** a unit is moved in occupancy, **the system shall** clear its previous coordinate and reserve its destination coordinate.
 
 ### Battle initial state
 
@@ -225,5 +221,5 @@ This helps ensure requirements are:
 * **While** non-melee combat action simulation is deferred, **the system shall** avoid exposing morale, luck, ability, cost, growth, upgrade, long-reach attack, ranged attack, or other deferred behavior as part of the Unit model.
 * **While** combat mechanics beyond committed melee attack behavior are deferred, **the system shall** avoid applying morale, luck, initiative, economy, upgrade, ability, long-reach attack, ranged attack, or other deferred behavior from unit catalog records.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
-* **While** multi-hex movement is deferred, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior as part of single-hex movement simulation.
+* **While** all unit stacks occupy exactly one coordinate, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior.
 * **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.

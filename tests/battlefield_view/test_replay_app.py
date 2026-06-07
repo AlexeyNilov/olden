@@ -8,6 +8,7 @@ from olden.battlefield_view.replay_app import (
     load_replay_page_css,
 )
 from olden.combat.combat_log import UnitAttackedEvent
+from olden.combat.coordinates import HexCoord
 from olden.config import DEMO_BATTLE_INITIAL_STATE_PATH, DEMO_COMBAT_LOG_PATH
 
 
@@ -126,7 +127,15 @@ def test_replay_page_css_is_loaded_from_packaged_stylesheet():
     assert ".combat-log-panel" in css
 
 
-DEFAULT_PLAYER_START = next(iter(load_demo_replay_frames()[0].battle.occupancy.coordinates_for("player-esquire")))
+def _default_player_start() -> HexCoord:
+    coord = load_demo_replay_frames()[0].battle.occupancy.coordinate_for("player-esquire")
+    if coord is None:
+        msg = "Demo replay is missing the player stack start coordinate"
+        raise AssertionError(msg)
+    return coord
+
+
+DEFAULT_PLAYER_START = _default_player_start()
 
 
 class FakeTimer:

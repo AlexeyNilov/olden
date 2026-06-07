@@ -66,7 +66,7 @@ def _place_unit_stacks(
 
 def _place_stack(occupancy: Occupancy, stack: UnitStack, anchor: HexCoord) -> None:
     try:
-        occupancy.place_footprint(stack.id, stack.definition.footprint.coordinates_anchored_at(anchor))
+        occupancy.place(stack.id, anchor)
     except ValueError as exc:
         raise BattleSetupValidationError(str(exc)) from exc
 
@@ -128,11 +128,11 @@ def _dump_unit_stack(battle: Battle, stack: UnitStack) -> dict[str, object]:
 
 
 def _single_anchor_for(battle: Battle, stack_id: str) -> HexCoord:
-    coordinates = battle.occupancy.coordinates_for(stack_id)
-    if len(coordinates) != 1:
+    coord = battle.occupancy.coordinate_for(stack_id)
+    if coord is None:
         msg = f"Initial state serialization requires exactly one anchor for unit stack: {stack_id}"
         raise BattleSetupValidationError(msg)
-    return next(iter(coordinates))
+    return coord
 
 
 def _dump_coord(coord: HexCoord) -> dict[str, int]:

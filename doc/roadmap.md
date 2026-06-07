@@ -25,7 +25,7 @@
 * Unit side
 * Unit stack data
 * Unit speed
-* Multi-hex unit footprint rules
+* Single-coordinate unit occupancy
 
 ## Milestone 3: Range and movement math
 

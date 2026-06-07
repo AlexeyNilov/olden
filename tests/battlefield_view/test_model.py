@@ -5,7 +5,7 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 VALID_INITIAL_STATE_YAML = """
@@ -49,7 +49,6 @@ def test_battlefield_view_exposes_occupying_unit_identity_and_optional_stack_met
             name="Swordsman",
             initiative=5,
             speed=4,
-            footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),
         ),
         side=CombatSide.PLAYER,

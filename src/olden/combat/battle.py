@@ -64,7 +64,8 @@ class Battle:
     def copy(self) -> "Battle":
         occupancy = Occupancy(blocked_coordinates=self.battlefield.blocked_coordinates)
         for stack_id in self.unit_stacks:
-            for coord in self.occupancy.coordinates_for(stack_id):
+            coord = self.occupancy.coordinate_for(stack_id)
+            if coord is not None:
                 occupancy.place(stack_id, coord)
         return Battle(
             battlefield=self.battlefield,
@@ -73,8 +74,8 @@ class Battle:
         )
 
     def _single_occupied_coordinate(self, stack_id: str) -> HexCoord:
-        coordinates = self.occupancy.coordinates_for(stack_id)
-        if len(coordinates) != 1:
+        coord = self.occupancy.coordinate_for(stack_id)
+        if coord is None:
             msg = f"Expected one occupied coordinate for unit stack: {stack_id}"
             raise ValueError(msg)
-        return next(iter(coordinates))
+        return coord

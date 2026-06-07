@@ -34,6 +34,31 @@ Use a lightweight Architecture Decision Record (ADR) style:
 
 ## Actual decisions
 
+### 2026-06-07: Keep unit stacks single-coordinate
+
+**Status:** Accepted
+
+**Context:** Earlier combat-model work included a `UnitFootprint` abstraction
+for possible multi-hex units. A later review found that most implemented
+movement, attack, serialization, and replay behavior already assumed exactly
+one occupied coordinate per stack. The current source material checked for unit
+data does not require multi-hex unit footprints.
+
+**Decision:** Treat every unit stack as occupying exactly one battlefield
+coordinate. Remove footprint data from unit definitions and keep occupancy,
+movement, attack targeting, battle setup, combat logs, and replay centered on
+single-coordinate stack placement.
+
+**Alternatives considered:** Keeping a single-hex footprint abstraction was
+rejected because it adds a public concept without current domain value and
+encourages false readiness for large-unit rules. Deferring multi-hex footprints
+was rejected because no known committed feature needs them.
+
+**Consequences:** The combat model is simpler and better aligned with current
+evidence. If later evidence proves large units exist, multi-coordinate
+occupancy will need a new requirements slice, tests, and likely changes to
+movement, adjacency, serialization, and replay.
+
 ### 2026-06-07: Show combat logs beside battlefield replay
 
 **Status:** Accepted

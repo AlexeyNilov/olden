@@ -39,11 +39,11 @@ def test_materialize_stack_split_battle_maps_non_empty_genome_slots_to_fixed_dep
     assert battle.stack("genetic-player-3").count == 3
     assert battle.stack("genetic-player-4").count == 1
     assert battle.stack("genetic-player-6").count == 2
-    assert battle.occupancy.coordinates_for("genetic-player-1") == frozenset({HexCoord(0, 9)})
-    assert battle.occupancy.coordinates_for("genetic-player-3") == frozenset({HexCoord(0, 7)})
-    assert battle.occupancy.coordinates_for("genetic-player-4") == frozenset({HexCoord(0, 6)})
-    assert battle.occupancy.coordinates_for("genetic-player-6") == frozenset({HexCoord(0, 4)})
-    assert battle.occupancy.coordinates_for("enemy-esquire") == frozenset({HexCoord(12, 5)})
+    assert battle.occupancy.coordinate_for("genetic-player-1") == HexCoord(0, 9)
+    assert battle.occupancy.coordinate_for("genetic-player-3") == HexCoord(0, 7)
+    assert battle.occupancy.coordinate_for("genetic-player-4") == HexCoord(0, 6)
+    assert battle.occupancy.coordinate_for("genetic-player-6") == HexCoord(0, 4)
+    assert battle.occupancy.coordinate_for("enemy-esquire") == HexCoord(12, 5)
 
 
 @pytest.mark.parametrize(

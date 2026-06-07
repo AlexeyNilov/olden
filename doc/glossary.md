@@ -38,7 +38,6 @@
 * **Turn marker:** Replay metadata identifying the round and turn number associated with a logged event.
 * **Unit catalog:** A local collection of static unit records loaded from packaged data.
 * **Unit definition:** Static unit data shared by every stack of that unit type.
-* **Unit footprint:** The set of battlefield coordinates occupied by a unit stack when anchored at a coordinate.
 * **Unit image:** A battlefield-view visual asset for a unit definition, resolved by stable unit ID.
 * **Unit record:** A catalog entry for one unit type, including source metadata and stats that may not yet affect combat simulation.
 * **Unit stack:** A battle-state instance of a unit definition with a side and creature count.

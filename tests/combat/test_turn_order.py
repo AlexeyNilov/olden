@@ -4,7 +4,7 @@ from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.turn_order import order_stacks_for_round
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
 def test_turn_order_uses_initiative_then_speed_then_configured_order():
@@ -57,7 +57,6 @@ def _stack(stack_id: str, initiative: int, speed: int) -> UnitStack:
             name=stack_id,
             initiative=initiative,
             speed=speed,
-            footprint=UnitFootprint.single_hex(),
             combat=UnitCombatStats(
                 health=12,
                 attack=4,

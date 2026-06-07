@@ -250,7 +250,7 @@ Relevant later:
 
 * Speed determines movement distance.
 * Ranged attacks need distance for range penalty.
-* Ranged adjacency lockout needs neighbor/footprint adjacency checks.
+* Ranged adjacency lockout needs neighbor adjacency checks.
 * Long-reach targeting needs a clarified distance rule.
 
 ### Milestone 5: Combat actions
@@ -282,4 +282,3 @@ These terms appear likely to become recurring domain vocabulary:
 * Turn order
 * Unit definition
 * Unit stack
-

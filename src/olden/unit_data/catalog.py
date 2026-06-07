@@ -3,7 +3,7 @@ from typing import Any
 
 import yaml
 
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition
 
 
 class UnitCatalogError(ValueError):
@@ -76,7 +76,6 @@ class UnitRecord:
             name=self.name,
             initiative=self.combat.initiative,
             speed=self.combat.speed,
-            footprint=UnitFootprint.single_hex(),
             combat=UnitCombatStats(
                 health=self.combat.health,
                 attack=self.combat.attack,

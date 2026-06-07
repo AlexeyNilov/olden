@@ -1,12 +1,10 @@
 import pytest
 
-from olden.combat.coordinates import HexCoord
 from olden.combat.sides import CombatSide
-from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitFootprint, UnitStack
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 
 
-def test_unit_definition_exposes_identity_name_initiative_speed_footprint_and_combat_stats():
-    footprint = UnitFootprint.single_hex()
+def test_unit_definition_exposes_identity_name_initiative_speed_and_combat_stats():
     combat = _combat_stats()
 
     swordsman = UnitDefinition(
@@ -14,7 +12,6 @@ def test_unit_definition_exposes_identity_name_initiative_speed_footprint_and_co
         name="Swordsman",
         initiative=5,
         speed=4,
-        footprint=footprint,
         combat=combat,
     )
 
@@ -22,7 +19,6 @@ def test_unit_definition_exposes_identity_name_initiative_speed_footprint_and_co
     assert swordsman.name == "Swordsman"
     assert swordsman.initiative == 5
     assert swordsman.speed == 4
-    assert swordsman.footprint is footprint
     assert swordsman.combat is combat
 
 
@@ -33,7 +29,6 @@ def test_unit_definition_rejects_negative_initiative():
             name="Swordsman",
             initiative=-1,
             speed=4,
-            footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),
         )
 
@@ -45,7 +40,6 @@ def test_unit_definition_rejects_negative_speed():
             name="Swordsman",
             initiative=5,
             speed=-1,
-            footprint=UnitFootprint.single_hex(),
             combat=_combat_stats(),
         )
 
@@ -67,7 +61,6 @@ def test_unit_stack_exposes_side_definition_and_count():
         name="Swordsman",
         initiative=5,
         speed=4,
-        footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),
     )
 
@@ -92,7 +85,6 @@ def test_unit_stack_rejects_non_positive_count():
         name="Swordsman",
         initiative=5,
         speed=4,
-        footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),
     )
 
@@ -111,7 +103,6 @@ def test_unit_stack_rejects_wound_damage_outside_current_creature_health():
         name="Swordsman",
         initiative=5,
         speed=4,
-        footprint=UnitFootprint.single_hex(),
         combat=_combat_stats(),
     )
 
@@ -131,23 +122,6 @@ def test_unit_stack_rejects_wound_damage_outside_current_creature_health():
             count=25,
             wound_damage=swordsman.combat.health,
         )
-
-
-def test_single_hex_unit_footprint_occupies_anchor_coordinate():
-    footprint = UnitFootprint.single_hex()
-
-    assert footprint.coordinates_anchored_at(HexCoord(4, 5)) == frozenset({HexCoord(4, 5)})
-
-
-def test_multi_hex_unit_footprint_derives_coordinates_from_anchor_and_offsets():
-    footprint = UnitFootprint(offsets=frozenset({HexCoord(0, 0), HexCoord(1, 0)}))
-
-    assert footprint.coordinates_anchored_at(HexCoord(4, 5)) == frozenset({HexCoord(4, 5), HexCoord(5, 5)})
-
-
-def test_unit_footprint_rejects_offsets_that_omit_anchor():
-    with pytest.raises(ValueError, match="anchor"):
-        UnitFootprint(offsets=frozenset({HexCoord(1, 0)}))
 
 
 def _combat_stats(
