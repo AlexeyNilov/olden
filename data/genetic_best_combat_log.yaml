@@ -31,21 +31,21 @@ events:
   stack_id: enemy-esquire
   start:
     column: 12
-    row: 5
+    row: 1
   destination:
     column: 8
-    row: 5
+    row: 2
   path:
   - column: 12
-    row: 5
+    row: 1
   - column: 11
-    row: 5
+    row: 1
   - column: 10
-    row: 5
+    row: 1
   - column: 9
-    row: 5
+    row: 1
   - column: 8
-    row: 5
+    row: 2
 - sequence: 4
   type: unit_moved
   round: 2
@@ -56,18 +56,18 @@ events:
     row: 9
   destination:
     column: 6
-    row: 6
+    row: 5
   path:
   - column: 4
     row: 9
-  - column: 5
-    row: 9
-  - column: 5
+  - column: 4
     row: 8
-  - column: 6
+  - column: 5
     row: 7
-  - column: 6
+  - column: 5
     row: 6
+  - column: 6
+    row: 5
 - sequence: 5
   type: unit_moved
   round: 2
@@ -75,15 +75,19 @@ events:
   stack_id: enemy-esquire
   start:
     column: 8
-    row: 5
+    row: 2
   destination:
     column: 7
-    row: 6
+    row: 5
   path:
   - column: 8
-    row: 5
+    row: 2
+  - column: 8
+    row: 3
   - column: 7
-    row: 6
+    row: 4
+  - column: 7
+    row: 5
 - sequence: 6
   type: unit_attacked
   round: 3
@@ -92,19 +96,19 @@ events:
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
-    final_damage: 20
-    creatures_killed: 1
+    final_damage: 30
+    creatures_killed: 2
     defender_count_before: 20
-    defender_count_after: 19
-    defender_wound_damage_after: 8
+    defender_count_after: 18
+    defender_wound_damage_after: 6
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 38
+    final_damage: 36
     creatures_killed: 3
-    defender_count_before: 10
-    defender_count_after: 7
-    defender_wound_damage_after: 2
+    defender_count_before: 15
+    defender_count_after: 12
+    defender_wound_damage_after: 0
     defender_defeated: false
 - sequence: 7
   type: unit_attacked
@@ -114,19 +118,19 @@ events:
   defender_id: genetic-player-1
   primary_damage:
     selected_damage: 2
-    final_damage: 38
+    final_damage: 36
     creatures_killed: 3
-    defender_count_before: 7
-    defender_count_after: 4
-    defender_wound_damage_after: 4
+    defender_count_before: 12
+    defender_count_after: 9
+    defender_wound_damage_after: 0
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 8
-    creatures_killed: 1
-    defender_count_before: 19
-    defender_count_after: 18
-    defender_wound_damage_after: 4
+    final_damage: 18
+    creatures_killed: 2
+    defender_count_before: 18
+    defender_count_after: 16
+    defender_wound_damage_after: 0
     defender_defeated: false
 - sequence: 8
   type: unit_attacked
@@ -136,19 +140,19 @@ events:
   defender_id: enemy-esquire
   primary_damage:
     selected_damage: 2
-    final_damage: 8
+    final_damage: 18
     creatures_killed: 1
-    defender_count_before: 18
-    defender_count_after: 17
-    defender_wound_damage_after: 0
+    defender_count_before: 16
+    defender_count_after: 15
+    defender_wound_damage_after: 6
     defender_defeated: false
   counterattack:
     selected_damage: 2
-    final_damage: 34
-    creatures_killed: 3
-    defender_count_before: 4
-    defender_count_after: 1
-    defender_wound_damage_after: 2
+    final_damage: 30
+    creatures_killed: 2
+    defender_count_before: 9
+    defender_count_after: 7
+    defender_wound_damage_after: 6
     defender_defeated: false
 - sequence: 9
   type: unit_attacked
@@ -158,9 +162,53 @@ events:
   defender_id: genetic-player-1
   primary_damage:
     selected_damage: 2
-    final_damage: 34
+    final_damage: 30
+    creatures_killed: 3
+    defender_count_before: 7
+    defender_count_after: 4
+    defender_wound_damage_after: 0
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 8
     creatures_killed: 1
-    defender_count_before: 1
+    defender_count_before: 15
+    defender_count_after: 14
+    defender_wound_damage_after: 2
+    defender_defeated: false
+- sequence: 10
+  type: unit_attacked
+  round: 5
+  turn: 1
+  attacker_id: genetic-player-1
+  defender_id: enemy-esquire
+  primary_damage:
+    selected_damage: 2
+    final_damage: 8
+    creatures_killed: 0
+    defender_count_before: 14
+    defender_count_after: 14
+    defender_wound_damage_after: 10
+    defender_defeated: false
+  counterattack:
+    selected_damage: 2
+    final_damage: 28
+    creatures_killed: 2
+    defender_count_before: 4
+    defender_count_after: 2
+    defender_wound_damage_after: 4
+    defender_defeated: false
+- sequence: 11
+  type: unit_attacked
+  round: 5
+  turn: 2
+  attacker_id: enemy-esquire
+  defender_id: genetic-player-1
+  primary_damage:
+    selected_damage: 2
+    final_damage: 28
+    creatures_killed: 2
+    defender_count_before: 2
     defender_count_after: 0
     defender_wound_damage_after: 0
     defender_defeated: true

@@ -43,7 +43,7 @@ def run_genetic_strategy_discovery(
     best_battle_path: Path = DEFAULT_BEST_BATTLE_PATH,
     best_combat_log_path: Path = DEFAULT_BEST_COMBAT_LOG_PATH,
     seed: int | None = None,
-    population_size: int = 24,
+    population_size: int = 100,
     generations: int = 20,
 ) -> GeneticStrategyDiscoverySampleResult:
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())

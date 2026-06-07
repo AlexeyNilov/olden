@@ -16,8 +16,8 @@ from olden.combat.combat_replay import CombatReplayFrame, build_combat_replay_fr
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "demo_battle.yaml"
-DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "demo_combat_log.yaml"
+DEFAULT_BATTLE_INITIAL_STATE_PATH = PROJECT_ROOT / "data" / "genetic_best_battle.yaml"
+DEFAULT_COMBAT_LOG_PATH = PROJECT_ROOT / "data" / "genetic_best_combat_log.yaml"
 DEFAULT_REPLAY_DELAY_SECONDS = 1.0
 DEFAULT_REPLAY_PORT = 8081
 REPLAY_PAGE_CSS = """

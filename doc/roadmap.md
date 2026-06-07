@@ -145,6 +145,7 @@
 
 ## Future plans
 
+* Move and attack if target is in reach
 * Later concern: decide whether movement-only simulation should remain separate
   or be consolidated with the full combat simulation once both paths stabilize
 * Later concern: decide whether exact initiative and speed ties should alternate
