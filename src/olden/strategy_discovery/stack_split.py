@@ -417,6 +417,7 @@ def _action_chooser_for_strategy(strategy: StackSplitStrategy) -> ActionChooser:
         if _should_wait_with_attacker(strategy.wait_policy, context):
             return CombatAction.WAIT
         for action in (
+            CombatAction.RANGED_ATTACK,
             CombatAction.MELEE_ENGAGE,
             CombatAction.STAY_OUT_OF_MELEE_REACH,
             CombatAction.SKIP,

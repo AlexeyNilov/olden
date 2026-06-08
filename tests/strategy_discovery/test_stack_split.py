@@ -5,7 +5,7 @@ import pytest
 from olden.combat.action_selection import CombatAction
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
-from olden.combat.combat_log import UnitWaitedEvent
+from olden.combat.combat_log import UnitAttackedEvent, UnitWaitedEvent
 from olden.combat.coordinates import HexCoord
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
@@ -167,6 +167,28 @@ def test_simulate_stack_split_first_action_if_safe_policy_records_attacker_wait(
     assert len(wait_events) == 1
     assert wait_events[0].stack_id == "genetic-attacker-1"
     assert result.turns_taken == 1
+
+
+def test_simulate_stack_split_prefers_ranged_attack_when_available_for_support_stack():
+    scenario = StackSplitScenario(
+        base_battle=_base_battle_with_attacker_support_stack(),
+        attacker_pool_stack_id="attacker-esquire",
+        unit_pool_size=10,
+        max_slots=1,
+        deployment_slots=(HexCoord(0, 9),),
+        generated_attacker_stack_id_prefix="genetic-attacker",
+        max_turns=3,
+        attacker_actions=(CombatAction.RANGED_ATTACK, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.MELEE_ENGAGE,),
+    )
+    strategy = StackSplitStrategy(stack_counts=(10,), wait_policy=AttackerWaitPolicy.NEVER)
+
+    result = simulate_stack_split(scenario, strategy)
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert len(attack_events) == 1
+    assert attack_events[0].attacker_id == "attacker-crossbowman"
+    assert attack_events[0].attack_kind == "ranged"
 
 
 def test_discover_stack_split_strategy_returns_the_best_evaluated_individual():
