@@ -123,7 +123,8 @@ This helps ensure requirements are:
 
 * **When** a melee attack is resolved, **the system shall** require the attacker and defender to be opposing unit stacks.
 * **When** a melee attack is resolved, **the system shall** require the defender to occupy a hex adjacent to the attacker.
-* **When** a melee attack is resolved, **the system shall** require the attacker to have the melee attack category.
+* **When** a melee attack is resolved, **the system shall** require the attacker to have a melee-capable attack category.
+* **When** a ranged unit is adjacent to an enemy unit stack, **the system shall** allow the ranged unit to perform a melee attack.
 * **When** attack damage is resolved, **the system shall** calculate base damage as attacker count multiplied by the selected damage value from the attacker's damage range.
 * **When** attack damage is resolved, **the system shall** apply the attack/defense modifier `(20 + attacker attack) / (20 + defender defense)`.
 * **When** attack damage produces a fractional result, **the system shall** round the result down to the nearest integer.
@@ -132,7 +133,19 @@ This helps ensure requirements are:
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
-* **While** morale, luck, hero stats, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **While** morale, luck, hero stats, damage tags, abilities, ranged-unit melee penalties, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+
+### Ranged attack
+
+* **When** a ranged attack is resolved, **the system shall** require the attacker and defender to be opposing unit stacks.
+* **When** a ranged attack is resolved, **the system shall** require the attacker to have the ranged attack category.
+* **When** a ranged attack is resolved, **the system shall** allow the defender to occupy any battlefield hex that is not adjacent to the attacker.
+* **When** a ranged attack is resolved while any living opposing unit stack occupies a hex adjacent to the attacker, **the system shall** reject the ranged attack.
+* **When** a ranged attack target is no more than three hexes away, **the system shall** apply no range penalty.
+* **When** a ranged attack target is more than three hexes away, **the system shall** reduce damage by 10% per additional hex.
+* **When** a ranged attack target is eight or more hexes away, **the system shall** cap the range penalty at 50% damage reduction.
+* **When** ranged attack damage produces a fractional result after the range penalty, **the system shall** round the result down to the nearest integer.
+* **When** a ranged defender survives an attack, **the system shall** not counterattack.
 
 ### Combat simulation
 
@@ -154,6 +167,8 @@ This helps ensure requirements are:
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
 * **When** combat simulation movement brings the acting unit stack adjacent to its target, **the system shall** perform the melee attack in the same action opportunity.
+* **When** a configured ranged attack action is selected, **the system shall** perform a ranged attack against the selected opponent without movement.
+* **When** a configured ranged attack action is considered while any enemy is adjacent to the acting unit stack, **the system shall** not make the ranged attack action applicable.
 * **When** a configured stay-out-of-melee-reach action is selected, **the system shall** move the acting unit stack toward a selected opponent only to a reachable hex that is outside that opponent's next melee engagement reach.
 * **When** a unit stack waits during combat simulation, **the system shall** move that stack's action to the end of the current round without counting the wait itself as a completed action opportunity.
 * **When** multiple unit stacks wait in the same round, **the system shall** resolve their delayed actions in flipped initiative order, with lower-initiative stacks acting before higher-initiative stacks.
@@ -235,8 +250,8 @@ This helps ensure requirements are:
 
 * **While** range and movement math remains pure geometric math, **the system shall** avoid exposing pathfinding APIs from range operations.
 * **While** attacker/defender tie alternation and army-slot ordering are deferred, **the system shall** preserve configured stack order for exact initiative and speed ties.
-* **While** non-melee combat action simulation is deferred, **the system shall** avoid exposing morale, luck, ability, cost, growth, upgrade, long-reach attack, ranged attack, or other deferred behavior as part of the Unit model.
-* **While** combat mechanics beyond committed turn ordering and melee attack behavior are deferred, **the system shall** avoid applying morale, luck, economy, upgrade, ability, long-reach attack, ranged attack, or other deferred behavior from unit catalog records.
+* **While** combat action simulation beyond melee and ranged attacks is deferred, **the system shall** avoid exposing morale, luck, ability, cost, growth, upgrade, long-reach attack, or other deferred behavior as part of the Unit model.
+* **While** combat mechanics beyond committed turn ordering, melee attack behavior, and ranged attack behavior are deferred, **the system shall** avoid applying morale, luck, economy, upgrade, ability, long-reach attack, or other deferred behavior from unit catalog records.
 * **While** line-of-sight and spell area-of-effect rings are deferred, **the system shall** avoid exposing line-of-sight or spell area-of-effect APIs as part of range and movement math.
 * **While** all unit stacks occupy exactly one coordinate, **the system shall** avoid exposing multi-hex pathfinding or footprint-clearance behavior.
 * **While** terrain effects and special movement are deferred, **the system shall** avoid exposing terrain-specific costs, flying, teleporting, attack zones, turn order, waiting, or action-economy behavior as part of movement simulation.

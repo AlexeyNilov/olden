@@ -1,6 +1,5 @@
 import pytest
 
-from olden.combat.units import UnitDefinition
 from olden.unit_data.catalog import (
     DuplicateUnitIdError,
     MissingUnitRecordError,
@@ -94,7 +93,7 @@ def test_unit_catalog_rejects_inverted_morale_and_luck_ranges():
 
 
 def test_unit_record_rejects_unsupported_attack_category_during_conversion():
-    catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: ranged"))
+    catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: long_reach"))
 
     with pytest.raises(UnitCatalogValidationError, match="attack_category"):
         catalog.get("esquire").to_unit_definition()
@@ -109,3 +108,37 @@ def test_packaged_unit_catalog_loads_attributed_sample_records():
     assert catalog.license == "CC-BY-SA-4.0"
     assert record.source.license == "CC-BY-SA-4.0"
     assert record.source.retrieved_on == "2026-06-06"
+
+
+def test_packaged_unit_catalog_loads_crossbowman_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("crossbowman")
+
+    assert record.name == "Crossbowman"
+    assert record.faction == "temple"
+    assert record.tier == 2
+    assert record.combat.health == 10
+    assert record.combat.attack == 5
+    assert record.combat.defense == 3
+    assert record.combat.damage.minimum == 3
+    assert record.combat.damage.maximum == 4
+    assert record.combat.morale.minimum == -5
+    assert record.combat.morale.maximum == 5
+    assert record.combat.luck.minimum == -3
+    assert record.combat.luck.maximum == 3
+    assert record.combat.initiative == 5
+    assert record.combat.speed == 3
+    assert record.combat.attack_category == "ranged"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Crossbowman"
+    assert record.source.retrieved_on == "2026-06-08"
+
+
+def test_packaged_crossbowman_record_converts_to_ranged_unit_definition():
+    catalog = load_packaged_unit_catalog()
+
+    definition = catalog.get("crossbowman").to_unit_definition()
+
+    assert definition.id == "crossbowman"
+    assert definition.name == "Crossbowman"
+    assert definition.combat.attack_category.value == "ranged"

@@ -8,7 +8,7 @@ from olden.combat.occupancy import Occupancy
 from olden.combat.units import UnitStack
 
 if TYPE_CHECKING:
-    from olden.combat.attack import DamageChooser, MeleeAttackResult
+    from olden.combat.attack import DamageChooser, MeleeAttackResult, RangedAttackResult
 
 
 class UnknownUnitStackError(ValueError):
@@ -53,6 +53,16 @@ class Battle:
         from olden.combat.attack import resolve_melee_attack
 
         return resolve_melee_attack(self, attacker_id, defender_id, damage_chooser, allow_counterattack)
+
+    def ranged_attack_stack(
+        self,
+        attacker_id: str,
+        defender_id: str,
+        damage_chooser: "DamageChooser",
+    ) -> "RangedAttackResult":
+        from olden.combat.attack import resolve_ranged_attack
+
+        return resolve_ranged_attack(self, attacker_id, defender_id, damage_chooser)
 
     def stack(self, stack_id: str) -> UnitStack:
         try:

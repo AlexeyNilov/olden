@@ -71,6 +71,43 @@ def test_combat_simulation_attacks_after_moving_into_reach_in_same_turn():
     assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
+def test_combat_simulation_can_resolve_configured_ranged_attack_without_movement():
+    initial_battle = _battle(
+        attacker_stack=_stack(
+            "attacker-crossbowman",
+            CombatSide.ATTACKER,
+            count=10,
+            attack=5,
+            defense=3,
+            damage=DamageRange(minimum=3, maximum=4),
+            attack_category=AttackCategory.RANGED,
+        ),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 5),
+        defender_anchor=HexCoord(4, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-crossbowman",
+        second_stack_id="defender-esquire",
+        attacker_actions=(CombatAction.RANGED_ATTACK, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.SKIP,),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert not movement_events
+    assert len(attack_events) == 1
+    assert attack_events[0].attack_kind == "ranged"
+    assert attack_events[0].primary_damage.final_damage == 27
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
 def test_combat_simulation_uses_initiative_order_with_multiple_stacks():
     attacker_esquire = _stack("attacker-esquire", CombatSide.ATTACKER, count=10, initiative=5, speed=4)
     attacker_griffin = _stack("attacker-griffin", CombatSide.ATTACKER, count=5, initiative=9, speed=5)
@@ -431,6 +468,7 @@ def _stack(
     attack: int = 4,
     defense: int = 4,
     damage: DamageRange = DamageRange(minimum=2, maximum=3),
+    attack_category: AttackCategory = AttackCategory.MELEE,
 ) -> UnitStack:
     return UnitStack(
         id=stack_id,
@@ -444,7 +482,7 @@ def _stack(
                 attack=attack,
                 defense=defense,
                 damage=damage,
-                attack_category=AttackCategory.MELEE,
+                attack_category=attack_category,
             ),
         ),
         side=side,

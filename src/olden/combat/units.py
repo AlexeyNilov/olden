@@ -6,6 +6,7 @@ from olden.combat.sides import CombatSide
 
 class AttackCategory(Enum):
     MELEE = "melee"
+    RANGED = "ranged"
 
 
 @dataclass(frozen=True, slots=True)

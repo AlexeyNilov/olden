@@ -3,9 +3,11 @@ import pytest
 from olden.combat.attack import (
     DamageContext,
     MeleeAttackError,
+    RangedAttackError,
     apply_damage_to_stack,
     calculate_attack_damage,
     resolve_melee_attack,
+    resolve_ranged_attack,
 )
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
@@ -84,6 +86,25 @@ def test_melee_attack_counterattacks_once_when_defender_survives():
     assert attacker.wound_damage == 2
 
 
+def test_ranged_unit_can_melee_attack_adjacent_defender_without_range_penalty():
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+    )
+
+    result = resolve_melee_attack(
+        battle,
+        "attacker-crossbowman",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    assert result.primary_damage.final_damage == 20
+    assert result.counterattack is not None
+
+
 def test_melee_attack_rejects_non_adjacent_target():
     battle = _battle(
         attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
@@ -106,6 +127,99 @@ def test_melee_attack_rejects_same_side_target():
 
     with pytest.raises(MeleeAttackError, match="opposing"):
         resolve_melee_attack(battle, "attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
+
+
+def test_ranged_attack_damages_non_adjacent_defender_without_counterattack():
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(3, 0),
+    )
+
+    result = resolve_ranged_attack(
+        battle,
+        "attacker-crossbowman",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    defender = battle.stack("defender-esquire")
+    assert result.primary_damage.final_damage == 20
+    assert result.primary_damage.creatures_killed == 1
+    assert defender.count == 19
+    assert defender.wound_damage == 8
+    assert result.counterattack is None
+
+
+def test_ranged_attack_rejects_same_side_target():
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.ATTACKER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(3, 0),
+    )
+
+    with pytest.raises(RangedAttackError, match="opposing"):
+        resolve_ranged_attack(battle, "attacker-crossbowman", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
+
+
+def test_ranged_attack_rejects_adjacent_target():
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+    )
+
+    with pytest.raises(RangedAttackError, match="adjacent enemy"):
+        resolve_ranged_attack(battle, "attacker-crossbowman", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
+
+
+def test_ranged_attack_rejects_far_target_when_any_enemy_is_adjacent():
+    attacker = _stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED)
+    adjacent_enemy = _stack("defender-adjacent", CombatSide.DEFENDER, count=20)
+    far_enemy = _stack("defender-far", CombatSide.DEFENDER, count=20)
+    battle = _battle_with_stacks(
+        placements=(
+            (attacker, HexCoord(0, 0)),
+            (adjacent_enemy, HexCoord(1, 0)),
+            (far_enemy, HexCoord(3, 0)),
+        )
+    )
+
+    with pytest.raises(RangedAttackError, match="adjacent enemy"):
+        resolve_ranged_attack(battle, "attacker-crossbowman", "defender-far", damage_chooser=lambda damage: damage.minimum)
+
+
+@pytest.mark.parametrize(
+    ("defender_anchor", "expected_damage"),
+    (
+        (HexCoord(3, 0), 20),
+        (HexCoord(4, 0), 18),
+        (HexCoord(8, 0), 10),
+        (HexCoord(11, 0), 10),
+    ),
+)
+def test_ranged_attack_applies_distance_penalty_capped_at_half_damage(
+    defender_anchor: HexCoord,
+    expected_damage: int,
+):
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=defender_anchor,
+    )
+
+    result = resolve_ranged_attack(
+        battle,
+        "attacker-crossbowman",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    assert result.primary_damage.final_damage == expected_damage
 
 
 def test_melee_attack_rounds_fractional_damage_down_with_minimum_one_damage():
@@ -227,12 +341,25 @@ def _battle(
     )
 
 
+def _battle_with_stacks(placements: tuple[tuple[UnitStack, HexCoord], ...]) -> Battle:
+    battlefield = Battlefield.default()
+    occupancy = Occupancy()
+    for stack, anchor in placements:
+        occupancy.place(stack.id, anchor)
+    return Battle(
+        battlefield=battlefield,
+        occupancy=occupancy,
+        unit_stacks={stack.id: stack for stack, _anchor in placements},
+    )
+
+
 def _stack(
     stack_id: str,
     side: CombatSide,
     count: int,
     wound_damage: int = 0,
     stats: UnitCombatStats | None = None,
+    attack_category: AttackCategory = AttackCategory.MELEE,
 ) -> UnitStack:
     return UnitStack(
         id=stack_id,
@@ -247,7 +374,7 @@ def _stack(
                 attack=4,
                 defense=4,
                 damage=DamageRange(minimum=2, maximum=3),
-                attack_category=AttackCategory.MELEE,
+                attack_category=attack_category,
             ),
         ),
         side=side,

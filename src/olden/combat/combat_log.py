@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from olden.combat.attack import AttackDamageResult, MeleeAttackResult
+from olden.combat.attack import AttackDamageResult, MeleeAttackResult, RangedAttackResult
 from olden.combat.battle import Battle, MovementResult
 from olden.combat.coordinates import HexCoord
 
@@ -76,6 +76,7 @@ class UnitAttackedEvent:
     defender_id: str
     primary_damage: AttackDamageEventData
     counterattack: AttackDamageEventData | None
+    attack_kind: str = "melee"
 
 
 CombatLogEvent = BattleStartedEvent | UnitMovedEvent | UnitWaitedEvent | UnitSkippedEvent | UnitAttackedEvent
@@ -121,7 +122,12 @@ class CombatLog:
         self._events.append(event)
         return event
 
-    def record_unit_attacked(self, turn: TurnMarker, attack: MeleeAttackResult) -> UnitAttackedEvent:
+    def record_unit_attacked(
+        self,
+        turn: TurnMarker,
+        attack: MeleeAttackResult | RangedAttackResult,
+        attack_kind: str = "melee",
+    ) -> UnitAttackedEvent:
         event = UnitAttackedEvent(
             sequence=self._next_sequence(),
             turn=turn,
@@ -129,6 +135,7 @@ class CombatLog:
             defender_id=attack.primary_damage.defender_id,
             primary_damage=snapshot_attack_damage(attack.primary_damage),
             counterattack=snapshot_attack_damage(attack.counterattack) if attack.counterattack is not None else None,
+            attack_kind=attack_kind,
         )
         self._events.append(event)
         return event
@@ -196,9 +203,9 @@ def _apply_unit_attacked_event(
     event: UnitAttackedEvent,
     replay_state: CombatLogReplayState,
 ) -> None:
-    from olden.combat.combat_actions import apply_logged_melee_attack_action
+    from olden.combat.combat_actions import apply_logged_attack_action
 
-    apply_logged_melee_attack_action(battle, event, replay_state)
+    apply_logged_attack_action(battle, event, replay_state)
 
 
 def _parse_event(value: object, index: int) -> CombatLogEvent:
@@ -268,6 +275,7 @@ def _parse_unit_attacked_event(data: Mapping[str, Any], path: str) -> UnitAttack
         defender_id=_require_str(data, "defender_id", path),
         primary_damage=_parse_attack_damage(_required(data, "primary_damage", path), f"{path}.primary_damage"),
         counterattack=_parse_optional_attack_damage(data, "counterattack", path),
+        attack_kind=_optional_str(data, "attack_kind", path, default="melee"),
     )
 
 
@@ -308,6 +316,7 @@ def _dump_event(event: CombatLogEvent) -> dict[str, object]:
         "turn": event.turn.turn_number,
         "attacker_id": event.attacker_id,
         "defender_id": event.defender_id,
+        "attack_kind": event.attack_kind,
         "primary_damage": _dump_attack_damage(event.primary_damage),
     }
     if event.counterattack is not None:
@@ -409,6 +418,12 @@ def _require_str(data: Mapping[str, Any], key: str, path: str) -> str:
         msg = f"{path}.{key} must be a non-empty string"
         raise CombatLogValidationError(msg)
     return value
+
+
+def _optional_str(data: Mapping[str, Any], key: str, path: str, default: str) -> str:
+    if key not in data:
+        return default
+    return _require_str(data, key, path)
 
 
 def _require_int(data: Mapping[str, Any], key: str, path: str, minimum: int | None = None) -> int:

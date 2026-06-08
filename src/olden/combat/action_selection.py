@@ -8,6 +8,7 @@ from olden.combat.combat_log import TurnMarker
 
 
 class CombatAction(Enum):
+    RANGED_ATTACK = "ranged_attack"
     MELEE_ENGAGE = "melee_engage"
     STAY_OUT_OF_MELEE_REACH = "stay_out_of_melee_reach"
     WAIT = "wait"

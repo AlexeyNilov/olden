@@ -4,9 +4,15 @@ from enum import Enum
 
 from olden.combat.action_opportunities import CombatRoundState
 from olden.combat.action_selection import ActionChooser, CombatAction, CombatActionContext, CombatActionSelectionError
-from olden.combat.attack import DamageChooser
+from olden.combat.attack import DamageChooser, can_resolve_ranged_attack
 from olden.combat.battle import Battle
-from olden.combat.combat_actions import apply_melee_attack_action, apply_movement_action, apply_skip_action, apply_wait_action
+from olden.combat.combat_actions import (
+    apply_melee_attack_action,
+    apply_movement_action,
+    apply_ranged_attack_action,
+    apply_skip_action,
+    apply_wait_action,
+)
 from olden.combat.combat_log import CombatLog, TurnMarker
 from olden.combat.engagement import MovementPath as MovementPath
 from olden.combat.engagement import (
@@ -22,7 +28,7 @@ from olden.combat.targeting import TargetingPolicy, is_defeated, one_side_defeat
 from olden.combat.turn_order import order_stacks_for_round, order_stacks_for_wait_phase
 from olden.combat.units import DamageRange
 
-DEFAULT_SIMULATION_ACTIONS = (CombatAction.MELEE_ENGAGE,)
+DEFAULT_SIMULATION_ACTIONS = (CombatAction.RANGED_ATTACK, CombatAction.MELEE_ENGAGE)
 
 
 class CombatSimulationStopReason(Enum):
@@ -149,6 +155,7 @@ def simulate_combat(
 
 def default_action_chooser(context: CombatActionContext) -> CombatAction:
     for action in (
+        CombatAction.RANGED_ATTACK,
         CombatAction.MELEE_ENGAGE,
         CombatAction.STAY_OUT_OF_MELEE_REACH,
         CombatAction.SKIP,
@@ -248,6 +255,16 @@ def _act_with_stack(
             raise CombatActionSelectionError(msg)
         apply_movement_action(battle, combat_log, turn, actor_id, path[-1])
         return _ActionResult(consumed_turn=True)
+    if selected_action is CombatAction.RANGED_ATTACK:
+        apply_ranged_attack_action(
+            battle,
+            combat_log,
+            turn,
+            actor_id,
+            opponent_id,
+            damage_chooser,
+        )
+        return _ActionResult(consumed_turn=True)
 
     return _apply_melee_engage_action(
         battle=battle,
@@ -287,6 +304,8 @@ def _applicable_actions(
         elif action is CombatAction.SKIP:
             applicable.append(action)
         elif action is CombatAction.MELEE_ENGAGE:
+            applicable.append(action)
+        elif action is CombatAction.RANGED_ATTACK and can_resolve_ranged_attack(battle, actor_id, opponent_id):
             applicable.append(action)
         elif action is CombatAction.STAY_OUT_OF_MELEE_REACH and has_stay_out_of_melee_reach_path(battle, actor_id, opponent_id):
             applicable.append(action)
