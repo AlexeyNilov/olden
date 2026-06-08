@@ -5,10 +5,17 @@ unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
     side: attacker
-    count: 20
+    count: 10
     anchor:
       column: 0
       row: 9
+  - id: attacker-crossbowman
+    unit_id: crossbowman
+    side: attacker
+    count: 5
+    anchor:
+      column: 0
+      row: 5
   - id: defender-esquire
     unit_id: esquire
     side: defender

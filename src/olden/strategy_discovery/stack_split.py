@@ -67,6 +67,10 @@ class StackSplitScenario:
         self.base_battle.stack(self.attacker_pool_stack_id)
         for slot in self.deployment_slots:
             self.base_battle.battlefield.require_valid(slot)
+            occupant_id = self.base_battle.occupancy.unit_at(slot)
+            if occupant_id is not None and occupant_id != self.attacker_pool_stack_id:
+                msg = f"Deployment slot is occupied by base battle stack: {occupant_id}"
+                raise ValueError(msg)
 
 
 @dataclass(frozen=True, slots=True)

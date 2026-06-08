@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from olden.combat.combat_simulation import CombatSimulationStopReason
+from olden.combat.coordinates import HexCoord
 from olden.combat.targeting import TargetingPolicy
 from olden.strategy_discovery.stack_split import (
     AttackerWaitPolicy,
@@ -26,6 +27,34 @@ unit_stacks:
     anchor:
       column: 0
       row: 9
+  - id: defender-esquire
+    unit_id: esquire
+    side: defender
+    count: 20
+    anchor:
+      column: 12
+      row: 5
+"""
+
+SAMPLE_INITIAL_STATE_WITH_SUPPORT_STACK_YAML = """\
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: attacker-esquire
+    unit_id: esquire
+    side: attacker
+    count: 10
+    anchor:
+      column: 0
+      row: 9
+  - id: attacker-crossbowman
+    unit_id: crossbowman
+    side: attacker
+    count: 5
+    anchor:
+      column: 0
+      row: 5
   - id: defender-esquire
     unit_id: esquire
     side: defender
@@ -170,6 +199,52 @@ def test_genetic_strategy_discovery_passes_configured_targeting_policy(monkeypat
     )
 
     assert captured["targeting_policy"] is TargetingPolicy.NEAREST_OPPONENT
+
+
+def test_genetic_strategy_discovery_excludes_deployment_slots_occupied_by_support_stacks(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GENETIC_STRATEGY_DISCOVERY_MAX_TURNS", raising=False)
+    initial_state_path = tmp_path / "genetic_battle.yaml"
+    initial_state_path.write_text(SAMPLE_INITIAL_STATE_WITH_SUPPORT_STACK_YAML, encoding="utf-8")
+    captured: dict[str, StackSplitScenario] = {}
+
+    def discover_with_captured_scenario(
+        scenario: StackSplitScenario,
+        *args: object,
+        **kwargs: object,
+    ) -> StackSplitDiscoveryResult:
+        captured["scenario"] = scenario
+        strategy = StackSplitStrategy(
+            stack_counts=(scenario.unit_pool_size, 0, 0, 0, 0, 0),
+            wait_policy=AttackerWaitPolicy.NEVER,
+        )
+        individual = StackSplitIndividual(
+            strategy=strategy,
+            evaluation=StackSplitEvaluation(
+                fitness=StackSplitFitness(
+                    score=0,
+                    attacker_surviving_units=0,
+                    attacker_surviving_health=0,
+                    defender_units_killed=0,
+                    turns_taken=0,
+                ),
+                stop_reason="test",
+            ),
+        )
+        return StackSplitDiscoveryResult(best_individual=individual, population=(individual,))
+
+    monkeypatch.setattr(genetic_strategy_discovery, "discover_stack_split_strategy", discover_with_captured_scenario)
+
+    run_genetic_strategy_discovery(
+        initial_state_path=initial_state_path,
+        best_battle_path=tmp_path / "genetic_best_battle.yaml",
+        best_combat_log_path=tmp_path / "genetic_best_combat_log.yaml",
+        seed=3,
+    )
+
+    scenario = captured["scenario"]
+    assert HexCoord(0, 5) not in scenario.deployment_slots
+    assert scenario.max_slots == 6
 
 
 def _write_sample_initial_state(tmp_path: Path) -> Path:

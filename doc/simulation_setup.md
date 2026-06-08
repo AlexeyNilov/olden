@@ -17,7 +17,8 @@ The sample searches only for the attacker's initial stack split. It does not
 search for turn-level tactics, target choices, spell use, morale handling, luck
 handling, or other battle strategy.
 
-The attacker unit pool is assigned to seven fixed deployment slots:
+The attacker unit pool is assigned to the available default deployment slots.
+The default slot candidates are:
 
 * `HexCoord(0, 9)`
 * `HexCoord(0, 8)`
@@ -27,10 +28,14 @@ The attacker unit pool is assigned to seven fixed deployment slots:
 * `HexCoord(0, 4)`
 * `HexCoord(0, 3)`
 
-Each genome position maps to one deployment slot. A zero value leaves that slot
-empty. A positive value creates one generated attacker stack with that many units.
-The genome must assign exactly the full attacker unit pool and cannot contain more
-than seven slots or negative counts.
+The sample excludes candidate slots occupied by base-battle stacks other than
+the attacker pool stack. This allows the editable battle file to include fixed
+attacker support stacks, such as ranged units, without overlapping generated
+stack-split positions. Each genome position maps to one remaining deployment
+slot. A zero value leaves that slot empty. A positive value creates one generated
+attacker stack with that many units. The genome must assign exactly the full
+attacker unit pool and cannot contain more slots than the available deployment
+slot count or negative counts.
 
 ## Evaluation
 

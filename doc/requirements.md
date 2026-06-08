@@ -186,6 +186,7 @@ This helps ensure requirements are:
 
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** map each genome slot to a fixed attacker deployment coordinate and create one attacker unit stack for each non-empty slot.
 * **When** stack-split strategy discovery evaluates a genome, **the system shall** require the genome to contain no more than seven slots, no negative stack counts, and exactly the configured attacker unit pool size.
+* **When** stack-split strategy discovery configures deployment slots, **the system shall** reject slots occupied by base-battle stacks other than the attacker pool stack.
 * **When** stack-split strategy discovery evaluates a strategy, **the system shall** use the strategy's wait policy to choose whether attacker unit stacks wait instead of using the default combat action order.
 * **When** a stack-split strategy uses the first-action-if-safe wait policy, **the system shall** wait with an attacker unit stack on its first round action only while the stack is outside the selected opponent's next melee engagement reach.
 * **When** stack-split strategy discovery scores a genome, **the system shall** use average unit damage so repeated evaluations of the same genome are deterministic.
@@ -195,6 +196,7 @@ This helps ensure requirements are:
 * **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 action opportunities.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS` to override the stack-split scenario turn cap.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE` from `0` through `1` to override the stack-split mutation rate.
+* **When** the genetic strategy discovery sample builds a stack-split scenario, **the system shall** exclude default attacker deployment slots occupied by non-pool stacks in the loaded battle.
 * **When** the genetic strategy discovery sample completes, **the system shall** save the best discovered initial battle and a replayable combat log for that battle.
 * **While** turn-level combat strategy is deferred, **the system shall** keep stack-split strategy discovery limited to initial army formation and fixed deployment slots.
 

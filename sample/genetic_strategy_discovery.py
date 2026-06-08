@@ -2,6 +2,7 @@ import random
 from dataclasses import dataclass
 from pathlib import Path
 
+from olden.combat.battle import Battle
 from olden.combat.battle_setup import load_battle_initial_state_file, save_battle_initial_state_file
 from olden.combat.combat_log import save_combat_log_file
 from olden.combat.combat_simulation import CombatSimulationResult
@@ -57,12 +58,13 @@ def run_genetic_strategy_discovery(
     resolved_mutation_rate = config.genetic_strategy_discovery_mutation_rate if mutation_rate is None else mutation_rate
     resolved_worker_count = config.genetic_strategy_discovery_workers if worker_count is None else worker_count
     battle = load_battle_initial_state_file(initial_state_path, load_packaged_unit_catalog())
+    deployment_slots = _available_attacker_deployment_slots(battle)
     scenario = StackSplitScenario(
         base_battle=battle,
         attacker_pool_stack_id=ATTACKER_POOL_STACK_ID,
         unit_pool_size=battle.stack(ATTACKER_POOL_STACK_ID).count,
-        max_slots=len(DEFAULT_ATTACKER_DEPLOYMENT_SLOTS),
-        deployment_slots=DEFAULT_ATTACKER_DEPLOYMENT_SLOTS,
+        max_slots=len(deployment_slots),
+        deployment_slots=deployment_slots,
         generated_attacker_stack_id_prefix="genetic-attacker",
         max_turns=resolved_max_turns,
         targeting_policy=config.combat_targeting_policy,
@@ -83,6 +85,14 @@ def run_genetic_strategy_discovery(
     save_battle_initial_state_file(best_battle_path, best_battle)
     save_combat_log_file(best_combat_log_path, combat_result.combat_log)
     return GeneticStrategyDiscoverySampleResult(discovery_result=discovery_result, combat_result=combat_result)
+
+
+def _available_attacker_deployment_slots(battle: Battle) -> tuple[HexCoord, ...]:
+    return tuple(
+        slot
+        for slot in DEFAULT_ATTACKER_DEPLOYMENT_SLOTS
+        if (occupant_id := battle.occupancy.unit_at(slot)) is None or occupant_id == ATTACKER_POOL_STACK_ID
+    )
 
 
 def main() -> None:

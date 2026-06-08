@@ -89,6 +89,20 @@ def test_stack_split_scenario_defaults_to_one_hundred_max_turns():
     assert scenario.max_turns == 100
 
 
+def test_stack_split_scenario_rejects_deployment_slot_occupied_by_non_pool_stack():
+    base_battle = _base_battle_with_attacker_support_stack()
+
+    with pytest.raises(ValueError, match="Deployment slot is occupied"):
+        StackSplitScenario(
+            base_battle=base_battle,
+            attacker_pool_stack_id="attacker-esquire",
+            unit_pool_size=10,
+            max_slots=2,
+            deployment_slots=(HexCoord(0, 9), HexCoord(0, 5)),
+            generated_attacker_stack_id_prefix="genetic-attacker",
+        )
+
+
 def test_evaluate_stack_split_uses_average_damage_for_repeatable_fitness():
     scenario = _scenario()
     strategy = StackSplitStrategy(stack_counts=(10, 0, 0, 0, 0, 0, 0), wait_policy=AttackerWaitPolicy.NEVER)
@@ -265,4 +279,23 @@ def _base_battle(attacker_count: int = 10, defender_count: int = 20) -> Battle:
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={attacker.id: attacker, defender.id: defender},
+    )
+
+
+def _base_battle_with_attacker_support_stack() -> Battle:
+    catalog = load_packaged_unit_catalog()
+    swordsman = catalog.get("esquire").to_unit_definition()
+    crossbowman = catalog.get("crossbowman").to_unit_definition()
+    battlefield = Battlefield.default()
+    occupancy = Occupancy(blocked_coordinates=battlefield.blocked_coordinates)
+    attacker = UnitStack(id="attacker-esquire", definition=swordsman, side=CombatSide.ATTACKER, count=10)
+    support = UnitStack(id="attacker-crossbowman", definition=crossbowman, side=CombatSide.ATTACKER, count=5)
+    defender = UnitStack(id="defender-esquire", definition=swordsman, side=CombatSide.DEFENDER, count=20)
+    occupancy.place(attacker.id, HexCoord(0, 9))
+    occupancy.place(support.id, HexCoord(0, 5))
+    occupancy.place(defender.id, HexCoord(12, 5))
+    return Battle(
+        battlefield=battlefield,
+        occupancy=occupancy,
+        unit_stacks={attacker.id: attacker, support.id: support, defender.id: defender},
     )
