@@ -20,4 +20,5 @@
   interact with counterattack capacity, adjacency, and target selection.
 * Later concern: decide whether exact initiative and speed ties should alternate
   between attacker and defender by odd/even round, as observed in Olden Era
-  reference notes, instead of using stable configured order. Add initiative visualization to the replay app?
+  reference notes, instead of using stable configured order. 
+* Add initiative visualization to the replay app?
