@@ -29,6 +29,32 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-06"
       modified: true
+  - id: crossbowman
+    name: Crossbowman
+    faction: temple
+    tier: 2
+    combat:
+      health: 10
+      attack: 5
+      defense: 3
+      damage:
+        min: 3
+        max: 4
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 5
+      speed: 3
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Crossbowman
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-08"
+      modified: false
   - id: griffin
     name: Griffin
     faction: temple

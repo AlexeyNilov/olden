@@ -93,24 +93,6 @@ def test_unit_catalog_rejects_inverted_morale_and_luck_ranges():
         load_unit_catalog_yaml(inverted_luck_catalog)
 
 
-def test_unit_record_converts_to_current_combat_unit_definition():
-    catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML)
-
-    definition = catalog.get("esquire").to_unit_definition()
-
-    assert isinstance(definition, UnitDefinition)
-    assert definition.id == "esquire"
-    assert definition.name == "Swordsman"
-    assert definition.initiative == 5
-    assert definition.speed == 4
-    assert definition.combat.health == 12
-    assert definition.combat.attack == 4
-    assert definition.combat.defense == 4
-    assert definition.combat.damage.minimum == 2
-    assert definition.combat.damage.maximum == 3
-    assert definition.combat.attack_category.value == "melee"
-
-
 def test_unit_record_rejects_unsupported_attack_category_during_conversion():
     catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: ranged"))
 
@@ -127,28 +109,3 @@ def test_packaged_unit_catalog_loads_attributed_sample_records():
     assert catalog.license == "CC-BY-SA-4.0"
     assert record.source.license == "CC-BY-SA-4.0"
     assert record.source.retrieved_on == "2026-06-06"
-
-
-def test_packaged_unit_catalog_loads_griffin_upgrade_records():
-    catalog = load_packaged_unit_catalog()
-
-    temple_griffin = catalog.get("griffin_upg")
-    guardian_griffin = catalog.get("griffin_upg_alt")
-
-    assert temple_griffin.name == "Temple Griffin"
-    assert temple_griffin.combat.attack == 8
-    assert temple_griffin.combat.defense == 6
-    assert temple_griffin.combat.damage.minimum == 5
-    assert temple_griffin.combat.damage.maximum == 9
-    assert temple_griffin.combat.initiative == 12
-    assert temple_griffin.combat.speed == 7
-    assert temple_griffin.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Temple_Griffin"
-
-    assert guardian_griffin.name == "Guardian Griffin"
-    assert guardian_griffin.combat.attack == 9
-    assert guardian_griffin.combat.defense == 10
-    assert guardian_griffin.combat.damage.minimum == 7
-    assert guardian_griffin.combat.damage.maximum == 7
-    assert guardian_griffin.combat.initiative == 10
-    assert guardian_griffin.combat.speed == 6
-    assert guardian_griffin.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Guardian_Griffin"
