@@ -12,7 +12,7 @@ unit_stacks:
   - id: attacker-crossbowman
     unit_id: crossbowman
     side: attacker
-    count: 5
+    count: 10
     anchor:
       column: 0
       row: 5
