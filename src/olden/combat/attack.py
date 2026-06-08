@@ -76,7 +76,13 @@ def resolve_melee_attack(
     defender = battle.stack(defender_id)
     _validate_melee_attack(battle, attacker, defender)
 
-    primary_damage = _resolve_attack_damage(battle, attacker_id, defender_id, damage_chooser)
+    primary_damage = _resolve_attack_damage(
+        battle,
+        attacker_id,
+        defender_id,
+        damage_chooser,
+        damage_multiplier_percent=melee_damage_multiplier_percent(attacker),
+    )
     counterattack = None
     if allow_counterattack and not primary_damage.defender_defeated and _can_counterattack(battle.stack(defender_id)):
         counterattack = _resolve_attack_damage(battle, defender_id, attacker_id, damage_chooser)
@@ -119,6 +125,12 @@ def range_damage_multiplier_percent(distance: int) -> int:
         raise ValueError(msg)
     penalty = min(max(distance - 3, 0) * 10, 50)
     return 100 - penalty
+
+
+def melee_damage_multiplier_percent(attacker: UnitStack) -> int:
+    if attacker.definition.combat.attack_category is AttackCategory.RANGED:
+        return 50
+    return 100
 
 
 def _validate_melee_attack(battle: Battle, attacker: UnitStack, defender: UnitStack) -> None:

@@ -125,6 +125,7 @@ This helps ensure requirements are:
 * **When** a melee attack is resolved, **the system shall** require the defender to occupy a hex adjacent to the attacker.
 * **When** a melee attack is resolved, **the system shall** require the attacker to have a melee-capable attack category.
 * **When** a ranged unit is adjacent to an enemy unit stack, **the system shall** allow the ranged unit to perform a melee attack.
+* **When** a ranged unit performs a melee attack, **the system shall** reduce the primary attack damage by 50%.
 * **When** attack damage is resolved, **the system shall** calculate base damage as attacker count multiplied by the selected damage value from the attacker's damage range.
 * **When** attack damage is resolved, **the system shall** apply the attack/defense modifier `(20 + attacker attack) / (20 + defender defense)`.
 * **When** attack damage produces a fractional result, **the system shall** round the result down to the nearest integer.
@@ -133,7 +134,7 @@ This helps ensure requirements are:
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
-* **While** morale, luck, hero stats, damage tags, abilities, ranged-unit melee penalties, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **While** morale, luck, hero stats, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Ranged attack
 
