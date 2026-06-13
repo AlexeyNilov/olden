@@ -1147,3 +1147,783 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false
+  - id: ghoul
+    name: Ghoul
+    faction: neutral
+    tier: 2
+    combat:
+      health: 20
+      attack: 9
+      defense: 6
+      damage:
+        min: 4
+        max: 7
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 5
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Ghoul
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: ferocious_rashoth
+    name: Ferocious Ra'Shoth
+    faction: schism
+    tier: 1
+    combat:
+      health: 10
+      attack: 4
+      defense: 4
+      damage:
+        min: 3
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 5
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Ferocious_Ra%27Shoth
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: stinging_rashoth
+    name: Stinging Ra'Shoth
+    faction: schism
+    tier: 1
+    combat:
+      health: 10
+      attack: 5
+      defense: 5
+      damage:
+        min: 3
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 4
+      speed: 4
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Stinging_Ra%27Shoth
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: abyssal_envoy
+    name: Abyssal Envoy
+    faction: schism
+    tier: 7
+    combat:
+      health: 250
+      attack: 30
+      defense: 30
+      damage:
+        min: 40
+        max: 60
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 8
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Abyssal_Envoy
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: unspeakable_shoth
+    name: Unspeakable Shoth
+    faction: schism
+    tier: 4
+    combat:
+      health: 50
+      attack: 11
+      defense: 11
+      damage:
+        min: 10
+        max: 13
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 8
+      speed: 8
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Unspeakable_Shoth
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: unthinkable_shoth
+    name: Unthinkable Shoth
+    faction: schism
+    tier: 4
+    combat:
+      health: 50
+      attack: 11
+      defense: 11
+      damage:
+        min: 10
+        max: 13
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 13
+      speed: 6
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Unthinkable_Shoth
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: infiltrator
+    name: Infiltrator
+    faction: dungeon
+    tier: 2
+    combat:
+      health: 13
+      attack: 6
+      defense: 2
+      damage:
+        min: 3
+        max: 5
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 1
+        max: 1
+      initiative: 6
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Infiltrator
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: onyx_dancer
+    name: Onyx Dancer
+    faction: dungeon
+    tier: 3
+    combat:
+      health: 18
+      attack: 8
+      defense: 8
+      damage:
+        min: 5
+        max: 7
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 4
+      speed: 2
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Onyx_Dancer
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: animated_armour
+    name: Animated Armour
+    faction: neutral
+    tier: 3
+    combat:
+      health: 25
+      attack: 4
+      defense: 8
+      damage:
+        min: 4
+        max: 12
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 1
+      speed: 4
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Animated_Armour
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: agashoth_rider
+    name: Aga'Shoth Rider
+    faction: schism
+    tier: 3
+    combat:
+      health: 20
+      attack: 7
+      defense: 7
+      damage:
+        min: 5
+        max: 7
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 6
+      speed: 4
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Aga%27Shoth_Rider
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: locust
+    name: Locust
+    faction: hive
+    tier: 2
+    combat:
+      health: 12
+      attack: 5
+      defense: 4
+      damage:
+        min: 3
+        max: 5
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 6
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Locust
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: hoplet
+    name: Hoplet
+    faction: sylvan
+    tier: 2
+    combat:
+      health: 18
+      attack: 5
+      defense: 3
+      damage:
+        min: 3
+        max: 6
+      morale:
+        min: 1
+        max: 1
+      luck:
+        min: 1
+        max: 1
+      initiative: 6
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Hoplet
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: false
+  - id: black_dragon
+    name: Black Dragon
+    faction: dungeon
+    tier: 7
+    combat:
+      health: 350
+      attack: 29
+      defense: 31
+      damage:
+        min: 60
+        max: 65
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 14
+      speed: 9
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Black_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: cave_dragon
+    name: Cave Dragon
+    faction: dungeon
+    tier: 7
+    combat:
+      health: 275
+      attack: 29
+      defense: 25
+      damage:
+        min: 45
+        max: 50
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 11
+      speed: 8
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Cave_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: ashen_dragon
+    name: Ashen Dragon
+    faction: dungeon
+    tier: 7
+    combat:
+      health: 300
+      attack: 37
+      defense: 25
+      damage:
+        min: 60
+        max: 65
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 12
+      speed: 11
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Ashen_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: sentinel_of_glory
+    name: Sentinel of Glory
+    faction: neutral
+    tier: 7
+    combat:
+      health: 400
+      attack: 40
+      defense: 40
+      damage:
+        min: 50
+        max: 50
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 7
+      speed: 7
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Sentinel_of_Glory
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: minotaur
+    name: Minotaur
+    faction: dungeon
+    tier: 4
+    combat:
+      health: 40
+      attack: 11
+      defense: 11
+      damage:
+        min: 12
+        max: 14
+      morale:
+        min: 1
+        max: 1
+      luck:
+        min: 0
+        max: 0
+      initiative: 5
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Minotaur
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: worldwatcher
+    name: Worldwatcher
+    faction: neutral
+    tier: 6
+    combat:
+      health: 75
+      attack: 25
+      defense: 25
+      damage:
+        min: 25
+        max: 25
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 8
+      speed: 3
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Worldwatcher
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: kittenhorn
+    name: Kittenhorn
+    faction: neutral
+    tier: 4
+    combat:
+      health: 40
+      attack: 10
+      defense: 10
+      damage:
+        min: 10
+        max: 15
+      morale:
+        min: 3
+        max: 3
+      luck:
+        min: 3
+        max: 3
+      initiative: 6
+      speed: 6
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Kittenhorn
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: false
+  - id: faerie_dragon
+    name: Faerie Dragon
+    faction: neutral
+    tier: 5
+    combat:
+      health: 75
+      attack: 15
+      defense: 15
+      damage:
+        min: 15
+        max: 15
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 10
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Faerie_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: halfling
+    name: Halfling
+    faction: neutral
+    tier: 2
+    combat:
+      health: 6
+      attack: 6
+      defense: 6
+      damage:
+        min: 3
+        max: 3
+      morale:
+        min: 3
+        max: 3
+      luck:
+        min: 0
+        max: 0
+      initiative: 6
+      speed: 6
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Halfling
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: groll
+    name: Groll
+    faction: neutral
+    tier: 3
+    combat:
+      health: 40
+      attack: 8
+      defense: 6
+      damage:
+        min: 5
+        max: 7
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 8
+      speed: 5
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Groll
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: lich_dragon
+    name: Lich Dragon
+    faction: neutral
+    tier: 8
+    combat:
+      health: 999
+      attack: 66
+      defense: 66
+      damage:
+        min: 99
+        max: 99
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 9
+      speed: 9
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Lich_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: herbomancer
+    name: Herbomancer
+    faction: sylvan
+    tier: 5
+    combat:
+      health: 60
+      attack: 12
+      defense: 14
+      damage:
+        min: 15
+        max: 18
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 6
+      speed: 4
+      attack_category: long_reach
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Herbomancer
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: medusa
+    name: Medusa
+    faction: dungeon
+    tier: 5
+    combat:
+      health: 55
+      attack: 15
+      defense: 14
+      damage:
+        min: 11
+        max: 15
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 4
+      speed: 2
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Medusa
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: troglodyte
+    name: Troglodyte
+    faction: dungeon
+    tier: 1
+    combat:
+      health: 8
+      attack: 2
+      defense: 3
+      damage:
+        min: 1
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 4
+      speed: 4
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Troglodyte
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: phoenix
+    name: Phoenix
+    faction: sylvan
+    tier: 7
+    combat:
+      health: 200
+      attack: 28
+      defense: 26
+      damage:
+        min: 45
+        max: 65
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 14
+      speed: 7
+      attack_category: melee
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Phoenix
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: arbitrator
+    name: Arbitrator
+    faction: schism
+    tier: 6
+    combat:
+      health: 75
+      attack: 20
+      defense: 20
+      damage:
+        min: 18
+        max: 22
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 5
+      speed: 4
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Arbitrator
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: concubus
+    name: Concubus
+    faction: schism
+    tier: 5
+    combat:
+      health: 60
+      attack: 16
+      defense: 13
+      damage:
+        min: 14
+        max: 20
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 5
+      speed: 2
+      attack_category: ranged
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Concubus
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true
+  - id: cultist
+    name: Cultist
+    faction: schism
+    tier: 2
+    combat:
+      health: 15
+      attack: 5
+      defense: 4
+      damage:
+        min: 4
+        max: 6
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: 0
+        max: 0
+      initiative: 4
+      speed: 3
+      attack_category: long_reach
+    source:
+      name: 'Heroes of Might and Magic: Olden Era Official Wiki'
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Cultist
+      license: CC-BY-SA-4.0
+      retrieved_on: '2026-06-13'
+      modified: true

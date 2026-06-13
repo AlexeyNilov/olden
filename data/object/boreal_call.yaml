@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-agashoth_rider-1
+    unit_id: agashoth_rider
+    count: 11
+  - id: defender-agashoth_rider-2
+    unit_id: agashoth_rider
+    count: 11
+  - id: defender-agashoth_rider-3
+    unit_id: agashoth_rider
+    count: 11
+  - id: defender-agashoth_rider-4
+    unit_id: agashoth_rider
+    count: 11
+  - id: defender-agashoth_rider-5
+    unit_id: agashoth_rider
+    count: 11

@@ -1,0 +1,12 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-skeleton-1
+    unit_id: skeleton
+    count: 40
+  - id: defender-skeleton-2
+    unit_id: skeleton
+    count: 40
+  - id: defender-ghoul-3
+    unit_id: ghoul
+    count: 15

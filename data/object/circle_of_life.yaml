@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-hoplet-1
+    unit_id: hoplet
+    count: 12
+  - id: defender-locust-2
+    unit_id: locust
+    count: 12
+  - id: defender-locust-3
+    unit_id: locust
+    count: 12
+  - id: defender-hoplet-4
+    unit_id: hoplet
+    count: 12
+  - id: defender-locust-5
+    unit_id: locust
+    count: 12

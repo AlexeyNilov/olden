@@ -1,0 +1,12 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-halfling-1
+    unit_id: halfling
+    count: 16
+  - id: defender-halfling-2
+    unit_id: halfling
+    count: 16
+  - id: defender-groll-3
+    unit_id: groll
+    count: 20

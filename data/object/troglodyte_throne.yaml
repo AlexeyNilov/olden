@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-medusa-1
+    unit_id: medusa
+    count: 8
+  - id: defender-medusa-2
+    unit_id: medusa
+    count: 8
+  - id: defender-medusa-3
+    unit_id: medusa
+    count: 8
+  - id: defender-medusa-4
+    unit_id: medusa
+    count: 8
+  - id: defender-troglodyte-5
+    unit_id: troglodyte
+    count: 1

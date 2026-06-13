@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-crossbowman_upg-1
+    unit_id: crossbowman_upg
+    count: 16
+  - id: defender-esquire_upg-2
+    unit_id: esquire_upg
+    count: 16
+  - id: defender-esquire_upg-3
+    unit_id: esquire_upg
+    count: 16
+  - id: defender-crossbowman_upg-4
+    unit_id: crossbowman_upg
+    count: 16
+  - id: defender-crossbowman_upg_alt-5
+    unit_id: crossbowman_upg_alt
+    count: 16

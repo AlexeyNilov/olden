@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-phoenix-1
+    unit_id: phoenix
+    count: 1
+  - id: defender-phoenix-2
+    unit_id: phoenix
+    count: 1
+  - id: defender-phoenix-3
+    unit_id: phoenix
+    count: 1
+  - id: defender-phoenix-4
+    unit_id: phoenix
+    count: 1

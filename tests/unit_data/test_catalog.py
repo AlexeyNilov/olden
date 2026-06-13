@@ -1,5 +1,7 @@
 import pytest
+import yaml
 
+from olden.config import PROJECT_ROOT
 from olden.unit_data.catalog import (
     DuplicateUnitIdError,
     MissingUnitRecordError,
@@ -190,6 +192,44 @@ def test_packaged_unit_catalog_loads_red_dragon_record():
     assert record.combat.attack_category == "melee"
     assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Red_Dragon"
     assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_unit_catalog_resolves_combat_object_guard_units():
+    catalog = load_packaged_unit_catalog()
+    object_paths = sorted(PROJECT_ROOT.glob("data/object/*.yaml"))
+
+    assert [path.name for path in object_paths] == [
+        "abandoned_mansion.yaml",
+        "abnormal_structure.yaml",
+        "alvar_outpost.yaml",
+        "ancient_crypt.yaml",
+        "black_tower.yaml",
+        "boreal_call.yaml",
+        "carrion_pile.yaml",
+        "circle_of_life.yaml",
+        "colosseum.yaml",
+        "cursed_old_house.yaml",
+        "dragon_utopia.yaml",
+        "iridicent_abbey.yaml",
+        "legions_memorial.yaml",
+        "meareas_altar.yaml",
+        "overgrown_vori_ruins.yaml",
+        "petrified_memorial.yaml",
+        "point_of_balance.yaml",
+        "prismatic_nest.yaml",
+        "raiders_camp.yaml",
+        "research_laboratory.yaml",
+        "ritual_pyre.yaml",
+        "tomb_of_vigilance.yaml",
+        "troglodyte_throne.yaml",
+        "twilight_bloom.yaml",
+        "uncanny_rite.yaml",
+    ]
+    for path in object_paths:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        assert data["unit_stacks"], path
+        for stack in data["unit_stacks"]:
+            assert catalog.get(stack["unit_id"])
 
 
 def test_packaged_unit_catalog_loads_skeleton_record():

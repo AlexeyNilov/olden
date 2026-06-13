@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-worldwatcher-1
+    unit_id: worldwatcher
+    count: 4
+  - id: defender-worldwatcher-2
+    unit_id: worldwatcher
+    count: 4
+  - id: defender-worldwatcher-3
+    unit_id: worldwatcher
+    count: 4
+  - id: defender-worldwatcher-4
+    unit_id: worldwatcher
+    count: 4

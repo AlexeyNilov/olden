@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-animated_armour-1
+    unit_id: animated_armour
+    count: 20
+  - id: defender-animated_armour-2
+    unit_id: animated_armour
+    count: 20
+  - id: defender-animated_armour-3
+    unit_id: animated_armour
+    count: 20
+  - id: defender-animated_armour-4
+    unit_id: animated_armour
+    count: 20

@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-arbitrator-1
+    unit_id: arbitrator
+    count: 1
+  - id: defender-lich-2
+    unit_id: lich
+    count: 3
+  - id: defender-concubus-3
+    unit_id: concubus
+    count: 1
+  - id: defender-cultist-4
+    unit_id: cultist
+    count: 36

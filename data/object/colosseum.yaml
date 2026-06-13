@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-griffin-1
+    unit_id: griffin
+    count: 7
+  - id: defender-griffin-2
+    unit_id: griffin
+    count: 7
+  - id: defender-griffin-3
+    unit_id: griffin
+    count: 7
+  - id: defender-griffin-4
+    unit_id: griffin
+    count: 7
+  - id: defender-griffin-5
+    unit_id: griffin
+    count: 7

@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-minotaur-1
+    unit_id: minotaur
+    count: 5
+  - id: defender-minotaur-2
+    unit_id: minotaur
+    count: 5
+  - id: defender-minotaur-3
+    unit_id: minotaur
+    count: 5
+  - id: defender-minotaur-4
+    unit_id: minotaur
+    count: 5

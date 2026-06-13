@@ -1,0 +1,15 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-lightweaver_upg_alt-1
+    unit_id: lightweaver_upg_alt
+    count: 5
+  - id: defender-lightweaver-2
+    unit_id: lightweaver
+    count: 5
+  - id: defender-lightweaver_upg-3
+    unit_id: lightweaver_upg
+    count: 5
+  - id: defender-inquisitor-4
+    unit_id: inquisitor
+    count: 2

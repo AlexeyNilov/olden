@@ -1,0 +1,21 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-black_dragon-1
+    unit_id: black_dragon
+    count: 2
+  - id: defender-black_dragon-2
+    unit_id: black_dragon
+    count: 2
+  - id: defender-cave_dragon-3
+    unit_id: cave_dragon
+    count: 2
+  - id: defender-cave_dragon-4
+    unit_id: cave_dragon
+    count: 2
+  - id: defender-ashen_dragon-5
+    unit_id: ashen_dragon
+    count: 2
+  - id: defender-ashen_dragon-6
+    unit_id: ashen_dragon
+    count: 2

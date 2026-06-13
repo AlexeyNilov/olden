@@ -1,0 +1,21 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-pet-1
+    unit_id: pet
+    count: 13
+  - id: defender-pet-2
+    unit_id: pet
+    count: 13
+  - id: defender-pet-3
+    unit_id: pet
+    count: 13
+  - id: defender-pet-4
+    unit_id: pet
+    count: 13
+  - id: defender-pet-5
+    unit_id: pet
+    count: 13
+  - id: defender-pet-6
+    unit_id: pet
+    count: 13

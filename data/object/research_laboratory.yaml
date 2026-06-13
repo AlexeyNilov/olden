@@ -1,0 +1,9 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-lich_dragon-1
+    unit_id: lich_dragon
+    count: 1
+  - id: defender-lich_dragon-2
+    unit_id: lich_dragon
+    count: 1

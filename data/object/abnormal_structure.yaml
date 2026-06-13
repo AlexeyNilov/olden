@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-ferocious_rashoth-1
+    unit_id: ferocious_rashoth
+    count: 13
+  - id: defender-stinging_rashoth-2
+    unit_id: stinging_rashoth
+    count: 13
+  - id: defender-abyssal_envoy-3
+    unit_id: abyssal_envoy
+    count: 1
+  - id: defender-unspeakable_shoth-4
+    unit_id: unspeakable_shoth
+    count: 8
+  - id: defender-unthinkable_shoth-5
+    unit_id: unthinkable_shoth
+    count: 8

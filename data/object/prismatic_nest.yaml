@@ -1,0 +1,18 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-kittenhorn-1
+    unit_id: kittenhorn
+    count: 3
+  - id: defender-kittenhorn-2
+    unit_id: kittenhorn
+    count: 3
+  - id: defender-kittenhorn-3
+    unit_id: kittenhorn
+    count: 3
+  - id: defender-kittenhorn-4
+    unit_id: kittenhorn
+    count: 3
+  - id: defender-faerie_dragon-5
+    unit_id: faerie_dragon
+    count: 10

@@ -1,0 +1,24 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-flicker_upg-1
+    unit_id: flicker_upg
+    count: 18
+  - id: defender-flicker_upg-2
+    unit_id: flicker_upg
+    count: 18
+  - id: defender-graverobber-3
+    unit_id: graverobber
+    count: 8
+  - id: defender-pet-4
+    unit_id: pet
+    count: 12
+  - id: defender-flicker_upg_alt-5
+    unit_id: flicker_upg_alt
+    count: 18
+  - id: defender-flicker_upg_alt-6
+    unit_id: flicker_upg_alt
+    count: 18
+  - id: defender-pet-7
+    unit_id: pet
+    count: 12

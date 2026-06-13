@@ -1,0 +1,12 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-sentinel_of_glory-1
+    unit_id: sentinel_of_glory
+    count: 2
+  - id: defender-sentinel_of_glory-2
+    unit_id: sentinel_of_glory
+    count: 2
+  - id: defender-sentinel_of_glory-3
+    unit_id: sentinel_of_glory
+    count: 2
