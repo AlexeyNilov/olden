@@ -783,3 +783,29 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false
+  - id: dragon_upg
+    name: Red Dragon
+    faction: neutral
+    tier: 7
+    combat:
+      health: 325
+      attack: 33
+      defense: 32
+      damage:
+        min: 60
+        max: 70
+      morale:
+        min: 0
+        max: 5
+      luck:
+        min: 0
+        max: 3
+      initiative: 12
+      speed: 9
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Red_Dragon
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false

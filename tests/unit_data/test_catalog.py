@@ -168,6 +168,30 @@ def test_packaged_unit_catalog_loads_couatl_record():
     assert record.source.retrieved_on == "2026-06-13"
 
 
+def test_packaged_unit_catalog_loads_red_dragon_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("dragon_upg")
+
+    assert record.name == "Red Dragon"
+    assert record.faction == "neutral"
+    assert record.tier == 7
+    assert record.combat.health == 325
+    assert record.combat.attack == 33
+    assert record.combat.defense == 32
+    assert record.combat.damage.minimum == 60
+    assert record.combat.damage.maximum == 70
+    assert record.combat.morale.minimum == 0
+    assert record.combat.morale.maximum == 5
+    assert record.combat.luck.minimum == 0
+    assert record.combat.luck.maximum == 3
+    assert record.combat.initiative == 12
+    assert record.combat.speed == 9
+    assert record.combat.attack_category == "melee"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Red_Dragon"
+    assert record.source.retrieved_on == "2026-06-13"
+
+
 def test_packaged_unit_catalog_loads_skeleton_record():
     catalog = load_packaged_unit_catalog()
 
