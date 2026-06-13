@@ -6,12 +6,16 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 22: Add more actions
+## Milestone 23: 
 
 **Status:** Next
 
+
+
 ## Future plans
 
+* Later concern: add defense-aware and simulation-backed army matchup
+  predictions.
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
   two counterattacks per round, and Alert II units allowing unlimited

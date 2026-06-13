@@ -61,6 +61,17 @@ This helps ensure requirements are:
 * **When** a unit stack's wound damage is negative or greater than or equal to the unit definition's health, **the system shall** reject it as invalid.
 * **When** a unit stack is placed on the battlefield, **the system shall** occupy exactly one coordinate.
 
+### Army
+
+* **When** an army is represented, **the system shall** expose its combat side and unit stacks.
+* **When** an army is represented with unit stacks from multiple combat sides, **the system shall** reject it as invalid.
+* **When** an army is built from a battle side, **the system shall** include only living unit stacks for that combat side.
+* **When** an army stack is summarized, **the system shall** expose the stack ID, unit definition ID, unit name, creature count, remaining health, and average base damage.
+* **When** army remaining health is summarized, **the system shall** calculate each stack's remaining health as stack count multiplied by unit health minus current wound damage.
+* **When** army average base damage is summarized, **the system shall** calculate each stack's average base damage as stack count multiplied by the average of the stack's unit damage range.
+* **When** an attacker and defender army matchup is estimated, **the system shall** expose attacker and defender summaries, total remaining health for each side, average base damage per turn for each side, and the favored side when the estimate is not tied.
+* **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stats, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
+
 ### Unit catalog
 
 * **When** the packaged unit catalog is loaded, **the system shall** expose unit records by stable unit ID.

@@ -8,6 +8,7 @@
 * **Battlefield topology:** The battlefield's shape, valid coordinates, and neighbor relationships.
 * **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
 * **Attack category:** Unit attack classification. Current combat simulation supports melee; long-reach and ranged attacks are deferred.
+* **Army:** The living unit stacks belonging to one combat side, summarized for coarse strength comparison outside tactical combat simulation.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The attacker side starts on the left; the defender side starts on the right.
 * **Combat log:** Ordered combat-event history that can be replayed from a battle initial state.
