@@ -4,6 +4,7 @@ from olden.combat.army import Army, army_from_battle_side, estimate_army_matchup
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
+from olden.combat.heroes import Hero, HeroStats
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
@@ -15,6 +16,28 @@ def test_army_rejects_stacks_from_mixed_sides():
 
     with pytest.raises(ValueError, match="side"):
         Army(side=CombatSide.ATTACKER, stacks=(attacker, defender))
+
+
+def test_army_accepts_optional_hero():
+    hero = Hero(
+        id="meareas",
+        name="Meareas",
+        level=3,
+        experience=1200,
+        stats=HeroStats(attack=2, defense=1, spell_power=0, knowledge=1),
+    )
+
+    army = Army(side=CombatSide.ATTACKER, stacks=(_stack("attacker-esquire", CombatSide.ATTACKER),), hero=hero)
+
+    assert army.hero == hero
+
+
+def test_hero_rejects_invalid_level_and_stats():
+    with pytest.raises(ValueError, match="level"):
+        Hero(id="meareas", name="Meareas", level=0)
+
+    with pytest.raises(ValueError, match="attack"):
+        HeroStats(attack=-1)
 
 
 def test_army_from_battle_side_includes_only_living_stacks_for_side():
@@ -36,9 +59,17 @@ def test_army_from_battle_side_includes_only_living_stacks_for_side():
 
     assert army.side is CombatSide.ATTACKER
     assert army.stacks == (attacker_front, attacker_back)
+    assert army.hero is None
 
 
-def test_summarize_army_keeps_stack_details_and_totals_health_and_base_damage():
+def test_summarize_army_keeps_hero_stack_details_and_totals_health_and_base_damage():
+    hero = Hero(
+        id="meareas",
+        name="Meareas",
+        level=3,
+        experience=1200,
+        stats=HeroStats(attack=9, defense=9, spell_power=2, knowledge=3),
+    )
     esquires = _stack(
         "attacker-esquires",
         CombatSide.ATTACKER,
@@ -57,9 +88,10 @@ def test_summarize_army_keeps_stack_details_and_totals_health_and_base_damage():
         damage=DamageRange(minimum=5, maximum=6),
     )
 
-    summary = summarize_army(Army(side=CombatSide.ATTACKER, stacks=(esquires, guards)))
+    summary = summarize_army(Army(side=CombatSide.ATTACKER, stacks=(esquires, guards), hero=hero))
 
     assert summary.side is CombatSide.ATTACKER
+    assert summary.hero == hero
     assert summary.total_remaining_health == 175
     assert summary.total_average_base_damage_per_turn == 45
     assert [stack.stack_id for stack in summary.stacks] == ["attacker-esquires", "attacker-guards"]

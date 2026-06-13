@@ -63,18 +63,21 @@ This helps ensure requirements are:
 
 ### Army
 
-* **When** an army is represented, **the system shall** expose its combat side and unit stacks.
+* **When** an army is represented, **the system shall** expose its combat side, unit stacks, and optional hero.
 * **When** an army is represented with unit stacks from multiple combat sides, **the system shall** reject it as invalid.
 * **When** an army is built from a battle side, **the system shall** include only living unit stacks for that combat side.
+* **When** a hero is represented, **the system shall** expose stable identity, display name, level, experience, attack, defense, spell power, and knowledge data.
+* **When** a hero has an empty identity or display name, non-positive level, negative experience, or negative stat, **the system shall** reject it as invalid.
+* **When** an army summary is represented, **the system shall** expose the army's optional hero without applying hero stats to army totals.
 * **When** an army stack is summarized, **the system shall** expose the stack ID, unit definition ID, unit name, creature count, remaining health, and average base damage.
 * **When** army remaining health is summarized, **the system shall** calculate each stack's remaining health as stack count multiplied by unit health minus current wound damage.
 * **When** army average base damage is summarized, **the system shall** calculate each stack's average base damage as stack count multiplied by the average of the stack's unit damage range.
 * **When** an attacker and defender army matchup is estimated, **the system shall** expose attacker and defender summaries, total remaining health for each side, average base damage per turn for each side, and the favored side when the estimate is not tied.
-* **When** army setup is loaded from YAML, **the system shall** build an army from one combat side, unit stack IDs, unit catalog IDs, and stack counts.
+* **When** army setup is loaded from YAML, **the system shall** build an army from one combat side, optional hero data, unit stack IDs, unit catalog IDs, and stack counts.
 * **When** army setup is loaded from YAML, **the system shall** resolve unit definitions through the unit catalog by stable unit ID.
 * **When** army setup contains duplicate stack IDs, **the system shall** reject the setup before exposing the army.
 * **When** army setup is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent army setup.
-* **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stats, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
+* **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stat effects, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
 
 ### Unit catalog
 
@@ -149,7 +152,7 @@ This helps ensure requirements are:
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
-* **While** morale, luck, hero stats, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **While** morale, luck, hero stat effects, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Ranged attack
 

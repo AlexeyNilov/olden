@@ -5,6 +5,7 @@ from typing import Any
 import yaml
 
 from olden.combat.army import Army
+from olden.combat.heroes import Hero, HeroStats
 from olden.combat.sides import CombatSide
 from olden.combat.units import UnitStack
 from olden.unit_data.catalog import UnitCatalog
@@ -27,17 +28,54 @@ def load_army_yaml(content: str, unit_catalog: UnitCatalog) -> Army:
     data = _require_mapping(yaml.safe_load(content), "army setup")
     _require_schema_version(data)
     side = _parse_side(_require_str(data, "side", "army setup"), "army setup.side")
+    hero = _parse_optional_hero(data)
     stacks = _parse_unit_stacks(data, unit_catalog, side)
-    return Army(side=side, stacks=stacks)
+    return Army(side=side, stacks=stacks, hero=hero)
 
 
 def dump_army_yaml(army: Army) -> str:
-    data = {
+    data: dict[str, object] = {
         "schema_version": 1,
         "side": army.side.value,
         "unit_stacks": [_dump_unit_stack(stack) for stack in army.stacks],
     }
+    if army.hero is not None:
+        data["hero"] = _dump_hero(army.hero)
     return yaml.safe_dump(data, sort_keys=False)
+
+
+def _parse_optional_hero(data: Mapping[str, Any]) -> Hero | None:
+    if "hero" not in data:
+        return None
+    hero_data = _require_mapping(data["hero"], "hero")
+    stats_data = _require_mapping(_required(hero_data, "stats", "hero"), "hero.stats")
+    return Hero(
+        id=_require_str(hero_data, "id", "hero"),
+        name=_require_str(hero_data, "name", "hero"),
+        level=_require_int(hero_data, "level", "hero", minimum=1),
+        experience=_require_int(hero_data, "experience", "hero", minimum=0),
+        stats=HeroStats(
+            attack=_require_int(stats_data, "attack", "hero.stats", minimum=0),
+            defense=_require_int(stats_data, "defense", "hero.stats", minimum=0),
+            spell_power=_require_int(stats_data, "spell_power", "hero.stats", minimum=0),
+            knowledge=_require_int(stats_data, "knowledge", "hero.stats", minimum=0),
+        ),
+    )
+
+
+def _dump_hero(hero: Hero) -> dict[str, object]:
+    return {
+        "id": hero.id,
+        "name": hero.name,
+        "level": hero.level,
+        "experience": hero.experience,
+        "stats": {
+            "attack": hero.stats.attack,
+            "defense": hero.stats.defense,
+            "spell_power": hero.stats.spell_power,
+            "knowledge": hero.stats.knowledge,
+        },
+    }
 
 
 def _parse_unit_stacks(data: Mapping[str, Any], unit_catalog: UnitCatalog, side: CombatSide) -> tuple[UnitStack, ...]:

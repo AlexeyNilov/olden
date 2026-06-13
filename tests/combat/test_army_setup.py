@@ -6,6 +6,7 @@ from olden.combat.army_setup import (
     load_army_yaml,
     save_army_file,
 )
+from olden.combat.heroes import Hero, HeroStats
 from olden.combat.sides import CombatSide
 from olden.unit_data.catalog import (
     UnitCatalog,
@@ -38,6 +39,39 @@ unit_stacks:
     assert [stack.definition.id for stack in army.stacks] == ["esquire", "crossbowman"]
     assert [stack.count for stack in army.stacks] == [20, 12]
     assert all(stack.side is CombatSide.ATTACKER for stack in army.stacks)
+    assert army.hero is None
+
+
+def test_load_army_yaml_loads_optional_hero():
+    army = load_army_yaml(
+        """\
+schema_version: 1
+side: attacker
+hero:
+  id: meareas
+  name: Meareas
+  level: 3
+  experience: 1200
+  stats:
+    attack: 2
+    defense: 1
+    spell_power: 0
+    knowledge: 1
+unit_stacks:
+  - id: attacker-esquire
+    unit_id: esquire
+    count: 20
+""",
+        _catalog(),
+    )
+
+    assert army.hero == Hero(
+        id="meareas",
+        name="Meareas",
+        level=3,
+        experience=1200,
+        stats=HeroStats(attack=2, defense=1, spell_power=0, knowledge=1),
+    )
 
 
 def test_dump_army_yaml_round_trips_through_loader(tmp_path):
@@ -59,6 +93,33 @@ unit_stacks:
     loaded = load_army_yaml(path.read_text(encoding="utf-8"), catalog)
 
     assert loaded == army
+    assert load_army_yaml(dump_army_yaml(army), catalog) == army
+
+
+def test_dump_army_yaml_preserves_optional_hero():
+    catalog = _catalog()
+    army = load_army_yaml(
+        """\
+schema_version: 1
+side: attacker
+hero:
+  id: meareas
+  name: Meareas
+  level: 3
+  experience: 1200
+  stats:
+    attack: 2
+    defense: 1
+    spell_power: 0
+    knowledge: 1
+unit_stacks:
+  - id: attacker-esquire
+    unit_id: esquire
+    count: 20
+""",
+        catalog,
+    )
+
     assert load_army_yaml(dump_army_yaml(army), catalog) == army
 
 
@@ -114,6 +175,28 @@ unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
     count: 0
+""",
+            _catalog(),
+        )
+
+
+def test_load_army_yaml_rejects_invalid_hero():
+    with pytest.raises(ArmySetupValidationError, match="hero.level must be at least 1"):
+        load_army_yaml(
+            """\
+schema_version: 1
+side: attacker
+hero:
+  id: meareas
+  name: Meareas
+  level: 0
+  experience: 1200
+  stats:
+    attack: 2
+    defense: 1
+    spell_power: 0
+    knowledge: 1
+unit_stacks: []
 """,
             _catalog(),
         )

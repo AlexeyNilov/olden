@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from olden.combat.battle import Battle
+from olden.combat.heroes import Hero
 from olden.combat.sides import CombatSide
 from olden.combat.units import UnitStack
 
@@ -9,6 +10,7 @@ from olden.combat.units import UnitStack
 class Army:
     side: CombatSide
     stacks: tuple[UnitStack, ...]
+    hero: Hero | None = None
 
     def __post_init__(self) -> None:
         for stack in self.stacks:
@@ -33,6 +35,7 @@ class ArmySummary:
     stacks: tuple[ArmyStackSummary, ...]
     total_remaining_health: int
     total_average_base_damage_per_turn: int
+    hero: Hero | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +60,7 @@ def summarize_army(army: Army) -> ArmySummary:
         stacks=stack_summaries,
         total_remaining_health=sum(stack.remaining_health for stack in stack_summaries),
         total_average_base_damage_per_turn=sum(stack.average_base_damage for stack in stack_summaries),
+        hero=army.hero,
     )
 
 

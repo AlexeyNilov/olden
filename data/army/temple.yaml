@@ -1,5 +1,15 @@
 schema_version: 1
 side: attacker
+hero:
+  id: meareas
+  name: Meareas
+  level: 1
+  experience: 0
+  stats:
+    attack: 0
+    defense: 0
+    spell_power: 0
+    knowledge: 0
 unit_stacks:
   - id: attacker-esquire
     unit_id: esquire

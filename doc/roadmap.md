@@ -6,16 +6,29 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 23: 
+## Milestone 23: Add Hero
 
-**Status:** Next
+**Status:** Done
 
+Implemented first hero slice:
+
+* Armies can optionally include hero data.
+* Hero data includes stable ID, display name, level, experience, attack, defense,
+  spell power, and knowledge.
+* Army YAML can load and save optional hero data while existing hero-less armies
+  remain valid.
+* Current summaries preserve hero data but do not apply hero stat effects to
+  army totals or combat simulation.
 
 
 ## Future plans
 
 * Later concern: add defense-aware and simulation-backed army matchup
   predictions.
+* Later concern: define hero leveling thresholds, stat-growth rules, skills,
+  spells, and ability unlocks.
+* Later concern: apply committed hero attack and defense effects to combat
+  damage once hero stat effects are promoted to requirements.
 * Later concern: model counterattack capacity as unit combat data, with normal
   melee units defaulting to one counterattack per round, Alert I units allowing
   two counterattacks per round, and Alert II units allowing unlimited
