@@ -7,7 +7,7 @@ unit_stacks:
     count: 100
   # - id: attacker-griffin
   #   unit_id: griffin
-  #   count: 20
+  #   count: 100
   # - id: attacker-crossbowman
   #   unit_id: crossbowman
   #   count: 50

@@ -190,3 +190,75 @@ def test_packaged_unit_catalog_loads_skeleton_record():
     assert record.combat.attack_category == "melee"
     assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Skeleton"
     assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_unit_catalog_loads_cavalry_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("sunlight_cavalry")
+
+    assert record.name == "Cavalry"
+    assert record.faction == "temple"
+    assert record.tier == 5
+    assert record.combat.health == 85
+    assert record.combat.attack == 12
+    assert record.combat.defense == 17
+    assert record.combat.damage.minimum == 10
+    assert record.combat.damage.maximum == 14
+    assert record.combat.morale.minimum == -5
+    assert record.combat.morale.maximum == 5
+    assert record.combat.luck.minimum == -3
+    assert record.combat.luck.maximum == 3
+    assert record.combat.initiative == 10
+    assert record.combat.speed == 7
+    assert record.combat.attack_category == "melee"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Cavalry"
+    assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_unit_catalog_loads_inquisitor_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("inquisitor")
+
+    assert record.name == "Inquisitor"
+    assert record.faction == "temple"
+    assert record.tier == 6
+    assert record.combat.health == 95
+    assert record.combat.attack == 20
+    assert record.combat.defense == 24
+    assert record.combat.damage.minimum == 19
+    assert record.combat.damage.maximum == 23
+    assert record.combat.morale.minimum == -5
+    assert record.combat.morale.maximum == 5
+    assert record.combat.luck.minimum == -3
+    assert record.combat.luck.maximum == 3
+    assert record.combat.initiative == 7
+    assert record.combat.speed == 4
+    assert record.combat.attack_category == "melee"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Inquisitor"
+    assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_unit_catalog_loads_angel_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("angel")
+
+    assert record.name == "Angel"
+    assert record.faction == "temple"
+    assert record.tier == 7
+    assert record.combat.health == 225
+    assert record.combat.attack == 30
+    assert record.combat.defense == 30
+    assert record.combat.damage.minimum == 50
+    assert record.combat.damage.maximum == 75
+    assert record.combat.morale.minimum == -3
+    assert record.combat.morale.maximum == 3
+    assert record.combat.luck.minimum == -3
+    assert record.combat.luck.maximum == 3
+    assert record.combat.initiative == 8
+    assert record.combat.speed == 4
+    assert record.combat.attack_category == "ranged"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Angel"
+    assert record.source.retrieved_on == "2026-06-13"

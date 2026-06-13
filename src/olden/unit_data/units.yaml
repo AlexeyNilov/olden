@@ -133,6 +133,84 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-07"
       modified: false
+  - id: sunlight_cavalry
+    name: Cavalry
+    faction: temple
+    tier: 5
+    combat:
+      health: 85
+      attack: 12
+      defense: 17
+      damage:
+        min: 10
+        max: 14
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 10
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Cavalry
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: inquisitor
+    name: Inquisitor
+    faction: temple
+    tier: 6
+    combat:
+      health: 95
+      attack: 20
+      defense: 24
+      damage:
+        min: 19
+        max: 23
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 7
+      speed: 4
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Inquisitor
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: angel
+    name: Angel
+    faction: temple
+    tier: 7
+    combat:
+      health: 225
+      attack: 30
+      defense: 30
+      damage:
+        min: 50
+        max: 75
+      morale:
+        min: -3
+        max: 3
+      luck:
+        min: -3
+        max: 3
+      initiative: 8
+      speed: 4
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Angel
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: skeleton
     name: Skeleton
     faction: necropolis
