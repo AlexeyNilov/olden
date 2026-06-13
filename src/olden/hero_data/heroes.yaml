@@ -1,0 +1,27 @@
+schema_version: 1
+license: CC-BY-SA-4.0
+license_url: https://creativecommons.org/licenses/by-sa/4.0/
+
+heroes:
+  - id: john_johnson
+    name: John Johnson
+    faction: temple
+    hero_class: Knight
+    base_stats:
+      attack: 2
+      defense: 3
+      spell_power: 1
+      knowledge: 1
+    starting_skills:
+      - Righteousness
+      - Defense
+    starting_spell: null
+    specialty:
+      name: Salt of the Earth
+      description: Swordsman city growth increases by 1. Allied Swordsmen gain speed, initiative, health, and level-scaled attack and defense bonuses; enemy Swordsmen lose matching attack and defense.
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/John_Johnson
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: true

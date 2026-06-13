@@ -5,9 +5,10 @@ from typing import Any
 import yaml
 
 from olden.combat.army import Army
-from olden.combat.heroes import Hero, HeroStats
+from olden.combat.heroes import Hero
 from olden.combat.sides import CombatSide
 from olden.combat.units import UnitStack
+from olden.hero_data.catalog import HeroCatalog, MissingHeroRecordError
 from olden.unit_data.catalog import UnitCatalog
 
 
@@ -15,8 +16,8 @@ class ArmySetupValidationError(ValueError):
     pass
 
 
-def load_army_file(path: Path, unit_catalog: UnitCatalog) -> Army:
-    return load_army_yaml(path.read_text(encoding="utf-8"), unit_catalog)
+def load_army_file(path: Path, unit_catalog: UnitCatalog, hero_catalog: HeroCatalog | None = None) -> Army:
+    return load_army_yaml(path.read_text(encoding="utf-8"), unit_catalog, hero_catalog)
 
 
 def save_army_file(path: Path, army: Army) -> None:
@@ -24,11 +25,11 @@ def save_army_file(path: Path, army: Army) -> None:
     path.write_text(dump_army_yaml(army), encoding="utf-8")
 
 
-def load_army_yaml(content: str, unit_catalog: UnitCatalog) -> Army:
+def load_army_yaml(content: str, unit_catalog: UnitCatalog, hero_catalog: HeroCatalog | None = None) -> Army:
     data = _require_mapping(yaml.safe_load(content), "army setup")
     _require_schema_version(data)
     side = _parse_side(_require_str(data, "side", "army setup"), "army setup.side")
-    hero = _parse_optional_hero(data)
+    hero = _parse_optional_hero(data, hero_catalog)
     stacks = _parse_unit_stacks(data, unit_catalog, side)
     return Army(side=side, stacks=stacks, hero=hero)
 
@@ -40,42 +41,25 @@ def dump_army_yaml(army: Army) -> str:
         "unit_stacks": [_dump_unit_stack(stack) for stack in army.stacks],
     }
     if army.hero is not None:
-        data["hero"] = _dump_hero(army.hero)
+        data["hero_id"] = army.hero.id
     return yaml.safe_dump(data, sort_keys=False)
 
 
-def _parse_optional_hero(data: Mapping[str, Any]) -> Hero | None:
-    if "hero" not in data:
+def _parse_optional_hero(data: Mapping[str, Any], hero_catalog: HeroCatalog | None) -> Hero | None:
+    if "hero" in data:
+        msg = "army setup.hero is not supported; use army setup.hero_id"
+        raise ArmySetupValidationError(msg)
+    if "hero_id" not in data:
         return None
-    hero_data = _require_mapping(data["hero"], "hero")
-    stats_data = _require_mapping(_required(hero_data, "stats", "hero"), "hero.stats")
-    return Hero(
-        id=_require_str(hero_data, "id", "hero"),
-        name=_require_str(hero_data, "name", "hero"),
-        level=_require_int(hero_data, "level", "hero", minimum=1),
-        experience=_require_int(hero_data, "experience", "hero", minimum=0),
-        stats=HeroStats(
-            attack=_require_int(stats_data, "attack", "hero.stats", minimum=0),
-            defense=_require_int(stats_data, "defense", "hero.stats", minimum=0),
-            spell_power=_require_int(stats_data, "spell_power", "hero.stats", minimum=0),
-            knowledge=_require_int(stats_data, "knowledge", "hero.stats", minimum=0),
-        ),
-    )
-
-
-def _dump_hero(hero: Hero) -> dict[str, object]:
-    return {
-        "id": hero.id,
-        "name": hero.name,
-        "level": hero.level,
-        "experience": hero.experience,
-        "stats": {
-            "attack": hero.stats.attack,
-            "defense": hero.stats.defense,
-            "spell_power": hero.stats.spell_power,
-            "knowledge": hero.stats.knowledge,
-        },
-    }
+    if hero_catalog is None:
+        msg = "army setup.hero_id requires a hero catalog"
+        raise ArmySetupValidationError(msg)
+    hero_id = _require_str(data, "hero_id", "army setup")
+    try:
+        return hero_catalog.get(hero_id).to_hero()
+    except MissingHeroRecordError as exc:
+        msg = f"Missing hero record for army setup.hero_id: {hero_id}"
+        raise ArmySetupValidationError(msg) from exc
 
 
 def _parse_unit_stacks(data: Mapping[str, Any], unit_catalog: UnitCatalog, side: CombatSide) -> tuple[UnitStack, ...]:

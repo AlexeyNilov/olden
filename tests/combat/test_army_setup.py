@@ -8,6 +8,7 @@ from olden.combat.army_setup import (
 )
 from olden.combat.heroes import Hero, HeroStats
 from olden.combat.sides import CombatSide
+from olden.hero_data.catalog import HeroBaseStatsRecord, HeroCatalog, HeroRecord, HeroSourceRecord, HeroSpecialtyRecord
 from olden.unit_data.catalog import (
     UnitCatalog,
     UnitCombatRecord,
@@ -42,35 +43,27 @@ unit_stacks:
     assert army.hero is None
 
 
-def test_load_army_yaml_loads_optional_hero():
+def test_load_army_yaml_resolves_optional_hero_id_from_catalog():
     army = load_army_yaml(
         """\
 schema_version: 1
 side: attacker
-hero:
-  id: meareas
-  name: Meareas
-  level: 3
-  experience: 1200
-  stats:
-    attack: 2
-    defense: 1
-    spell_power: 0
-    knowledge: 1
+hero_id: john_johnson
 unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
     count: 20
 """,
         _catalog(),
+        _hero_catalog(),
     )
 
     assert army.hero == Hero(
-        id="meareas",
-        name="Meareas",
-        level=3,
-        experience=1200,
-        stats=HeroStats(attack=2, defense=1, spell_power=0, knowledge=1),
+        id="john_johnson",
+        name="John Johnson",
+        level=1,
+        experience=0,
+        stats=HeroStats(attack=2, defense=3, spell_power=1, knowledge=1),
     )
 
 
@@ -96,31 +89,28 @@ unit_stacks:
     assert load_army_yaml(dump_army_yaml(army), catalog) == army
 
 
-def test_dump_army_yaml_preserves_optional_hero():
+def test_dump_army_yaml_preserves_optional_hero_id():
     catalog = _catalog()
+    hero_catalog = _hero_catalog()
     army = load_army_yaml(
         """\
 schema_version: 1
 side: attacker
-hero:
-  id: meareas
-  name: Meareas
-  level: 3
-  experience: 1200
-  stats:
-    attack: 2
-    defense: 1
-    spell_power: 0
-    knowledge: 1
+hero_id: john_johnson
 unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
     count: 20
 """,
         catalog,
+        hero_catalog,
     )
 
-    assert load_army_yaml(dump_army_yaml(army), catalog) == army
+    dumped = dump_army_yaml(army)
+
+    assert "hero_id: john_johnson" in dumped
+    assert "hero:" not in dumped
+    assert load_army_yaml(dumped, catalog, hero_catalog) == army
 
 
 def test_load_army_yaml_rejects_unsupported_schema_version():
@@ -180,8 +170,21 @@ unit_stacks:
         )
 
 
-def test_load_army_yaml_rejects_invalid_hero():
-    with pytest.raises(ArmySetupValidationError, match="hero.level must be at least 1"):
+def test_load_army_yaml_rejects_hero_id_without_hero_catalog():
+    with pytest.raises(ArmySetupValidationError, match="hero catalog"):
+        load_army_yaml(
+            """\
+schema_version: 1
+side: attacker
+hero_id: john_johnson
+unit_stacks: []
+""",
+            _catalog(),
+        )
+
+
+def test_load_army_yaml_rejects_inline_hero_data():
+    with pytest.raises(ArmySetupValidationError, match="hero_id"):
         load_army_yaml(
             """\
 schema_version: 1
@@ -189,13 +192,13 @@ side: attacker
 hero:
   id: meareas
   name: Meareas
-  level: 0
-  experience: 1200
+  level: 1
+  experience: 0
   stats:
-    attack: 2
-    defense: 1
+    attack: 0
+    defense: 0
     spell_power: 0
-    knowledge: 1
+    knowledge: 0
 unit_stacks: []
 """,
             _catalog(),
@@ -211,6 +214,36 @@ def _catalog() -> UnitCatalog:
             _record("esquire", "Swordsman", health=12, damage_min=2, damage_max=3),
             _record("crossbowman", "Crossbowman", health=10, damage_min=2, damage_max=2),
             _record("griffin", "Griffin", health=25, damage_min=5, damage_max=7),
+        ),
+    )
+
+
+def _hero_catalog() -> HeroCatalog:
+    return HeroCatalog(
+        schema_version=1,
+        license="test",
+        license_url="https://example.test/license",
+        records=(
+            HeroRecord(
+                id="john_johnson",
+                name="John Johnson",
+                faction="temple",
+                hero_class="Knight",
+                base_stats=HeroBaseStatsRecord(attack=2, defense=3, spell_power=1, knowledge=1),
+                starting_skills=("Righteousness", "Defense"),
+                starting_spell=None,
+                specialty=HeroSpecialtyRecord(
+                    name="Salt of the Earth",
+                    description="Test specialty.",
+                ),
+                source=HeroSourceRecord(
+                    name="test",
+                    url="https://example.test/hero",
+                    license="test",
+                    retrieved_on="2026-06-13",
+                    modified=False,
+                ),
+            ),
         ),
     )
 

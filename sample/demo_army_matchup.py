@@ -4,6 +4,7 @@ from pathlib import Path
 
 from olden.combat.army import ArmyMatchupEstimate, ArmySummary, estimate_army_matchup
 from olden.combat.army_setup import load_army_file
+from olden.hero_data.packaged import load_packaged_hero_catalog
 from olden.unit_data.packaged import load_packaged_unit_catalog
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -16,8 +17,9 @@ def run_demo_army_matchup(
     defender_army_path: Path = DEFAULT_DEFENDER_ARMY_PATH,
 ) -> ArmyMatchupEstimate:
     catalog = load_packaged_unit_catalog()
-    attacker = load_army_file(attacker_army_path, catalog)
-    defender = load_army_file(defender_army_path, catalog)
+    hero_catalog = load_packaged_hero_catalog()
+    attacker = load_army_file(attacker_army_path, catalog, hero_catalog)
+    defender = load_army_file(defender_army_path, catalog, hero_catalog)
     estimate = estimate_army_matchup(attacker=attacker, defender=defender)
     _print_estimate(estimate, attacker_army_path, defender_army_path)
     return estimate

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "olden"
-version = "0.1.17"
+version = "0.1.18"
 description = "Olden combat simulator."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -44,6 +44,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "olden.battlefield_view" = ["*.css"]
+"olden.hero_data" = ["*.yaml", "NOTICE.md"]
 "olden.unit_data" = ["*.yaml", "LICENSE-*.md", "NOTICE.md"]
 
 [tool.pytest.ini_options]

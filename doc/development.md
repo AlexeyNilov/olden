@@ -16,6 +16,8 @@ tests, and docs aligned with those terms.
 
 * `src/olden/combat/` contains combat simulation rules and should not depend on
   browser UI, local server management, or packaged data loading.
+* `src/olden/hero_data/` loads and validates packaged hero catalog data, then
+  converts catalog records into narrower combat-domain hero data.
 * `src/olden/unit_data/` loads and validates packaged unit catalog data, then
   converts catalog records into narrower combat-domain unit definitions.
 * `src/olden/battlefield_view/` maps combat state into read-only render data and
@@ -85,6 +87,13 @@ src/olden/
         svg.py
         unit_images.py
 
+    hero_data/
+        __init__.py
+        catalog.py
+        packaged.py
+        heroes.yaml
+        NOTICE.md
+
     unit_data/
         __init__.py
         catalog.py
@@ -142,6 +151,9 @@ tests/
 
     unit_data/
         test_catalog.py
+
+    hero_data/
+        test_catalog.py
 ```
 
 ## Structure principles
@@ -174,6 +186,7 @@ tests/
 * Put read-only battlefield visualization layout and render-state mapping in `src/olden/battlefield_view/`.
 * Put the separate local combat replay browser view in `src/olden/battlefield_view/replay_app.py`.
 * Put shared SVG battlefield rendering in `src/olden/battlefield_view/svg.py`.
+* Put local packaged hero catalog loading, validation, and source-attributed data in `src/olden/hero_data/`.
 * Put local packaged unit catalog loading, validation, and source-attributed data in `src/olden/unit_data/`.
 * Put local battle setup examples in `data/`.
 * Put exploratory findings from local experiments and analysis in `findings/`.

@@ -73,8 +73,10 @@ This helps ensure requirements are:
 * **When** army remaining health is summarized, **the system shall** calculate each stack's remaining health as stack count multiplied by unit health minus current wound damage.
 * **When** army average base damage is summarized, **the system shall** calculate each stack's average base damage as stack count multiplied by the average of the stack's unit damage range.
 * **When** an attacker and defender army matchup is estimated, **the system shall** expose attacker and defender summaries, total remaining health for each side, average base damage per turn for each side, and the favored side when the estimate is not tied.
-* **When** army setup is loaded from YAML, **the system shall** build an army from one combat side, optional hero data, unit stack IDs, unit catalog IDs, and stack counts.
+* **When** army setup is loaded from YAML, **the system shall** build an army from one combat side, optional hero catalog ID, unit stack IDs, unit catalog IDs, and stack counts.
 * **When** army setup is loaded from YAML, **the system shall** resolve unit definitions through the unit catalog by stable unit ID.
+* **When** army setup contains a hero catalog ID, **the system shall** resolve hero data through the hero catalog by stable hero ID.
+* **When** army setup contains a hero catalog ID without a hero catalog, **the system shall** reject the setup before exposing the army.
 * **When** army setup contains duplicate stack IDs, **the system shall** reject the setup before exposing the army.
 * **When** army setup is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent army setup.
 * **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stat effects, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
@@ -90,6 +92,17 @@ This helps ensure requirements are:
 * **When** a unit record is converted for current combat simulation, **the system shall** produce a unit definition with stable identity, display name, speed, health, attack, defense, damage range, and attack category data.
 * **When** a unit record is converted for current combat simulation with an unsupported attack category, **the system shall** reject the conversion.
 * **When** bundled unit catalog data is derived from a CC BY-SA source, **the system shall** keep source attribution and catalog license metadata with the packaged data.
+
+### Hero catalog
+
+* **When** the packaged hero catalog is loaded, **the system shall** expose hero records by stable hero ID.
+* **When** a requested hero ID is missing from a hero catalog, **the system shall** raise a dedicated missing-record exception.
+* **When** hero catalog data contains duplicate hero IDs, **the system shall** reject the catalog.
+* **When** hero catalog data is loaded, **the system shall** reject malformed required fields before exposing records to callers.
+* **When** a hero catalog record represents base stats, **the system shall** preserve attack, defense, spell power, and knowledge values.
+* **When** a hero catalog record is converted for current combat simulation, **the system shall** produce a hero with stable identity, display name, level `1`, experience `0`, and base stats.
+* **When** bundled hero catalog data is derived from a CC BY-SA source, **the system shall** keep source attribution and catalog license metadata with the packaged data.
+* **While** hero classes, starting skills, starting spells, specialties, and starting armies have deferred effects, **the system shall** preserve them as catalog data without applying them to combat simulation.
 
 ### Occupancy
 
