@@ -5,9 +5,9 @@ unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
     count: 100
-  - id: attacker-griffin
-    unit_id: griffin
-    count: 20
-  - id: attacker-crossbowman
-    unit_id: crossbowman
-    count: 50
+  # - id: attacker-griffin
+  #   unit_id: griffin
+  #   count: 20
+  # - id: attacker-crossbowman
+  #   unit_id: crossbowman
+  #   count: 50
