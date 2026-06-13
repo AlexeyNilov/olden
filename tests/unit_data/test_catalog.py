@@ -361,3 +361,164 @@ def test_packaged_unit_catalog_loads_angel_record():
     assert record.combat.attack_category == "ranged"
     assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Angel"
     assert record.source.retrieved_on == "2026-06-13"
+
+
+@pytest.mark.parametrize(
+    (
+        "unit_id",
+        "name",
+        "tier",
+        "health",
+        "attack",
+        "defense",
+        "damage_minimum",
+        "damage_maximum",
+        "morale_minimum",
+        "morale_maximum",
+        "luck_minimum",
+        "luck_maximum",
+        "initiative",
+        "speed",
+        "attack_category",
+        "wiki_slug",
+    ),
+    [
+        ("esquire_upg", "Guard Captain", 1, 12, 5, 6, 3, 3, -5, 5, -3, 3, 5, 4, "melee", "Guard_Captain"),
+        ("esquire_upg_alt", "Sun's Aegis", 1, 20, 4, 4, 2, 3, -5, 5, -3, 3, 5, 4, "melee", "Sun%27s_Aegis"),
+        ("crossbowman_upg", "Austringer", 2, 10, 5, 4, 3, 4, -5, 5, -3, 3, 6, 5, "ranged", "Austringer"),
+        ("crossbowman_upg_alt", "Marksman", 2, 10, 6, 3, 3, 4, -5, 5, -3, 3, 5, 3, "ranged", "Marksman"),
+        ("lightweaver", "Lightweaver", 4, 34, 10, 11, 8, 12, -5, 5, -3, 3, 7, 5, "ranged", "Lightweaver"),
+        (
+            "lightweaver_upg",
+            "Hierophant",
+            4,
+            38,
+            12,
+            14,
+            8,
+            12,
+            -5,
+            5,
+            -3,
+            3,
+            7,
+            5,
+            "ranged",
+            "Hierophant",
+        ),
+        (
+            "lightweaver_upg_alt",
+            "Sun Herald",
+            4,
+            34,
+            16,
+            11,
+            10,
+            14,
+            -5,
+            5,
+            -3,
+            3,
+            8,
+            6,
+            "ranged",
+            "Sun_Herald",
+        ),
+        ("sunlight_cavalry_upg", "Noble Cavalry", 5, 85, 15, 17, 14, 18, -5, 5, -3, 3, 10, 8, "melee", "Noble_Cavalry"),
+        (
+            "sunlight_cavalry_upg_alt",
+            "Sunspear Cavalry",
+            5,
+            85,
+            18,
+            18,
+            18,
+            18,
+            -5,
+            5,
+            -3,
+            3,
+            11,
+            8,
+            "long_reach",
+            "Sunspear_Cavalry",
+        ),
+        (
+            "inquisitor_upg",
+            "Mother Superior",
+            6,
+            95,
+            20,
+            28,
+            19,
+            23,
+            -5,
+            5,
+            -3,
+            3,
+            8,
+            5,
+            "melee",
+            "Mother_Superior",
+        ),
+        (
+            "inquisitor_upg_alt",
+            "Excommunicator",
+            6,
+            95,
+            24,
+            24,
+            25,
+            25,
+            -5,
+            5,
+            -3,
+            3,
+            9,
+            5,
+            "melee",
+            "Excommunicator",
+        ),
+        ("angel_upg", "Archangel", 7, 275, 33, 36, 50, 75, -3, 3, -3, 3, 8, 6, "ranged", "Archangel"),
+        ("angel_upg_alt", "Apotheosis", 7, 225, 36, 30, 50, 75, -3, 3, -3, 3, 10, 6, "melee", "Apotheosis"),
+    ],
+)
+def test_packaged_unit_catalog_loads_missing_temple_unit_records(
+    unit_id,
+    name,
+    tier,
+    health,
+    attack,
+    defense,
+    damage_minimum,
+    damage_maximum,
+    morale_minimum,
+    morale_maximum,
+    luck_minimum,
+    luck_maximum,
+    initiative,
+    speed,
+    attack_category,
+    wiki_slug,
+):
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get(unit_id)
+
+    assert record.name == name
+    assert record.faction == "temple"
+    assert record.tier == tier
+    assert record.combat.health == health
+    assert record.combat.attack == attack
+    assert record.combat.defense == defense
+    assert record.combat.damage.minimum == damage_minimum
+    assert record.combat.damage.maximum == damage_maximum
+    assert record.combat.morale.minimum == morale_minimum
+    assert record.combat.morale.maximum == morale_maximum
+    assert record.combat.luck.minimum == luck_minimum
+    assert record.combat.luck.maximum == luck_maximum
+    assert record.combat.initiative == initiative
+    assert record.combat.speed == speed
+    assert record.combat.attack_category == attack_category
+    assert record.source.url == f"https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/{wiki_slug}"
+    assert record.source.retrieved_on == "2026-06-13"

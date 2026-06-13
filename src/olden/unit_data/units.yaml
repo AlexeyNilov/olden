@@ -29,6 +29,58 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-06"
       modified: true
+  - id: esquire_upg
+    name: Guard Captain
+    faction: temple
+    tier: 1
+    combat:
+      health: 12
+      attack: 5
+      defense: 6
+      damage:
+        min: 3
+        max: 3
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 5
+      speed: 4
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Guard_Captain
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: esquire_upg_alt
+    name: Sun's Aegis
+    faction: temple
+    tier: 1
+    combat:
+      health: 20
+      attack: 4
+      defense: 4
+      damage:
+        min: 2
+        max: 3
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 5
+      speed: 4
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Sun%27s_Aegis
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: crossbowman
     name: Crossbowman
     faction: temple
@@ -54,6 +106,58 @@ units:
       url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Crossbowman
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-08"
+      modified: false
+  - id: crossbowman_upg
+    name: Austringer
+    faction: temple
+    tier: 2
+    combat:
+      health: 10
+      attack: 5
+      defense: 4
+      damage:
+        min: 3
+        max: 4
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 6
+      speed: 5
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Austringer
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: crossbowman_upg_alt
+    name: Marksman
+    faction: temple
+    tier: 2
+    combat:
+      health: 10
+      attack: 6
+      defense: 3
+      damage:
+        min: 3
+        max: 4
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 5
+      speed: 3
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Marksman
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
       modified: false
   - id: griffin
     name: Griffin
@@ -133,6 +237,84 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-07"
       modified: false
+  - id: lightweaver
+    name: Lightweaver
+    faction: temple
+    tier: 4
+    combat:
+      health: 34
+      attack: 10
+      defense: 11
+      damage:
+        min: 8
+        max: 12
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 7
+      speed: 5
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Lightweaver
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: lightweaver_upg
+    name: Hierophant
+    faction: temple
+    tier: 4
+    combat:
+      health: 38
+      attack: 12
+      defense: 14
+      damage:
+        min: 8
+        max: 12
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 7
+      speed: 5
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Hierophant
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: lightweaver_upg_alt
+    name: Sun Herald
+    faction: temple
+    tier: 4
+    combat:
+      health: 34
+      attack: 16
+      defense: 11
+      damage:
+        min: 10
+        max: 14
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 8
+      speed: 6
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Sun_Herald
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: sunlight_cavalry
     name: Cavalry
     faction: temple
@@ -156,6 +338,58 @@ units:
     source:
       name: "Heroes of Might and Magic: Olden Era Official Wiki"
       url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Cavalry
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: sunlight_cavalry_upg
+    name: Noble Cavalry
+    faction: temple
+    tier: 5
+    combat:
+      health: 85
+      attack: 15
+      defense: 17
+      damage:
+        min: 14
+        max: 18
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 10
+      speed: 8
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Noble_Cavalry
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: sunlight_cavalry_upg_alt
+    name: Sunspear Cavalry
+    faction: temple
+    tier: 5
+    combat:
+      health: 85
+      attack: 18
+      defense: 18
+      damage:
+        min: 18
+        max: 18
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 11
+      speed: 8
+      attack_category: long_reach
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Sunspear_Cavalry
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false
@@ -185,6 +419,58 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false
+  - id: inquisitor_upg
+    name: Mother Superior
+    faction: temple
+    tier: 6
+    combat:
+      health: 95
+      attack: 20
+      defense: 28
+      damage:
+        min: 19
+        max: 23
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 8
+      speed: 5
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Mother_Superior
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: inquisitor_upg_alt
+    name: Excommunicator
+    faction: temple
+    tier: 6
+    combat:
+      health: 95
+      attack: 24
+      defense: 24
+      damage:
+        min: 25
+        max: 25
+      morale:
+        min: -5
+        max: 5
+      luck:
+        min: -3
+        max: 3
+      initiative: 9
+      speed: 5
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Excommunicator
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: angel
     name: Angel
     faction: temple
@@ -208,6 +494,58 @@ units:
     source:
       name: "Heroes of Might and Magic: Olden Era Official Wiki"
       url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Angel
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: angel_upg
+    name: Archangel
+    faction: temple
+    tier: 7
+    combat:
+      health: 275
+      attack: 33
+      defense: 36
+      damage:
+        min: 50
+        max: 75
+      morale:
+        min: -3
+        max: 3
+      luck:
+        min: -3
+        max: 3
+      initiative: 8
+      speed: 6
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Archangel
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: angel_upg_alt
+    name: Apotheosis
+    faction: temple
+    tier: 7
+    combat:
+      health: 225
+      attack: 36
+      defense: 30
+      damage:
+        min: 50
+        max: 75
+      morale:
+        min: -3
+        max: 3
+      luck:
+        min: -3
+        max: 3
+      initiative: 10
+      speed: 6
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Apotheosis
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false

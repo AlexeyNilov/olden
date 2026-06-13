@@ -1,0 +1,6 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender
+    unit_id: dragon_upg
+    count: 1
