@@ -142,3 +142,27 @@ def test_packaged_crossbowman_record_converts_to_ranged_unit_definition():
     assert definition.id == "crossbowman"
     assert definition.name == "Crossbowman"
     assert definition.combat.attack_category.value == "ranged"
+
+
+def test_packaged_unit_catalog_loads_couatl_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("coatl")
+
+    assert record.name == "Couatl"
+    assert record.faction == "neutral"
+    assert record.tier == 6
+    assert record.combat.health == 95
+    assert record.combat.attack == 26
+    assert record.combat.defense == 19
+    assert record.combat.damage.minimum == 21
+    assert record.combat.damage.maximum == 28
+    assert record.combat.morale.minimum == -3
+    assert record.combat.morale.maximum == 3
+    assert record.combat.luck.minimum == -5
+    assert record.combat.luck.maximum == 5
+    assert record.combat.initiative == 12
+    assert record.combat.speed == 8
+    assert record.combat.attack_category == "melee"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Couatl"
+    assert record.source.retrieved_on == "2026-06-13"
