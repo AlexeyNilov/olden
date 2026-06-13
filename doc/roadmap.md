@@ -6,20 +6,9 @@
 * **Next:** Expected next implementation focus.
 * **Later:** Planned but not next.
 
-## Milestone 23: Add Hero
+## Milestone 24: 
 
-**Status:** Done
-
-Implemented first hero slice:
-
-* Armies can optionally include a catalog-backed hero through `hero_id`.
-* Hero data includes stable ID, display name, level, experience, attack, defense,
-  spell power, and knowledge.
-* Army YAML can load and save optional hero IDs while existing hero-less armies
-  remain valid.
-* Packaged hero catalog includes John Johnson with source attribution.
-* Current summaries preserve hero data but do not apply hero stat effects to
-  army totals or combat simulation.
+**Status:** TBD
 
 
 ## Future plans
