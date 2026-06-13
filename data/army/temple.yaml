@@ -8,6 +8,6 @@ unit_stacks:
   # - id: attacker-griffin
   #   unit_id: griffin
   #   count: 100
-  # - id: attacker-crossbowman
-  #   unit_id: crossbowman
+  # - id: attacker-sunlight_cavalry
+  #   unit_id: sunlight_cavalry
   #   count: 50

@@ -237,6 +237,526 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: false
+  - id: skeleton_upg
+    name: Skeleton Warrior
+    faction: necropolis
+    tier: 1
+    combat:
+      health: 6
+      attack: 4
+      defense: 3
+      damage:
+        min: 2
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 4
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Skeleton_Warrior
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: skeleton_upg_alt
+    name: Skeleton Archer
+    faction: necropolis
+    tier: 1
+    combat:
+      health: 6
+      attack: 4
+      defense: 1
+      damage:
+        min: 1
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 4
+      speed: 3
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Skeleton_Archer
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: flicker
+    name: Wight
+    faction: necropolis
+    tier: 2
+    combat:
+      health: 8
+      attack: 3
+      defense: 0
+      damage:
+        min: 2
+        max: 4
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 7
+      speed: 6
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Wight
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: flicker_upg
+    name: Wraith
+    faction: necropolis
+    tier: 2
+    combat:
+      health: 8
+      attack: 6
+      defense: 0
+      damage:
+        min: 2
+        max: 4
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 9
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Wraith
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: flicker_upg_alt
+    name: Phantasm
+    faction: necropolis
+    tier: 2
+    combat:
+      health: 8
+      attack: 6
+      defense: 4
+      damage:
+        min: 2
+        max: 4
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 8
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Phantasm
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: pet
+    name: Undead Pet
+    faction: necropolis
+    tier: 3
+    combat:
+      health: 14
+      attack: 4
+      defense: 6
+      damage:
+        min: 3
+        max: 5
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 5
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Undead_Pet
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: pet_upg
+    name: Barghest
+    faction: necropolis
+    tier: 3
+    combat:
+      health: 14
+      attack: 8
+      defense: 6
+      damage:
+        min: 3
+        max: 5
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 8
+      speed: 6
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Barghest
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: pet_upg_alt
+    name: Armored Hound
+    faction: necropolis
+    tier: 3
+    combat:
+      health: 18
+      attack: 4
+      defense: 8
+      damage:
+        min: 3
+        max: 5
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 5
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Armored_Hound
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: graverobber
+    name: Graverobber
+    faction: necropolis
+    tier: 4
+    combat:
+      health: 30
+      attack: 11
+      defense: 9
+      damage:
+        min: 6
+        max: 8
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 4
+      speed: 3
+      attack_category: long_reach
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Graverobber
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: graverobber_upg
+    name: Merchant of Death
+    faction: necropolis
+    tier: 4
+    combat:
+      health: 30
+      attack: 11
+      defense: 9
+      damage:
+        min: 7
+        max: 9
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 4
+      attack_category: long_reach
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Merchant_of_Death
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: graverobber_upg_alt
+    name: Kennelmaster
+    faction: necropolis
+    tier: 4
+    combat:
+      health: 30
+      attack: 12
+      defense: 13
+      damage:
+        min: 6
+        max: 8
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 5
+      attack_category: long_reach
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Kennelmaster
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: lich
+    name: Lich
+    faction: necropolis
+    tier: 5
+    combat:
+      health: 45
+      attack: 12
+      defense: 12
+      damage:
+        min: 12
+        max: 16
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 4
+      speed: 2
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Lich
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: lich_upg
+    name: Pestilent Lich
+    faction: necropolis
+    tier: 5
+    combat:
+      health: 45
+      attack: 16
+      defense: 12
+      damage:
+        min: 16
+        max: 16
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 5
+      speed: 3
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Pestilent_Lich
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: lich_upg_alt
+    name: Sanguine Lich
+    faction: necropolis
+    tier: 5
+    combat:
+      health: 45
+      attack: 12
+      defense: 16
+      damage:
+        min: 12
+        max: 16
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 4
+      speed: 3
+      attack_category: ranged
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Sanguine_Lich
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: avatar_of_war
+    name: Dread Knight
+    faction: necropolis
+    tier: 6
+    combat:
+      health: 100
+      attack: 19
+      defense: 18
+      damage:
+        min: 12
+        max: 14
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 9
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Dread_Knight
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: avatar_of_war_upg
+    name: Avatar of War
+    faction: necropolis
+    tier: 6
+    combat:
+      health: 100
+      attack: 19
+      defense: 20
+      damage:
+        min: 18
+        max: 20
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 11
+      speed: 8
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Avatar_of_War
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: avatar_of_war_upg_alt
+    name: Hollow Reaper
+    faction: necropolis
+    tier: 6
+    combat:
+      health: 100
+      attack: 25
+      defense: 18
+      damage:
+        min: 22
+        max: 24
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 10
+      speed: 7
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Hollow_Reaper
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: vampire
+    name: Vampire
+    faction: necropolis
+    tier: 7
+    combat:
+      health: 150
+      attack: 22
+      defense: 20
+      damage:
+        min: 25
+        max: 25
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 11
+      speed: 6
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Vampire
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: vampire_upg
+    name: Vampire Lord
+    faction: necropolis
+    tier: 7
+    combat:
+      health: 175
+      attack: 22
+      defense: 27
+      damage:
+        min: 30
+        max: 30
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 13
+      speed: 8
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Vampire_Lord
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
+  - id: vampire_upg_alt
+    name: Vampire Scholar
+    faction: necropolis
+    tier: 7
+    combat:
+      health: 150
+      attack: 25
+      defense: 20
+      damage:
+        min: 30
+        max: 30
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 12
+      speed: 5
+      attack_category: long_reach
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Vampire_Scholar
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: coatl
     name: Couatl
     faction: neutral

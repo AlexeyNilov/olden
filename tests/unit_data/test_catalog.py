@@ -192,6 +192,81 @@ def test_packaged_unit_catalog_loads_skeleton_record():
     assert record.source.retrieved_on == "2026-06-13"
 
 
+@pytest.mark.parametrize(
+    (
+        "unit_id",
+        "name",
+        "tier",
+        "health",
+        "attack",
+        "defense",
+        "damage_minimum",
+        "damage_maximum",
+        "initiative",
+        "speed",
+        "attack_category",
+        "wiki_slug",
+    ),
+    [
+        ("skeleton_upg", "Skeleton Warrior", 1, 6, 4, 3, 2, 3, 5, 4, "melee", "Skeleton_Warrior"),
+        ("skeleton_upg_alt", "Skeleton Archer", 1, 6, 4, 1, 1, 3, 4, 3, "ranged", "Skeleton_Archer"),
+        ("flicker", "Wight", 2, 8, 3, 0, 2, 4, 7, 6, "melee", "Wight"),
+        ("flicker_upg", "Wraith", 2, 8, 6, 0, 2, 4, 9, 7, "melee", "Wraith"),
+        ("flicker_upg_alt", "Phantasm", 2, 8, 6, 4, 2, 4, 8, 7, "melee", "Phantasm"),
+        ("pet", "Undead Pet", 3, 14, 4, 6, 3, 5, 5, 5, "melee", "Undead_Pet"),
+        ("pet_upg", "Barghest", 3, 14, 8, 6, 3, 5, 8, 6, "melee", "Barghest"),
+        ("pet_upg_alt", "Armored Hound", 3, 18, 4, 8, 3, 5, 5, 5, "melee", "Armored_Hound"),
+        ("graverobber", "Graverobber", 4, 30, 11, 9, 6, 8, 4, 3, "long_reach", "Graverobber"),
+        ("graverobber_upg", "Merchant of Death", 4, 30, 11, 9, 7, 9, 5, 4, "long_reach", "Merchant_of_Death"),
+        ("graverobber_upg_alt", "Kennelmaster", 4, 30, 12, 13, 6, 8, 5, 5, "long_reach", "Kennelmaster"),
+        ("lich", "Lich", 5, 45, 12, 12, 12, 16, 4, 2, "ranged", "Lich"),
+        ("lich_upg", "Pestilent Lich", 5, 45, 16, 12, 16, 16, 5, 3, "ranged", "Pestilent_Lich"),
+        ("lich_upg_alt", "Sanguine Lich", 5, 45, 12, 16, 12, 16, 4, 3, "ranged", "Sanguine_Lich"),
+        ("avatar_of_war", "Dread Knight", 6, 100, 19, 18, 12, 14, 9, 7, "melee", "Dread_Knight"),
+        ("avatar_of_war_upg", "Avatar of War", 6, 100, 19, 20, 18, 20, 11, 8, "melee", "Avatar_of_War"),
+        ("avatar_of_war_upg_alt", "Hollow Reaper", 6, 100, 25, 18, 22, 24, 10, 7, "melee", "Hollow_Reaper"),
+        ("vampire", "Vampire", 7, 150, 22, 20, 25, 25, 11, 6, "melee", "Vampire"),
+        ("vampire_upg", "Vampire Lord", 7, 175, 22, 27, 30, 30, 13, 8, "melee", "Vampire_Lord"),
+        ("vampire_upg_alt", "Vampire Scholar", 7, 150, 25, 20, 30, 30, 12, 5, "long_reach", "Vampire_Scholar"),
+    ],
+)
+def test_packaged_unit_catalog_loads_necropolis_unit_records(
+    unit_id,
+    name,
+    tier,
+    health,
+    attack,
+    defense,
+    damage_minimum,
+    damage_maximum,
+    initiative,
+    speed,
+    attack_category,
+    wiki_slug,
+):
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get(unit_id)
+
+    assert record.name == name
+    assert record.faction == "necropolis"
+    assert record.tier == tier
+    assert record.combat.health == health
+    assert record.combat.attack == attack
+    assert record.combat.defense == defense
+    assert record.combat.damage.minimum == damage_minimum
+    assert record.combat.damage.maximum == damage_maximum
+    assert record.combat.morale.minimum == 0
+    assert record.combat.morale.maximum == 0
+    assert record.combat.luck.minimum == -5
+    assert record.combat.luck.maximum == 5
+    assert record.combat.initiative == initiative
+    assert record.combat.speed == speed
+    assert record.combat.attack_category == attack_category
+    assert record.source.url == f"https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/{wiki_slug}"
+    assert record.source.retrieved_on == "2026-06-13"
+
+
 def test_packaged_unit_catalog_loads_cavalry_record():
     catalog = load_packaged_unit_catalog()
 
