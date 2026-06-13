@@ -52,6 +52,7 @@ def run_demo_breakpoint_scan(
     scanned_stack_id: str | None = None,
     max_count: int | None = None,
     neighbors: int = 3,
+    print_result: bool = True,
 ) -> BreakpointScanResult:
     catalog = load_packaged_unit_catalog()
     hero_catalog = load_packaged_hero_catalog()
@@ -75,7 +76,8 @@ def run_demo_breakpoint_scan(
         first_winning_count=first_winning_count,
         outcomes=outcomes,
     )
-    _print_result(result, neighbors)
+    if print_result:
+        _print_result(result, neighbors)
     return result
 
 
