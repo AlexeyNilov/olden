@@ -4,7 +4,7 @@ hero_id: john_johnson
 unit_stacks:
   - id: attacker-esquire
     unit_id: esquire
-    count: 58
+    count: 100
   # - id: attacker-griffin
   #   unit_id: griffin
   #   count: 20
