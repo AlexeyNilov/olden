@@ -28,7 +28,7 @@ from olden.unit_data.packaged import load_packaged_unit_catalog
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ATTACKER_ARMY_PATH = PROJECT_ROOT / "data" / "army" / "temple.yaml"
-DEFAULT_DEFENDER_ARMY_PATH = PROJECT_ROOT / "data" / "object" / "altar_of_meareas.yaml"
+DEFAULT_DEFENDER_ARMY_PATH = PROJECT_ROOT / "data" / "object" / "meareas_altar.yaml"
 ATTACKER_MELEE_COORD = HexCoord(5, 5)
 DEFENDER_MELEE_COORD = HexCoord(6, 5)
 
