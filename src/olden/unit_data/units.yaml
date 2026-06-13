@@ -133,6 +133,32 @@ units:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-07"
       modified: false
+  - id: skeleton
+    name: Skeleton
+    faction: necropolis
+    tier: 1
+    combat:
+      health: 6
+      attack: 4
+      defense: 1
+      damage:
+        min: 1
+        max: 3
+      morale:
+        min: 0
+        max: 0
+      luck:
+        min: -5
+        max: 5
+      initiative: 4
+      speed: 3
+      attack_category: melee
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Skeleton
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
   - id: coatl
     name: Couatl
     faction: neutral

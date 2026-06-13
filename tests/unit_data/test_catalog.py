@@ -166,3 +166,27 @@ def test_packaged_unit_catalog_loads_couatl_record():
     assert record.combat.attack_category == "melee"
     assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Couatl"
     assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_unit_catalog_loads_skeleton_record():
+    catalog = load_packaged_unit_catalog()
+
+    record = catalog.get("skeleton")
+
+    assert record.name == "Skeleton"
+    assert record.faction == "necropolis"
+    assert record.tier == 1
+    assert record.combat.health == 6
+    assert record.combat.attack == 4
+    assert record.combat.defense == 1
+    assert record.combat.damage.minimum == 1
+    assert record.combat.damage.maximum == 3
+    assert record.combat.morale.minimum == 0
+    assert record.combat.morale.maximum == 0
+    assert record.combat.luck.minimum == -5
+    assert record.combat.luck.maximum == 5
+    assert record.combat.initiative == 4
+    assert record.combat.speed == 3
+    assert record.combat.attack_category == "melee"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Skeleton"
+    assert record.source.retrieved_on == "2026-06-13"
