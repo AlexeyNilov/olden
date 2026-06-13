@@ -95,6 +95,8 @@ src/olden/
 
     combat/
         __init__.py
+        army.py
+        army_setup.py
         attack.py
         battle.py
         battle_setup.py
@@ -156,6 +158,8 @@ tests/
 * Put pure distance and movement-radius calculations in `range.py`.
 * Put shared combat side vocabulary in `sides.py`.
 * Put battle-level state orchestration in `battle.py`.
+* Put army-level grouping and summaries in `army.py`.
+* Put army YAML loading and saving in `army_setup.py`.
 * Put combat action vocabulary and action-selection errors in `action_selection.py`.
 * Put melee attack targeting and damage resolution in `attack.py`.
 * Put combat simulation loop orchestration and stop reasons in `combat_simulation.py`.

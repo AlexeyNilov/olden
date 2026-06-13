@@ -1,0 +1,12 @@
+schema_version: 1
+side: attacker
+unit_stacks:
+  - id: attacker-esquire
+    unit_id: esquire
+    count: 20
+  - id: attacker-griffin
+    unit_id: griffin
+    count: 5
+  - id: attacker-crossbowman
+    unit_id: crossbowman
+    count: 12
