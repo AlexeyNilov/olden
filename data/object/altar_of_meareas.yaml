@@ -1,0 +1,6 @@
+schema_version: 1
+side: defender
+unit_stacks:
+  - id: defender-coatl
+    unit_id: coatl
+    count: 3
