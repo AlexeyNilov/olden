@@ -1,0 +1,7 @@
+schema_version: 1
+side: attacker
+hero_id: onkos
+unit_stacks:
+  - id: attacker-skeleton
+    unit_id: skeleton
+    count: 100

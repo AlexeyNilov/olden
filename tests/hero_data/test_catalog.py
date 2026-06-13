@@ -113,3 +113,22 @@ def test_packaged_hero_catalog_loads_john_johnson_record():
     assert record.specialty.name == "Salt of the Earth"
     assert record.source.license == "CC-BY-SA-4.0"
     assert record.source.retrieved_on == "2026-06-13"
+
+
+def test_packaged_hero_catalog_loads_onkos_record():
+    catalog = load_packaged_hero_catalog()
+
+    record = catalog.get("onkos")
+
+    assert record.name == "Onkos"
+    assert record.faction == "necropolis"
+    assert record.hero_class == "Death Knight"
+    assert record.base_stats.attack == 3
+    assert record.base_stats.defense == 1
+    assert record.base_stats.spell_power == 1
+    assert record.base_stats.knowledge == 2
+    assert record.starting_skills == ("Necromancy", "Offense")
+    assert record.starting_spell is None
+    assert record.specialty.name == "Perfect Puppets"
+    assert record.source.url == "https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Onkos"
+    assert record.source.retrieved_on == "2026-06-13"

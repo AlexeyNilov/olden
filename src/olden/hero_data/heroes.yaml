@@ -25,3 +25,25 @@ heroes:
       license: CC-BY-SA-4.0
       retrieved_on: "2026-06-13"
       modified: true
+  - id: onkos
+    name: Onkos
+    faction: necropolis
+    hero_class: Death Knight
+    base_stats:
+      attack: 3
+      defense: 1
+      spell_power: 1
+      knowledge: 2
+    starting_skills:
+      - Necromancy
+      - Offense
+    starting_spell: null
+    specialty:
+      name: Perfect Puppets
+      description: Skeleton growth in your cities increases by 2. Under his command, Skeletons gain 1 Speed, 1 Initiative, and 20% HP. Their Attack and Defense increase by 1 for every 3 hero levels, and enemy Skeletons lose an equal amount of Attack and Defense.
+    source:
+      name: "Heroes of Might and Magic: Olden Era Official Wiki"
+      url: https://wiki.hoodedhorse.com/Heroes_of_Might_and_Magic_Olden_Era/Onkos
+      license: CC-BY-SA-4.0
+      retrieved_on: "2026-06-13"
+      modified: false
