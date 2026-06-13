@@ -149,6 +149,7 @@ def materialize_stack_split_battle(scenario: StackSplitScenario, strategy: Stack
         battlefield=scenario.base_battle.battlefield,
         occupancy=occupancy,
         unit_stacks=unit_stacks,
+        heroes=dict(scenario.base_battle.heroes),
     )
 
 

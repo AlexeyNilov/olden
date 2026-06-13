@@ -1,10 +1,12 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
+from olden.combat.heroes import Hero
 from olden.combat.movement import validate_movement
 from olden.combat.occupancy import Occupancy
+from olden.combat.sides import CombatSide
 from olden.combat.units import UnitStack
 
 if TYPE_CHECKING:
@@ -28,6 +30,7 @@ class Battle:
     battlefield: Battlefield
     occupancy: Occupancy
     unit_stacks: dict[str, UnitStack]
+    heroes: dict[CombatSide, Hero] = field(default_factory=dict)
 
     def move_stack(self, stack_id: str, destination: HexCoord) -> MovementResult:
         stack = self.stack(stack_id)
@@ -81,6 +84,7 @@ class Battle:
             battlefield=self.battlefield,
             occupancy=occupancy,
             unit_stacks=dict(self.unit_stacks),
+            heroes=dict(self.heroes),
         )
 
     def _single_occupied_coordinate(self, stack_id: str) -> HexCoord:

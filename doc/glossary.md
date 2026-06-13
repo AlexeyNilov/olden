@@ -21,11 +21,11 @@
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that combat simulation can move toward before resolving melee attacks.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
 * **Hex coordinate:** A zero-based `(column, row)` address for one battlefield hex.
-* **Hero:** Optional army leader data attached to an army. Current combat simulation preserves hero data but does not apply hero stats to combat resolution.
+* **Hero:** Optional army leader data attached to an army. Current combat simulation applies hero attack and defense to attack damage resolution.
 * **Hero catalog:** A local collection of static hero records loaded from packaged data.
 * **Hero record:** A catalog entry for one hero, including source metadata and hero data that may not yet affect combat simulation.
 * **Hero specialty:** Future hero-specific modifier or ability. Current combat simulation preserves specialty data but does not apply specialty effects.
-* **Hero stats:** Hero attack, defense, spell power, and knowledge values. Current combat simulation treats these as represented data with deferred effects.
+* **Hero stats:** Hero attack, defense, spell power, and knowledge values. Current combat simulation applies attack and defense to attack damage resolution; spell power and knowledge effects are deferred.
 * **Initiative:** Unit stat that determines combat simulation turn order before speed and configured stack order tie-breakers.
 * **Luck:** Future combat modifier that can alter damage up or down during attack resolution.
 * **Morale:** Future combat modifier that can grant an extra action or cause a lost action.

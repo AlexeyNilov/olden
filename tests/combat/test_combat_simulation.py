@@ -6,6 +6,7 @@ from olden.combat.battlefield import Battlefield
 from olden.combat.combat_log import UnitAttackedEvent, UnitMovedEvent, UnitSkippedEvent, UnitWaitedEvent, replay_combat_log
 from olden.combat.combat_simulation import CombatSimulationStopReason, simulate_combat
 from olden.combat.coordinates import HexCoord
+from olden.combat.heroes import Hero, HeroStats
 from olden.combat.obstacles import Obstacle
 from olden.combat.occupancy import Occupancy
 from olden.combat.range import distance_between
@@ -105,6 +106,29 @@ def test_combat_simulation_can_resolve_configured_ranged_attack_without_movement
     assert len(attack_events) == 1
     assert attack_events[0].attack_kind == "ranged"
     assert attack_events[0].primary_damage.final_damage == 27
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
+def test_combat_simulation_applies_battle_hero_stats_to_attack_damage():
+    initial_battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(4, 5),
+        defender_anchor=HexCoord(5, 5),
+        heroes={CombatSide.ATTACKER: Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=6))},
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-esquire",
+        second_stack_id="defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert len(attack_events) == 1
+    assert attack_events[0].primary_damage.final_damage == 25
     assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
@@ -423,6 +447,7 @@ def _battle(
     attacker_anchor: HexCoord,
     defender_anchor: HexCoord,
     obstacles: tuple[HexCoord, ...] = (),
+    heroes: dict[CombatSide, Hero] | None = None,
 ) -> Battle:
     battlefield = Battlefield.default(
         obstacles=tuple(
@@ -436,6 +461,7 @@ def _battle(
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={attacker_stack.id: attacker_stack, defender_stack.id: defender_stack},
+        heroes=heroes or {},
     )
 
 

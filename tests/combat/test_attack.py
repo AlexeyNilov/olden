@@ -12,6 +12,7 @@ from olden.combat.attack import (
 from olden.combat.battle import Battle
 from olden.combat.battlefield import Battlefield
 from olden.combat.coordinates import HexCoord
+from olden.combat.heroes import Hero, HeroStats
 from olden.combat.occupancy import Occupancy
 from olden.combat.sides import CombatSide
 from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
@@ -84,6 +85,63 @@ def test_melee_attack_counterattacks_once_when_defender_survives():
     assert result.counterattack.final_damage == 38
     assert attacker.count == 7
     assert attacker.wound_damage == 2
+
+
+def test_melee_attack_adds_attacking_hero_attack_to_damage_modifier():
+    battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+        heroes={CombatSide.ATTACKER: Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=6))},
+    )
+
+    result = resolve_melee_attack(
+        battle,
+        "attacker-esquire",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+        allow_counterattack=False,
+    )
+
+    assert result.primary_damage.final_damage == 25
+
+
+def test_melee_attack_adds_defending_hero_defense_to_damage_modifier():
+    battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+        heroes={CombatSide.DEFENDER: Hero(id="defender-hero", name="Defender", stats=HeroStats(defense=6))},
+    )
+
+    result = resolve_melee_attack(
+        battle,
+        "attacker-esquire",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+        allow_counterattack=False,
+    )
+
+    assert result.primary_damage.final_damage == 16
+
+
+def test_melee_counterattack_uses_hero_stats_for_reversed_roles():
+    battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+        heroes={
+            CombatSide.ATTACKER: Hero(id="attacker-hero", name="Attacker", stats=HeroStats(defense=6)),
+        },
+    )
+
+    result = resolve_melee_attack(battle, "attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
+
+    assert result.counterattack is not None
+    assert result.counterattack.final_damage == 30
 
 
 def test_ranged_unit_melee_attack_applies_half_damage_penalty():
@@ -191,6 +249,49 @@ def test_ranged_attack_damages_non_adjacent_defender_without_counterattack():
     assert defender.count == 19
     assert defender.wound_damage == 8
     assert result.counterattack is None
+
+
+def test_ranged_attack_applies_hero_stats_before_range_penalty():
+    battle = _battle(
+        attacker_stack=_stack("attacker-crossbowman", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.RANGED),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(4, 0),
+        heroes={
+            CombatSide.ATTACKER: Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=6)),
+        },
+    )
+
+    result = resolve_ranged_attack(
+        battle,
+        "attacker-crossbowman",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    assert result.primary_damage.final_damage == 22
+
+
+def test_battle_copy_preserves_side_heroes_for_replayed_damage():
+    initial_battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+        heroes={CombatSide.ATTACKER: Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=6))},
+    )
+
+    copied_battle = initial_battle.copy()
+    result = resolve_melee_attack(
+        copied_battle,
+        "attacker-esquire",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+        allow_counterattack=False,
+    )
+
+    assert copied_battle.heroes == initial_battle.heroes
+    assert result.primary_damage.final_damage == 25
 
 
 def test_ranged_attack_rejects_same_side_target():
@@ -309,6 +410,23 @@ def test_attack_damage_calculation_uses_selected_damage_and_attack_defense_modif
     assert result.final_damage == 20
 
 
+def test_attack_damage_calculation_uses_effective_attack_and_defense():
+    attacker = _stack("attacker-esquire", CombatSide.ATTACKER, count=10)
+    defender = _stack("defender-esquire", CombatSide.DEFENDER, count=20)
+
+    result = calculate_attack_damage(
+        DamageContext(
+            attacker=attacker,
+            defender=defender,
+            selected_damage=2,
+            attacker_hero=Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=6)),
+            defender_hero=Hero(id="defender-hero", name="Defender", stats=HeroStats(defense=6)),
+        )
+    )
+
+    assert result.final_damage == 20
+
+
 def test_attack_damage_calculation_rounds_fractional_damage_down_with_minimum_one_damage():
     attacker = _stack(
         "attacker-esquire",
@@ -369,7 +487,11 @@ def test_damage_application_reports_defeated_stack_without_mutating_battle():
 
 
 def _battle(
-    attacker_stack: UnitStack, defender_stack: UnitStack, attacker_anchor: HexCoord, defender_anchor: HexCoord
+    attacker_stack: UnitStack,
+    defender_stack: UnitStack,
+    attacker_anchor: HexCoord,
+    defender_anchor: HexCoord,
+    heroes: dict[CombatSide, Hero] | None = None,
 ) -> Battle:
     battlefield = Battlefield.default()
     occupancy = Occupancy()
@@ -379,10 +501,13 @@ def _battle(
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={attacker_stack.id: attacker_stack, defender_stack.id: defender_stack},
+        heroes=heroes or {},
     )
 
 
-def _battle_with_stacks(placements: tuple[tuple[UnitStack, HexCoord], ...]) -> Battle:
+def _battle_with_stacks(
+    placements: tuple[tuple[UnitStack, HexCoord], ...], heroes: dict[CombatSide, Hero] | None = None
+) -> Battle:
     battlefield = Battlefield.default()
     occupancy = Occupancy()
     for stack, anchor in placements:
@@ -391,6 +516,7 @@ def _battle_with_stacks(placements: tuple[tuple[UnitStack, HexCoord], ...]) -> B
         battlefield=battlefield,
         occupancy=occupancy,
         unit_stacks={stack.id: stack for stack, _anchor in placements},
+        heroes=heroes or {},
     )
 
 

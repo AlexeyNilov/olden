@@ -3,6 +3,7 @@ from dataclasses import dataclass, replace
 
 from olden.combat.battle import Battle
 from olden.combat.coordinates import HexCoord
+from olden.combat.heroes import Hero
 from olden.combat.units import AttackCategory, DamageRange, UnitStack
 
 DamageChooser = Callable[[DamageRange], int]
@@ -22,6 +23,8 @@ class DamageContext:
     defender: UnitStack
     selected_damage: int
     damage_multiplier_percent: int = 100
+    attacker_hero: Hero | None = None
+    defender_hero: Hero | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -175,6 +178,8 @@ def _resolve_attack_damage(
             defender=defender,
             selected_damage=selected_damage,
             damage_multiplier_percent=damage_multiplier_percent,
+            attacker_hero=battle.heroes.get(attacker.side),
+            defender_hero=battle.heroes.get(defender.side),
         )
     )
     damage_application = apply_damage_to_stack(defender, calculated_damage.final_damage)
@@ -206,11 +211,19 @@ def calculate_attack_damage(context: DamageContext) -> CalculatedDamage:
         msg = "Damage multiplier percent cannot be negative"
         raise ValueError(msg)
     base_damage = context.attacker.count * context.selected_damage
-    modified_damage = (
-        base_damage * (20 + context.attacker.definition.combat.attack) // (20 + context.defender.definition.combat.defense)
-    )
+    modified_damage = base_damage * (20 + _effective_attack(context)) // (20 + _effective_defense(context))
     final_damage = modified_damage * context.damage_multiplier_percent // 100
     return CalculatedDamage(selected_damage=context.selected_damage, final_damage=max(1, final_damage))
+
+
+def _effective_attack(context: DamageContext) -> int:
+    hero_attack = context.attacker_hero.stats.attack if context.attacker_hero is not None else 0
+    return context.attacker.definition.combat.attack + hero_attack
+
+
+def _effective_defense(context: DamageContext) -> int:
+    hero_defense = context.defender_hero.stats.defense if context.defender_hero is not None else 0
+    return context.defender.definition.combat.defense + hero_defense
 
 
 def apply_damage_to_stack(defender: UnitStack, final_damage: int) -> DamageApplicationResult:

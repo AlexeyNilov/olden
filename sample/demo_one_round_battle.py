@@ -95,7 +95,8 @@ def _battle_from_armies(attacker: Army, defender: Army) -> Battle:
     available_coords = (coord for coord in battlefield.coordinates() if coord not in reserved_coords)
     for stack_id in unit_stacks:
         occupancy.place(stack_id, next(available_coords))
-    return Battle(battlefield=battlefield, occupancy=occupancy, unit_stacks=unit_stacks)
+    heroes = {army.side: army.hero for army in (attacker, defender) if army.hero is not None}
+    return Battle(battlefield=battlefield, occupancy=occupancy, unit_stacks=unit_stacks, heroes=heroes)
 
 
 def _resolve_one_round(battle: Battle, combat_log: CombatLog, stack_ids: tuple[str, ...]) -> int:

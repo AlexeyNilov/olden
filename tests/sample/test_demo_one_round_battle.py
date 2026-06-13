@@ -1,6 +1,10 @@
 from pathlib import Path
 
+from olden.combat.army import Army
 from olden.combat.combat_log import UnitAttackedEvent
+from olden.combat.heroes import Hero, HeroStats
+from olden.combat.sides import CombatSide
+from olden.combat.units import AttackCategory, DamageRange, UnitCombatStats, UnitDefinition, UnitStack
 from sample import demo_one_round_battle
 from sample.demo_one_round_battle import OneRoundBattleResult, run_demo_one_round_battle
 
@@ -74,6 +78,28 @@ unit_stacks:
     assert "defender-griffin -> attacker-esquire" in capsys.readouterr().out
 
 
+def test_battle_from_armies_preserves_attacker_and_defender_heroes():
+    attacker_hero = Hero(id="attacker-hero", name="Attacker", stats=HeroStats(attack=2))
+    defender_hero = Hero(id="defender-hero", name="Defender", stats=HeroStats(defense=3))
+    attacker = Army(
+        side=CombatSide.ATTACKER,
+        stacks=(_stack("attacker-esquire", CombatSide.ATTACKER),),
+        hero=attacker_hero,
+    )
+    defender = Army(
+        side=CombatSide.DEFENDER,
+        stacks=(_stack("defender-esquire", CombatSide.DEFENDER),),
+        hero=defender_hero,
+    )
+
+    battle = demo_one_round_battle._battle_from_armies(attacker, defender)
+
+    assert battle.heroes == {
+        CombatSide.ATTACKER: attacker_hero,
+        CombatSide.DEFENDER: defender_hero,
+    }
+
+
 def test_demo_one_round_battle_main_uses_argument_paths(monkeypatch, tmp_path):
     attacker_path = tmp_path / "attacker.yaml"
     defender_path = tmp_path / "defender.yaml"
@@ -106,3 +132,24 @@ def test_demo_one_round_battle_main_uses_argument_paths(monkeypatch, tmp_path):
 def _write_army(path: Path, content: str) -> Path:
     path.write_text(content, encoding="utf-8")
     return path
+
+
+def _stack(stack_id: str, side: CombatSide) -> UnitStack:
+    return UnitStack(
+        id=stack_id,
+        definition=UnitDefinition(
+            id="esquire",
+            name="Swordsman",
+            initiative=5,
+            speed=4,
+            combat=UnitCombatStats(
+                health=12,
+                attack=4,
+                defense=4,
+                damage=DamageRange(minimum=2, maximum=3),
+                attack_category=AttackCategory.MELEE,
+            ),
+        ),
+        side=side,
+        count=10,
+    )

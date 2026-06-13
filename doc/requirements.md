@@ -79,7 +79,7 @@ This helps ensure requirements are:
 * **When** army setup contains a hero catalog ID without a hero catalog, **the system shall** reject the setup before exposing the army.
 * **When** army setup contains duplicate stack IDs, **the system shall** reject the setup before exposing the army.
 * **When** army setup is saved to a file, **the system shall** write YAML that can be loaded back into an equivalent army setup.
-* **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stat effects, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
+* **While** defense-aware targeting, tactical positioning, range penalties, counterattacks, morale, luck, hero stat effects in matchup estimates, and abilities are deferred, **the system shall** treat army matchup estimates as coarse base-damage comparisons rather than combat simulation outcomes.
 
 ### Unit catalog
 
@@ -158,14 +158,16 @@ This helps ensure requirements are:
 * **When** a ranged unit is adjacent to an enemy unit stack, **the system shall** allow the ranged unit to perform a melee attack.
 * **When** a ranged unit performs a melee attack, **the system shall** reduce the primary attack damage by 50%.
 * **When** attack damage is resolved, **the system shall** calculate base damage as attacker count multiplied by the selected damage value from the attacker's damage range.
-* **When** attack damage is resolved, **the system shall** apply the attack/defense modifier `(20 + attacker attack) / (20 + defender defense)`.
+* **When** attack damage is resolved, **the system shall** apply the attack/defense modifier `(20 + effective attacker attack) / (20 + effective defender defense)`.
+* **When** attack damage is resolved for a unit stack led by a hero, **the system shall** add the attacking hero's attack stat to the attacker's unit attack.
+* **When** attack damage is resolved against a unit stack led by a hero, **the system shall** add the defending hero's defense stat to the defender's unit defense.
 * **When** attack damage produces a fractional result, **the system shall** round the result down to the nearest integer.
 * **When** attack damage is resolved, **the system shall** deal at least `1` final damage.
 * **When** attack damage is applied to a unit stack, **the system shall** carry partial damage forward as wound damage on the current surviving creature.
 * **When** attack damage kills every creature in a unit stack, **the system shall** remove the defeated stack from battle state and occupancy.
 * **When** a melee defender survives an attack and has the melee attack category, **the system shall** immediately counterattack once.
 * **When** melee attack resolution is told to suppress counterattacks, **the system shall** resolve only primary attack damage.
-* **While** morale, luck, hero stat effects, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
+* **While** morale, luck, hero spell power, hero knowledge, damage tags, abilities, and range penalties are deferred, **the system shall** avoid applying those mechanics to melee attack resolution.
 
 ### Ranged attack
 
