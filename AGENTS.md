@@ -9,7 +9,7 @@ Read only the context needed for the task. Prefer `rg` and targeted section read
 Before changing code or docs, route to the owner document:
 
 - Combat behavior: relevant section of `doc/requirements.md`; add or update it before tests when behavior is missing or ambiguous.
-- Combat-action planning: `doc/combat_system_reference.md`, then promote only committed behavior into `doc/requirements.md`.
+- Combat-action planning: `doc/wiki/combat_system_reference.md`, then promote only committed behavior into `doc/requirements.md`.
 - Combat terminology: `doc/glossary.md` only when introducing or renaming shared terms.
 - Current local simulation and strategy-discovery setup: `doc/simulation_setup.md`.
 - Current architecture, project structure, and workflow: `doc/development.md`.

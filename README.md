@@ -16,7 +16,7 @@ battle plus combat log for inspection.
 * `doc/glossary.md` owns shared project vocabulary.
 * `doc/requirements.md` owns current testable system behavior.
 * `doc/decisions.md` owns decision history for architecture, domain behavior, data flow, public APIs, and dependencies.
-* `doc/combat_system_reference.md` captures reviewed external combat-system notes for planning.
+* `doc/wiki/` captures external wiki/reference material for planning.
 * `doc/hex_math.md` owns coordinate-system and hex-math reference notes.
 * `doc/simulation_setup.md` owns the current local simulation and strategy-discovery setup.
 * `findings/` owns exploratory findings from local experiments and analysis.

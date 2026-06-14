@@ -53,7 +53,6 @@ findings/
     stack_split_tactic.md
 
 doc/
-    combat_system_reference.md
     decisions.md
     development.md
     glossary.md
@@ -62,6 +61,10 @@ doc/
     requirements.md
     roadmap.md
     simulation_setup.md
+
+    wiki/
+        combat_system_reference.md
+        hero_basics.md
 
 image/
     field.png
