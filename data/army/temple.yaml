@@ -2,12 +2,12 @@ schema_version: 1
 side: attacker
 hero_id: john_johnson
 unit_stacks:
-  # - id: attacker-esquire
-  #   unit_id: esquire
-  #   count: 100
+  - id: attacker-esquire
+    unit_id: esquire
+    count: 100
   # - id: attacker-griffin
   #   unit_id: griffin
   #   count: 100
-  - id: attacker-sunlight_cavalry
-    unit_id: sunlight_cavalry
-    count: 50
+  # - id: attacker-sunlight_cavalry
+  #   unit_id: sunlight_cavalry
+  #   count: 50
