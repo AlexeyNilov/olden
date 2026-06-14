@@ -94,8 +94,16 @@ def test_unit_catalog_rejects_inverted_morale_and_luck_ranges():
         load_unit_catalog_yaml(inverted_luck_catalog)
 
 
-def test_unit_record_rejects_unsupported_attack_category_during_conversion():
+def test_unit_record_converts_long_reach_attack_category():
     catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: long_reach"))
+
+    definition = catalog.get("esquire").to_unit_definition()
+
+    assert definition.combat.attack_category.value == "long_reach"
+
+
+def test_unit_record_rejects_unsupported_attack_category_during_conversion():
+    catalog = load_unit_catalog_yaml(VALID_CATALOG_YAML.replace("attack_category: melee", "attack_category: magic"))
 
     with pytest.raises(UnitCatalogValidationError, match="attack_category"):
         catalog.get("esquire").to_unit_definition()

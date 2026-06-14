@@ -1,6 +1,7 @@
 from olden.combat.action_opportunities import CombatRoundState
 from olden.combat.battle_setup import load_battle_initial_state_yaml
 from olden.combat.combat_actions import (
+    apply_long_reach_attack_action,
     apply_melee_attack_action,
     apply_movement_action,
     apply_ranged_attack_action,
@@ -65,6 +66,27 @@ unit_stacks:
     count: 20
     anchor:
       column: 4
+      row: 5
+"""
+
+LONG_REACH_INITIAL_STATE_YAML = """
+schema_version: 1
+battlefield:
+  obstacles: []
+unit_stacks:
+  - id: attacker-graverobber
+    unit_id: graverobber
+    side: attacker
+    count: 10
+    anchor:
+      column: 0
+      row: 5
+  - id: defender-esquire
+    unit_id: esquire
+    side: defender
+    count: 20
+    anchor:
+      column: 2
       row: 5
 """
 
@@ -143,6 +165,27 @@ def test_apply_ranged_attack_action_records_replayable_event_without_counteratta
     assert event.attack_kind == "ranged"
     assert event.counterattack is None
     assert event.primary_damage.final_damage == 27
+    assert replay_combat_log(initial_battle, combat_log).unit_stacks == battle.unit_stacks
+
+
+def test_apply_long_reach_attack_action_records_replayable_event_without_counterattack():
+    catalog = load_packaged_unit_catalog()
+    initial_battle = load_battle_initial_state_yaml(LONG_REACH_INITIAL_STATE_YAML, catalog)
+    battle = initial_battle.copy()
+    combat_log = CombatLog()
+
+    event = apply_long_reach_attack_action(
+        battle,
+        combat_log,
+        TurnMarker(round_number=1, turn_number=1),
+        "attacker-graverobber",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    assert isinstance(event, UnitAttackedEvent)
+    assert event.attack_kind == "long_reach"
+    assert event.counterattack is None
     assert replay_combat_log(initial_battle, combat_log).unit_stacks == battle.unit_stacks
 
 

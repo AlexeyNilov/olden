@@ -4,9 +4,10 @@ from enum import Enum
 
 from olden.combat.action_opportunities import CombatRoundState
 from olden.combat.action_selection import ActionChooser, CombatAction, CombatActionContext, CombatActionSelectionError
-from olden.combat.attack import DamageChooser, can_resolve_ranged_attack
+from olden.combat.attack import DamageChooser, can_resolve_long_reach_attack, can_resolve_ranged_attack
 from olden.combat.battle import Battle
 from olden.combat.combat_actions import (
+    apply_long_reach_attack_action,
     apply_melee_attack_action,
     apply_movement_action,
     apply_ranged_attack_action,
@@ -19,16 +20,18 @@ from olden.combat.engagement import (
     PathChooser,
     are_adjacent,
     choose_engagement_path,
+    choose_long_reach_engagement_path,
     choose_stay_out_of_melee_reach_path,
     destination_for_speed,
+    has_long_reach_engagement_path,
     has_stay_out_of_melee_reach_path,
 )
 from olden.combat.sides import CombatSide
 from olden.combat.targeting import TargetingPolicy, is_defeated, one_side_defeated, select_living_opponent
 from olden.combat.turn_order import order_stacks_for_round, order_stacks_for_wait_phase
-from olden.combat.units import DamageRange
+from olden.combat.units import AttackCategory, DamageRange
 
-DEFAULT_SIMULATION_ACTIONS = (CombatAction.RANGED_ATTACK, CombatAction.MELEE_ENGAGE)
+DEFAULT_SIMULATION_ACTIONS = (CombatAction.RANGED_ATTACK, CombatAction.LONG_REACH_ATTACK, CombatAction.MELEE_ENGAGE)
 
 
 class CombatSimulationStopReason(Enum):
@@ -156,6 +159,7 @@ def simulate_combat(
 def default_action_chooser(context: CombatActionContext) -> CombatAction:
     for action in (
         CombatAction.RANGED_ATTACK,
+        CombatAction.LONG_REACH_ATTACK,
         CombatAction.MELEE_ENGAGE,
         CombatAction.STAY_OUT_OF_MELEE_REACH,
         CombatAction.SKIP,
@@ -265,6 +269,16 @@ def _act_with_stack(
             damage_chooser,
         )
         return _ActionResult(consumed_turn=True)
+    if selected_action is CombatAction.LONG_REACH_ATTACK:
+        return _apply_long_reach_attack_action(
+            battle=battle,
+            combat_log=combat_log,
+            turn=turn,
+            actor_id=actor_id,
+            opponent_id=opponent_id,
+            path_chooser=path_chooser,
+            damage_chooser=damage_chooser,
+        )
 
     return _apply_melee_engage_action(
         battle=battle,
@@ -307,9 +321,48 @@ def _applicable_actions(
             applicable.append(action)
         elif action is CombatAction.RANGED_ATTACK and can_resolve_ranged_attack(battle, actor_id, opponent_id):
             applicable.append(action)
+        elif action is CombatAction.LONG_REACH_ATTACK and _can_attempt_long_reach_engagement(battle, actor_id, opponent_id):
+            applicable.append(action)
         elif action is CombatAction.STAY_OUT_OF_MELEE_REACH and has_stay_out_of_melee_reach_path(battle, actor_id, opponent_id):
             applicable.append(action)
     return tuple(applicable)
+
+
+def _can_attempt_long_reach_engagement(battle: Battle, actor_id: str, opponent_id: str) -> bool:
+    return battle.stack(
+        actor_id
+    ).definition.combat.attack_category is AttackCategory.LONG_REACH and has_long_reach_engagement_path(
+        battle, actor_id, opponent_id
+    )
+
+
+def _apply_long_reach_attack_action(
+    battle: Battle,
+    combat_log: CombatLog,
+    turn: TurnMarker,
+    actor_id: str,
+    opponent_id: str,
+    path_chooser: PathChooser,
+    damage_chooser: DamageChooser,
+) -> _ActionResult:
+    path = choose_long_reach_engagement_path(battle, actor_id, opponent_id, path_chooser)
+    if path is None:
+        msg = f"No long-reach engagement path is available for unit stack: {actor_id}"
+        raise CombatActionSelectionError(msg)
+
+    destination = destination_for_speed(path, battle.stack(actor_id).definition.speed)
+    if destination != battle.occupancy.coordinate_for(actor_id):
+        apply_movement_action(battle, combat_log, turn, actor_id, destination)
+    if can_resolve_long_reach_attack(battle, actor_id, opponent_id):
+        apply_long_reach_attack_action(
+            battle,
+            combat_log,
+            turn,
+            actor_id,
+            opponent_id,
+            damage_chooser,
+        )
+    return _ActionResult(consumed_turn=True)
 
 
 def _apply_melee_engage_action(

@@ -6,6 +6,7 @@ from olden.combat.sides import CombatSide
 
 class AttackCategory(Enum):
     MELEE = "melee"
+    LONG_REACH = "long_reach"
     RANGED = "ranged"
 
 

@@ -13,6 +13,10 @@ class MeleeAttackError(ValueError):
     pass
 
 
+class LongReachAttackError(ValueError):
+    pass
+
+
 class RangedAttackError(ValueError):
     pass
 
@@ -63,6 +67,12 @@ class MeleeAttackResult:
 
 
 @dataclass(frozen=True, slots=True)
+class LongReachAttackResult:
+    primary_damage: AttackDamageResult
+    counterattack: AttackDamageResult | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class RangedAttackResult:
     primary_damage: AttackDamageResult
     counterattack: AttackDamageResult | None = None
@@ -93,6 +103,25 @@ def resolve_melee_attack(
     return MeleeAttackResult(primary_damage=primary_damage, counterattack=counterattack)
 
 
+def resolve_long_reach_attack(
+    battle: Battle,
+    attacker_id: str,
+    defender_id: str,
+    damage_chooser: DamageChooser,
+) -> LongReachAttackResult:
+    attacker = battle.stack(attacker_id)
+    defender = battle.stack(defender_id)
+    _validate_long_reach_attack(battle, attacker, defender)
+
+    primary_damage = _resolve_attack_damage(
+        battle,
+        attacker_id,
+        defender_id,
+        damage_chooser,
+    )
+    return LongReachAttackResult(primary_damage=primary_damage)
+
+
 def resolve_ranged_attack(
     battle: Battle,
     attacker_id: str,
@@ -112,6 +141,14 @@ def resolve_ranged_attack(
         damage_multiplier_percent=range_damage_multiplier_percent(distance),
     )
     return RangedAttackResult(primary_damage=primary_damage)
+
+
+def can_resolve_long_reach_attack(battle: Battle, attacker_id: str, defender_id: str) -> bool:
+    try:
+        _validate_long_reach_attack(battle, battle.stack(attacker_id), battle.stack(defender_id))
+    except LongReachAttackError:
+        return False
+    return True
 
 
 def can_resolve_ranged_attack(battle: Battle, attacker_id: str, defender_id: str) -> bool:
@@ -140,7 +177,11 @@ def _validate_melee_attack(battle: Battle, attacker: UnitStack, defender: UnitSt
     if attacker.side == defender.side:
         msg = "Melee attack requires opposing unit stacks"
         raise MeleeAttackError(msg)
-    if attacker.definition.combat.attack_category not in {AttackCategory.MELEE, AttackCategory.RANGED}:
+    if attacker.definition.combat.attack_category not in {
+        AttackCategory.MELEE,
+        AttackCategory.LONG_REACH,
+        AttackCategory.RANGED,
+    }:
         msg = "Melee attack requires a melee-capable attacker"
         raise MeleeAttackError(msg)
     attacker_coord = _single_occupied_coordinate(battle, attacker.id)
@@ -148,6 +189,19 @@ def _validate_melee_attack(battle: Battle, attacker: UnitStack, defender: UnitSt
     if defender_coord not in battle.battlefield.neighbors(attacker_coord):
         msg = "Melee attack target must be adjacent"
         raise MeleeAttackError(msg)
+
+
+def _validate_long_reach_attack(battle: Battle, attacker: UnitStack, defender: UnitStack) -> None:
+    if attacker.side == defender.side:
+        msg = "Long-reach attack requires opposing unit stacks"
+        raise LongReachAttackError(msg)
+    if attacker.definition.combat.attack_category is not AttackCategory.LONG_REACH:
+        msg = "Long-reach attack requires a long-reach attacker"
+        raise LongReachAttackError(msg)
+    distance = _distance_between_stacks(battle, attacker.id, defender.id)
+    if distance != 2:
+        msg = "Long-reach attack target must be exactly two hexes away"
+        raise LongReachAttackError(msg)
 
 
 def _validate_ranged_attack(battle: Battle, attacker: UnitStack, defender: UnitStack) -> None:

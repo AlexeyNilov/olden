@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from olden.combat.attack import AttackDamageResult, MeleeAttackResult, RangedAttackResult
+from olden.combat.attack import AttackDamageResult, LongReachAttackResult, MeleeAttackResult, RangedAttackResult
 from olden.combat.battle import Battle, MovementResult
 from olden.combat.coordinates import HexCoord
 
@@ -125,7 +125,7 @@ class CombatLog:
     def record_unit_attacked(
         self,
         turn: TurnMarker,
-        attack: MeleeAttackResult | RangedAttackResult,
+        attack: MeleeAttackResult | LongReachAttackResult | RangedAttackResult,
         attack_kind: str = "melee",
     ) -> UnitAttackedEvent:
         event = UnitAttackedEvent(

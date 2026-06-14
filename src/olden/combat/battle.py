@@ -10,7 +10,7 @@ from olden.combat.sides import CombatSide
 from olden.combat.units import UnitStack
 
 if TYPE_CHECKING:
-    from olden.combat.attack import DamageChooser, MeleeAttackResult, RangedAttackResult
+    from olden.combat.attack import DamageChooser, LongReachAttackResult, MeleeAttackResult, RangedAttackResult
 
 
 class UnknownUnitStackError(ValueError):
@@ -66,6 +66,16 @@ class Battle:
         from olden.combat.attack import resolve_ranged_attack
 
         return resolve_ranged_attack(self, attacker_id, defender_id, damage_chooser)
+
+    def long_reach_attack_stack(
+        self,
+        attacker_id: str,
+        defender_id: str,
+        damage_chooser: "DamageChooser",
+    ) -> "LongReachAttackResult":
+        from olden.combat.attack import resolve_long_reach_attack
+
+        return resolve_long_reach_attack(self, attacker_id, defender_id, damage_chooser)
 
     def stack(self, stack_id: str) -> UnitStack:
         try:

@@ -2,10 +2,12 @@ import pytest
 
 from olden.combat.attack import (
     DamageContext,
+    LongReachAttackError,
     MeleeAttackError,
     RangedAttackError,
     apply_damage_to_stack,
     calculate_attack_damage,
+    resolve_long_reach_attack,
     resolve_melee_attack,
     resolve_ranged_attack,
 )
@@ -204,6 +206,25 @@ def test_ranged_unit_melee_attack_penalty_rounds_down_with_minimum_one_damage():
     assert battle.stack("defender-esquire").wound_damage == 1
 
 
+def test_long_reach_unit_can_perform_adjacent_melee_attack():
+    battle = _battle(
+        attacker_stack=_stack("attacker-graverobber", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.LONG_REACH),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+    )
+
+    result = resolve_melee_attack(
+        battle,
+        "attacker-graverobber",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    assert result.primary_damage.final_damage == 20
+    assert result.counterattack is not None
+
+
 def test_melee_attack_rejects_non_adjacent_target():
     battle = _battle(
         attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
@@ -362,6 +383,83 @@ def test_ranged_attack_applies_distance_penalty_capped_at_half_damage(
     )
 
     assert result.primary_damage.final_damage == expected_damage
+
+
+def test_long_reach_attack_damages_defender_exactly_two_hexes_away_without_counterattack():
+    battle = _battle(
+        attacker_stack=_stack("attacker-graverobber", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.LONG_REACH),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(2, 0),
+    )
+
+    result = resolve_long_reach_attack(
+        battle,
+        "attacker-graverobber",
+        "defender-esquire",
+        damage_chooser=lambda damage: damage.minimum,
+    )
+
+    defender = battle.stack("defender-esquire")
+    assert result.primary_damage.final_damage == 20
+    assert result.primary_damage.creatures_killed == 1
+    assert defender.count == 19
+    assert defender.wound_damage == 8
+    assert result.counterattack is None
+
+
+def test_long_reach_attack_rejects_adjacent_target():
+    battle = _battle(
+        attacker_stack=_stack("attacker-graverobber", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.LONG_REACH),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(1, 0),
+    )
+
+    with pytest.raises(LongReachAttackError, match="exactly two"):
+        resolve_long_reach_attack(
+            battle, "attacker-graverobber", "defender-esquire", damage_chooser=lambda damage: damage.minimum
+        )
+
+
+def test_long_reach_attack_rejects_target_farther_than_two_hexes():
+    battle = _battle(
+        attacker_stack=_stack("attacker-graverobber", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.LONG_REACH),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(3, 0),
+    )
+
+    with pytest.raises(LongReachAttackError, match="exactly two"):
+        resolve_long_reach_attack(
+            battle, "attacker-graverobber", "defender-esquire", damage_chooser=lambda damage: damage.minimum
+        )
+
+
+def test_long_reach_attack_rejects_non_long_reach_attacker():
+    battle = _battle(
+        attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(2, 0),
+    )
+
+    with pytest.raises(LongReachAttackError, match="long-reach attacker"):
+        resolve_long_reach_attack(battle, "attacker-esquire", "defender-esquire", damage_chooser=lambda damage: damage.minimum)
+
+
+def test_long_reach_attack_rejects_same_side_target():
+    battle = _battle(
+        attacker_stack=_stack("attacker-graverobber", CombatSide.ATTACKER, count=10, attack_category=AttackCategory.LONG_REACH),
+        defender_stack=_stack("defender-esquire", CombatSide.ATTACKER, count=20),
+        attacker_anchor=HexCoord(0, 0),
+        defender_anchor=HexCoord(2, 0),
+    )
+
+    with pytest.raises(LongReachAttackError, match="opposing"):
+        resolve_long_reach_attack(
+            battle, "attacker-graverobber", "defender-esquire", damage_chooser=lambda damage: damage.minimum
+        )
 
 
 def test_melee_attack_rounds_fractional_damage_down_with_minimum_one_damage():

@@ -55,11 +55,11 @@ won a favorable damage roll.
 
 The current combat simulator still applies normal committed combat rules during
 evaluation: one turn per living stack per round, configured target
-policy selection, movement toward an adjacent engagement hex, attack after
-movement if adjacency is reached, and at most one counterattack per defending
-stack per round. Deferred mechanics such as morale, luck, waiting, target
-selection beyond configured target policy, and multi-stack battle strategy are
-not applied.
+policy selection, movement toward an engagement hex, melee attacks after
+movement if adjacency is reached, long-reach attacks from exactly two hexes
+away, ranged attacks, and at most one counterattack per defending stack per
+round. Deferred mechanics such as morale, luck, target selection beyond
+configured target policy, and multi-stack battle strategy are not applied.
 
 ## Fitness function
 

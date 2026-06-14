@@ -419,6 +419,7 @@ def _action_chooser_for_strategy(strategy: StackSplitStrategy) -> ActionChooser:
             return CombatAction.WAIT
         for action in (
             CombatAction.RANGED_ATTACK,
+            CombatAction.LONG_REACH_ATTACK,
             CombatAction.MELEE_ENGAGE,
             CombatAction.STAY_OUT_OF_MELEE_REACH,
             CombatAction.SKIP,

@@ -59,6 +59,18 @@ def apply_ranged_attack_action(
     return combat_log.record_unit_attacked(turn, attack, attack_kind="ranged")
 
 
+def apply_long_reach_attack_action(
+    battle: Battle,
+    combat_log: CombatLog,
+    turn: TurnMarker,
+    attacker_id: str,
+    defender_id: str,
+    damage_chooser: DamageChooser,
+) -> UnitAttackedEvent:
+    attack = battle.long_reach_attack_stack(attacker_id, defender_id, damage_chooser)
+    return combat_log.record_unit_attacked(turn, attack, attack_kind="long_reach")
+
+
 def apply_wait_action(combat_log: CombatLog, turn: TurnMarker, stack_id: str) -> UnitWaitedEvent:
     return combat_log.record_unit_waited(turn, stack_id)
 
@@ -84,6 +96,9 @@ def apply_logged_attack_action(
         return
     if event.attack_kind == "ranged":
         _apply_logged_ranged_attack_action(battle, event)
+        return
+    if event.attack_kind == "long_reach":
+        _apply_logged_long_reach_attack_action(battle, event)
         return
     msg = f"Combat log attack kind is unsupported: {event.attack_kind}"
     raise CombatLogValidationError(msg)
@@ -151,4 +166,24 @@ def _apply_logged_ranged_attack_action(battle: Battle, event: UnitAttackedEvent)
         raise CombatLogValidationError(msg)
     if event.counterattack is not None:
         msg = f"Combat log ranged attack cannot include counterattack damage for unit stack: {event.attacker_id}"
+        raise CombatLogValidationError(msg)
+
+
+def _apply_logged_long_reach_attack_action(battle: Battle, event: UnitAttackedEvent) -> None:
+    selected_damage_used = False
+
+    def choose_logged_damage(_: DamageRange) -> int:
+        nonlocal selected_damage_used
+        if selected_damage_used:
+            msg = f"Combat log long-reach attack has extra replayed damage for unit stack: {event.attacker_id}"
+            raise CombatLogValidationError(msg)
+        selected_damage_used = True
+        return event.primary_damage.selected_damage
+
+    attack = battle.long_reach_attack_stack(event.attacker_id, event.defender_id, choose_logged_damage)
+    if snapshot_attack_damage(attack.primary_damage) != event.primary_damage:
+        msg = f"Combat log attack does not match replayed primary damage for unit stack: {event.attacker_id}"
+        raise CombatLogValidationError(msg)
+    if event.counterattack is not None:
+        msg = f"Combat log long-reach attack cannot include counterattack damage for unit stack: {event.attacker_id}"
         raise CombatLogValidationError(msg)

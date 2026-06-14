@@ -109,6 +109,125 @@ def test_combat_simulation_can_resolve_configured_ranged_attack_without_movement
     assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
 
 
+def test_combat_simulation_can_resolve_configured_long_reach_attack_without_movement_when_already_in_reach():
+    initial_battle = _battle(
+        attacker_stack=_stack(
+            "attacker-graverobber",
+            CombatSide.ATTACKER,
+            count=10,
+            initiative=9,
+            attack_category=AttackCategory.LONG_REACH,
+        ),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(3, 5),
+        defender_anchor=HexCoord(5, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-graverobber",
+        second_stack_id="defender-esquire",
+        attacker_actions=(CombatAction.LONG_REACH_ATTACK, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.SKIP,),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert not movement_events
+    assert len(attack_events) == 1
+    assert attack_events[0].attack_kind == "long_reach"
+    assert attack_events[0].counterattack is None
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
+def test_combat_simulation_moves_into_long_reach_and_attacks_in_same_turn():
+    initial_battle = _battle(
+        attacker_stack=_stack(
+            "attacker-graverobber",
+            CombatSide.ATTACKER,
+            count=10,
+            initiative=9,
+            speed=3,
+            attack_category=AttackCategory.LONG_REACH,
+        ),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 5),
+        defender_anchor=HexCoord(5, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-graverobber",
+        second_stack_id="defender-esquire",
+        attacker_actions=(CombatAction.LONG_REACH_ATTACK, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.SKIP,),
+        action_chooser=lambda context: (
+            CombatAction.LONG_REACH_ATTACK
+            if CombatAction.LONG_REACH_ATTACK in context.applicable_actions
+            else context.applicable_actions[0]
+        ),
+        path_chooser=lambda paths: next(path for path in paths if path[-1] == HexCoord(3, 5)),
+        damage_chooser=lambda damage: damage.minimum,
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert len(movement_events) == 1
+    assert len(attack_events) == 1
+    assert movement_events[0].destination == HexCoord(3, 5)
+    assert movement_events[0].turn == attack_events[0].turn
+    assert attack_events[0].attack_kind == "long_reach"
+    assert attack_events[0].counterattack is None
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
+def test_combat_simulation_moves_toward_long_reach_without_attacking_when_speed_is_insufficient():
+    initial_battle = _battle(
+        attacker_stack=_stack(
+            "attacker-graverobber",
+            CombatSide.ATTACKER,
+            count=10,
+            initiative=9,
+            speed=2,
+            attack_category=AttackCategory.LONG_REACH,
+        ),
+        defender_stack=_stack("defender-esquire", CombatSide.DEFENDER, count=20),
+        attacker_anchor=HexCoord(0, 5),
+        defender_anchor=HexCoord(5, 5),
+    )
+
+    result = simulate_combat(
+        initial_battle,
+        first_stack_id="attacker-graverobber",
+        second_stack_id="defender-esquire",
+        attacker_actions=(CombatAction.LONG_REACH_ATTACK, CombatAction.MELEE_ENGAGE),
+        defender_actions=(CombatAction.SKIP,),
+        action_chooser=lambda context: (
+            CombatAction.LONG_REACH_ATTACK
+            if CombatAction.LONG_REACH_ATTACK in context.applicable_actions
+            else context.applicable_actions[0]
+        ),
+        path_chooser=lambda paths: next(path for path in paths if path[-1] == HexCoord(3, 5)),
+        max_turns=1,
+    )
+
+    movement_events = [event for event in result.combat_log.events if isinstance(event, UnitMovedEvent)]
+    attack_events = [event for event in result.combat_log.events if isinstance(event, UnitAttackedEvent)]
+    assert result.stop_reason is CombatSimulationStopReason.MAX_TURNS_REACHED
+    assert result.turns_taken == 1
+    assert len(movement_events) == 1
+    assert not attack_events
+    assert movement_events[0].destination == HexCoord(2, 5)
+    assert replay_combat_log(initial_battle, result.combat_log).unit_stacks == result.battle.unit_stacks
+
+
 def test_combat_simulation_applies_battle_hero_stats_to_attack_damage():
     initial_battle = _battle(
         attacker_stack=_stack("attacker-esquire", CombatSide.ATTACKER, count=10),

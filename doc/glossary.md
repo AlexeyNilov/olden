@@ -7,7 +7,7 @@
 * **Battlefield hex:** One addressable hex on the battlefield, including its coordinate and static field metadata.
 * **Battlefield topology:** The battlefield's shape, valid coordinates, and neighbor relationships.
 * **Battlefield view:** A read-only visualization of battlefield topology, field configuration, and battle-state occupancy.
-* **Attack category:** Unit attack classification. Current combat simulation supports melee; long-reach and ranged attacks are deferred.
+* **Attack category:** Unit attack classification. Current combat simulation supports melee, ranged, and long-reach attacks.
 * **Army:** The living unit stacks belonging to one combat side, summarized for coarse strength comparison outside tactical combat simulation.
 * **Combat:** The bounded context for battlefield, unit, movement, action, spell, and battle-state rules.
 * **Combat side:** One of the opposing sides in combat. The attacker side starts on the left; the defender side starts on the right.
@@ -15,8 +15,8 @@
 * **Combat log event:** One recorded battle event with a stable sequence number and event-specific payload.
 * **Combat replay frame:** One renderable battle state in a combat-log replay, optionally associated with the event that produced it.
 * **Combat replay view:** A local browser view that steps through combat replay frames with configurable playback delay.
-* **Combat simulation:** A limited battle simulation that orders unit-stack turns, moves stacks toward selected opponents, and resolves melee attacks until one side is defeated or simulation stops.
-* **Combat action:** A configured simulation choice available to a unit stack, such as melee engagement, staying out of melee reach, waiting, or skipping.
+* **Combat simulation:** A limited battle simulation that orders unit-stack turns, moves stacks toward selected opponents, and resolves attacks until one side is defeated or simulation stops.
+* **Combat action:** A configured simulation choice available to a unit stack, such as melee engagement, long-reach attack, staying out of melee reach, waiting, or skipping.
 * **Deployment zone:** The side-based set of coordinates where units can start combat.
 * **Engagement hex:** A passable hex adjacent to an opposing unit stack that combat simulation can move toward before resolving melee attacks.
 * **Field configuration:** Static battlefield data such as obstacles and deployment zones.
@@ -28,6 +28,7 @@
 * **Hero stats:** Hero attack, defense, spell power, and knowledge values. Current combat simulation applies attack and defense to attack damage resolution; spell power and knowledge effects are deferred.
 * **Initiative:** Unit stat that determines combat simulation turn order before speed and configured stack order tie-breakers.
 * **Luck:** Future combat modifier that can alter damage up or down during attack resolution.
+* **Long-reach attack:** A combat action that moves if needed, then attacks an opposing unit stack from exactly two hexes away without provoking a counterattack.
 * **Morale:** Future combat modifier that can grant an extra action or cause a lost action.
 * **Movement cost:** The number of movement points needed to traverse one step in a movement path. Current single-hex movement cost is always `1` per step.
 * **Movement path:** An ordered sequence of battlefield coordinates from a start coordinate to a destination coordinate.

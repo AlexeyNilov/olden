@@ -55,6 +55,10 @@ def test_unit_combat_stats_reject_invalid_values():
         _combat_stats(damage=DamageRange(minimum=4, maximum=3))
 
 
+def test_attack_category_includes_long_reach():
+    assert AttackCategory("long_reach") is AttackCategory.LONG_REACH
+
+
 def test_unit_stack_exposes_side_definition_and_count():
     swordsman = UnitDefinition(
         id="esquire",

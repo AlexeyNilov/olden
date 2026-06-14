@@ -21,12 +21,14 @@ DEFAULT_GENETIC_STRATEGY_DISCOVERY_WORKERS = max(1, (os.cpu_count() or 1) - 1)
 DEFAULT_COMBAT_TARGETING_POLICY = TargetingPolicy.THREAT_REMOVED
 DEFAULT_COMBAT_ATTACKER_ACTIONS = (
     CombatAction.RANGED_ATTACK,
+    CombatAction.LONG_REACH_ATTACK,
     CombatAction.STAY_OUT_OF_MELEE_REACH,
     CombatAction.MELEE_ENGAGE,
     CombatAction.WAIT,
     CombatAction.SKIP,
 )
 DEFAULT_COMBAT_DEFENDER_ACTIONS = (
+    CombatAction.LONG_REACH_ATTACK,
     CombatAction.MELEE_ENGAGE,
     CombatAction.WAIT,
     CombatAction.SKIP,
