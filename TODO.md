@@ -9,6 +9,7 @@
 ## Actual tasks
 
 * [ ] Add long reach attack
+* [ ] Clarify language: turns vs rounds
 
 ## Combat objects research
 

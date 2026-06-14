@@ -65,6 +65,7 @@ doc/
     wiki/
         combat_system_reference.md
         hero_basics.md
+        map_objects.md
 
 image/
     field.png
