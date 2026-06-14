@@ -54,7 +54,7 @@ same seed, and keeps the genetic algorithm from rewarding candidates that only
 won a favorable damage roll.
 
 The current combat simulator still applies normal committed combat rules during
-evaluation: one action opportunity per living stack per round, configured target
+evaluation: one turn per living stack per round, configured target
 policy selection, movement toward an adjacent engagement hex, attack after
 movement if adjacency is reached, and at most one counterattack per defending
 stack per round. Deferred mechanics such as morale, luck, waiting, target
@@ -83,8 +83,8 @@ Where:
   simulation.
 * `attacker_surviving_health` is the total remaining attacker health, including
   current wound damage on surviving stacks.
-* `turns_taken` is the number of simulated action opportunities consumed before
-  the simulation stops.
+* `turns_taken` is the number of simulated turns consumed before the simulation
+  stops.
 
 The packed score is lexicographic within a scenario:
 
@@ -124,8 +124,8 @@ costs more simulations.
 the current one. More generations give selection, crossover, and mutation more
 chances to improve the result.
 
-`max turns` is the maximum number of action opportunities simulated for one
-candidate battle. It bounds slow or stuck evaluations and can be overridden with
+`max turns` is the maximum number of turns simulated for one candidate battle.
+It bounds slow or stuck evaluations and can be overridden with
 `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS`.
 
 `mutation rate` is the probability that a newly bred child genome is mutated.

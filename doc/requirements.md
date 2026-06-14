@@ -185,7 +185,7 @@ This helps ensure requirements are:
 
 * **When** combat simulation starts, **the system shall** copy the initial battle before moving or attacking with unit stacks.
 * **When** combat simulation starts, **the system shall** record a battle-start event in the combat log.
-* **When** combat simulation advances rounds, **the system shall** give each non-defeated unit stack one action opportunity per round.
+* **When** combat simulation advances rounds, **the system shall** give each non-defeated unit stack one turn per round.
 * **When** combat simulation orders unit stacks within a round, **the system shall** act with higher initiative stacks before lower initiative stacks.
 * **When** combat simulation orders unit stacks with equal initiative, **the system shall** use higher speed as the tie-breaker.
 * **When** combat simulation orders unit stacks with equal initiative and speed, **the system shall** preserve configured stack order.
@@ -200,14 +200,14 @@ This helps ensure requirements are:
 * **When** multiple equally short engagement paths are available, **the system shall** choose randomly among those paths.
 * **When** a simulated movement path is longer than the acting unit stack's speed, **the system shall** move only as far along that path as the stack's speed allows.
 * **When** the acting unit stack is adjacent to its opponent, **the system shall** perform a melee attack.
-* **When** combat simulation movement brings the acting unit stack adjacent to its target, **the system shall** perform the melee attack in the same action opportunity.
+* **When** combat simulation movement brings the acting unit stack adjacent to its target, **the system shall** perform the melee attack in the same turn.
 * **When** a configured ranged attack action is selected, **the system shall** perform a ranged attack against the selected opponent without movement.
 * **When** a configured ranged attack action is considered while any enemy is adjacent to the acting unit stack, **the system shall** not make the ranged attack action applicable.
 * **When** a configured stay-out-of-melee-reach action is selected, **the system shall** move the acting unit stack toward a selected opponent only to a reachable hex that is outside that opponent's next melee engagement reach.
-* **When** a unit stack waits during combat simulation, **the system shall** move that stack's action to the end of the current round without counting the wait itself as a completed action opportunity.
+* **When** a unit stack waits during combat simulation, **the system shall** move that stack's action to the end of the current round without counting the wait itself as a completed turn.
 * **When** multiple unit stacks wait in the same round, **the system shall** resolve their delayed actions in flipped initiative order, with lower-initiative stacks acting before higher-initiative stacks.
 * **When** a unit stack has already waited during the current round, **the system shall** prevent that stack from waiting again during that round.
-* **When** a unit stack skips during combat simulation, **the system shall** end that stack's current action opportunity without movement or attack and count the skip as a completed action opportunity.
+* **When** a unit stack skips during combat simulation, **the system shall** end that stack's current turn without movement or attack and count the skip as a completed turn.
 * **When** combat simulation resolves counterattacks, **the system shall** allow each defending unit stack to counterattack at most once per round.
 * **When** combat simulation records movement, **the system shall** use combat-log movement events that can be replayed from the original battle.
 * **When** combat simulation records an attack, **the system shall** use a combat-log attack event that can be replayed from the original battle.
@@ -227,7 +227,7 @@ This helps ensure requirements are:
 * **When** stack-split strategy discovery encounters the same genome more than once in one discovery run, **the system shall** reuse its deterministic evaluation.
 * **When** stack-split strategy discovery evaluates a population with multiple workers, **the system shall** preserve the same population order, selection behavior, and best result as serial evaluation for the same random seed.
 * **When** stack-split strategy discovery scores a completed combat simulation, **the system shall** prioritize defender units killed, then surviving attacker units, then remaining attacker health, and then faster completion.
-* **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 action opportunities.
+* **When** stack-split strategy discovery evaluates a scenario without an explicit turn cap, **the system shall** simulate at most 100 turns.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MAX_TURNS` to override the stack-split scenario turn cap.
 * **When** the genetic strategy discovery sample reads configuration, **the system shall** allow `GENETIC_STRATEGY_DISCOVERY_MUTATION_RATE` from `0` through `1` to override the stack-split mutation rate.
 * **When** the genetic strategy discovery sample builds a stack-split scenario, **the system shall** exclude default attacker deployment slots occupied by non-pool stacks in the loaded battle.

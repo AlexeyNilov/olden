@@ -25,7 +25,7 @@ Why the split works under the current model:
 * Swordsmen have equal attack and defense, so each attacking creature deals 2
   final damage before health carry-over.
 * Each stack acts once per round, so splitting one army creates more player
-  action opportunities.
+  turns.
 * Defenders can counterattack at most once per round. A 1-unit stack can absorb
   the enemy 20-stack counterattack, letting later player stacks attack the same
   round without taking retaliation.
