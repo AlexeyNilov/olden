@@ -7,3 +7,5 @@
 ```
 
 ## Actual tasks
+
+* [ ] Add long reach attack
