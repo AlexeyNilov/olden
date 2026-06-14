@@ -5,6 +5,10 @@ See `README.md` for the project overview and documentation map.
 ## Context Loading
 
 Read only the context needed for the task. Prefer `rg` and targeted section reads over opening whole documents.
+Do not pre-read broad project docs, owner docs, or wiki captures "just in case";
+open them only when the task directly depends on their content. Use search
+results, file names, and narrow excerpts to decide whether a document is
+relevant before reading more.
 
 Before changing code or docs, route to the owner document:
 
